@@ -1,6 +1,6 @@
 # Diagram validation evidence
 
-Date: **2026-10-23**. Scope: generated architecture artifacts only.
+Date: **2026-10-23**. Scope: generated architecture artifacts. The pages were regenerated after ADR-07 to match the implemented free-tier architecture. Application verification is in [testing.md](../testing.md).
 
 ## Executed checks
 
@@ -37,4 +37,4 @@ Remaining manual check: open `notebooklm-clone.drawio` through diagrams.net's **
 | Unsupported answers | Explicit limitation and claim-level evaluation; valid IDs are not proof of support | Fixed real-provider evaluation set |
 | Deployment limitation | Single instance; volume redeploy downtime documented | Real image/PDF/DB/provider smoke test |
 
-No application tests, provider calls, runtime compatibility checks, public deployment or Loom recording were performed. No employer deliverable beyond the architecture artifact set is marked complete.
+Application type/lint, backend/provider-boundary and desktop/mobile browser tests now pass locally, including actual PDF extraction. Real-provider calls, hosted Neon/Vercel runtime checks, public deployment and Loom recording remain pending. See [delivery status](../delivery-status.md) for the current employer deliverables.

@@ -12,7 +12,7 @@
         <mxCell id="subtitle" value="Answer, limitation and provider failure are separate outcomes. No unchecked model text reaches the browser." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=15;fontColor=#475569;fontStyle=0;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="40" y="120" width="1520" height="45" />
         </mxCell>
-        <mxCell id="footer" value="ARCH-04  /  Proposed design, not implemented  /  2026-10-23  /  MVP-01–11  /  See manifest and ADRs" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=12;fontColor=#64748B;fontStyle=0;" vertex="1" parent="1">
+        <mxCell id="footer" value="ARCH-04  /  Implementation architecture; live deployment pending  /  2026-10-23  /  MVP-01–11  /  ADR-07 updates baseline" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=12;fontColor=#64748B;fontStyle=0;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="40" y="1588" width="1520" height="25" />
         </mxCell>
         <mxCell id="actor0" value="&lt;b&gt;Reviewer UI&lt;/b&gt;" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=15;fontColor=#0F172A;fontStyle=0;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">

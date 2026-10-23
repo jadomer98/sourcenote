@@ -6,12 +6,12 @@ Open **[notebooklm-clone.drawio](notebooklm-clone.drawio)**. It is a complete, u
 
 | Page | Purpose | Requirements | Decisions |
 | --- | --- | --- | --- |
-| ARCH-01 · System context & deployment containers | User journey, runtime, data locations, provider transmission and deployment boundary | MVP-01–03,08–11 | ADR-01,02,03,06 |
-| ARCH-02 · Source ingestion & grounded answering | Source state/retry flow, selection, bounded evidence, validation, failure and excerpt inspection | MVP-02–07,09,11 | ADR-02,04,05,06 |
-| ARCH-03 · Data model / ERD | Ownership, source/chunk lineage, operation evidence, historical outputs and relational integrity | MVP-01–08,10,11 | ADR-02,03,04,05,06 |
-| ARCH-04 · Question-to-citation sequence | Authorization, duplicate requests, provider call, valid/insufficient/failure outcomes, citation lookup | MVP-04–08,10,11 | ADR-02,03,05,06 |
+| ARCH-01 · System context & deployment containers | User journey, runtime, data locations, provider transmission and deployment boundary | MVP-01–03,08–11 | ADR-01,02,03,06,07 |
+| ARCH-02 · Source ingestion & grounded answering | Source state/retry flow, selection, bounded evidence, validation, failure and excerpt inspection | MVP-02–07,09,11 | ADR-02,04,05,06,07 |
+| ARCH-03 · Data model / ERD | Ownership, source/chunk lineage, operation evidence, historical outputs and relational integrity | MVP-01–08,10,11 | ADR-02,03,04,05,06,07 |
+| ARCH-04 · Question-to-citation sequence | Authorization, duplicate requests, provider call, valid/insufficient/failure outcomes, citation lookup | MVP-04–08,10,11 | ADR-02,03,05,06,07 |
 
-The diagrams describe the proposal in [architecture.md](../architecture.md). Read the [six ADRs](decisions.md) and [schema notes](schema-notes.md) for constraints too detailed for a diagram. Every page is explicitly labeled proposed; application behavior has not been implemented or tested.
+The diagrams describe the [implemented architecture](../architecture.md), updated by ADR-07 after Ayham required zero spending and chose Groq Free. ADR-01–06 preserve the original proposal; live deployment is still pending. Read the [decisions](decisions.md) and [schema notes](schema-notes.md) for constraints too detailed for a diagram.
 
 ## Open in diagrams.net
 
@@ -28,7 +28,7 @@ For **Extras → Edit Diagram**, use one standalone graph model, not the full mu
 - [ARCH-03.xml](pages/ARCH-03.xml)
 - [ARCH-04.xml](pages/ARCH-04.xml)
 
-The main file already contains all batches; no repeated `NEXT DIAGRAMS` messages are necessary. Browser automation was stopped by its URL-verification guard, so opening and checking the file in the actual diagrams.net editor remains a manual step. See [validation evidence](validation.md).
+The main file already contains all batches; no repeated `NEXT DIAGRAMS` messages are necessary. The earlier actual-editor opening attempt was stopped by browser URL verification. Native XML and approximate local previews were checked; actual diagrams.net rendering still needs a manual check. See [validation evidence](validation.md).
 
 Locally rendered layout previews: [context](previews/ARCH-01.png), [ingestion](previews/ARCH-02.png), [ERD](previews/ARCH-03.png), [sequence](previews/ARCH-04.png). These were visually inspected, but use an approximate renderer and are not screenshots of diagrams.net. Native editable XML is the authoritative artifact.
 

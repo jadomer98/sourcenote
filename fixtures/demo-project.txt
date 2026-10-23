@@ -1,0 +1,14 @@
+Projekt Morgenlicht — Pilot für ein energieeffizientes Büro
+Fiktive Demonstrationsquelle, von Ayham und Codex erstellt. Zur freien Verwendung (CC0).
+
+Projektziel
+Das Team möchte den Stromverbrauch eines kleinen Büros innerhalb von sechs Monaten um 20 Prozent gegenüber dem Ausgangswert von 2025 reduzieren. Der Pilot beginnt am 1. November 2026. Der Ausgangswert beträgt 24.000 kWh pro Jahr. Ein erfolgreicher Pilot würde rechnerisch 4.800 kWh pro Jahr einsparen.
+
+Maßnahmen und Budget
+LED-Beleuchtung und Präsenzsensoren sind mit 3.200 Euro budgetiert. Für intelligente Steckdosen sind 800 Euro vorgesehen. Workshops für Mitarbeitende kosten 1.000 Euro. Das Gesamtbudget für diese drei Maßnahmen beträgt 5.000 Euro. Die Projektleitung übernimmt Mira Keller. Jonas Weber ist für die Messung verantwortlich.
+
+Messung
+Der Verbrauch wird wöchentlich erfasst. Verglichen werden Arbeitstage mit ähnlicher Belegung. Die Kennzahl lautet kWh pro anwesender Person und Arbeitstag. Eine erste Zwischenbewertung erfolgt nach acht Wochen. Die finale Entscheidung trifft das Team nach sechs Monaten anhand der gemessenen Einsparung.
+
+Risiken und offene Fragen
+Die Daten enthalten keine Strompreise; eine finanzielle Amortisationszeit kann deshalb noch nicht verlässlich berechnet werden. Unterschiedliche Büroauslastung kann den Vergleich verzerren. Die Installation muss außerhalb der Kernarbeitszeit stattfinden. Ein Zeitplan für andere Standorte wurde noch nicht beschlossen.

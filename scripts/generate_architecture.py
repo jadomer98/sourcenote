@@ -27,7 +27,7 @@ class Page:
         self.box('brand', 'S O U R C E N O T E   /   ENGINEERING DESIGN', 40, 25, width-80, 25, text=True, size=13, color='#2563EB')
         self.box('title', f'{key[5:]}  {name}', 40, 65, width-80, 48, text=True, size=30, bold=True)
         self.box('subtitle', subtitle, 40, 120, width-80, 45, text=True, size=15, color='#475569')
-        self.box('footer', f'{key}  /  Proposed design, not implemented  /  2026-10-23  /  MVP-01–11  /  See manifest and ADRs', 40, height-42, width-80, 25, text=True, size=12, color='#64748B')
+        self.box('footer', f'{key}  /  Implementation architecture; live deployment pending  /  2026-10-23  /  MVP-01–11  /  ADR-07 updates baseline', 40, height-42, width-80, 25, text=True, size=12, color='#64748B')
 
     def box(self, id, value, x, y, w, h, kind='plain', text=False, size=15, bold=False, color='#0F172A', extra=''):
         fill, stroke = PALETTE[kind]
@@ -65,35 +65,35 @@ class Page:
 
 
 p=Page('ARCH-01','System context & deployment containers','One deployable application. Durable private data. One explicit boundary where selected evidence leaves the application.',1600,1100)
-p.band('host','RAILWAY PROJECT  /  selected region to be confirmed  /  proposed infrastructure',390,190,780,650)
+p.band('host','FREE REVIEW DEPLOYMENT  /  Vercel Hobby + Neon Free  /  accounts required',390,190,780,650)
 p.card('browser','Reviewer · browser',['German UI · isolated guest workspace','Notebooks → Sources / Chat / Studio','Responsive tabs on narrow screens','No provider keys or direct DB access'],40,230,280,200)
-p.card('web','SourceNote · Next.js / TypeScript',['Single Node.js container · HTTPS route handlers','Server-rendered shell + interactive React panels','Session / notebook / ingestion / evidence / outputs','Zod validation · parameterized SQL · no shared cache'],440,250,680,160)
-p.card('control','Server-owned execution',['Owner + notebook guard on every operation','DB-backed quotas, leases and idempotency','PDF.js in bounded child process; no job queue','Startup + 15-min reconciliation while running'],440,465,680,145,'guard')
-p.card('db','PostgreSQL service',['Owners, notebooks, source/chunk text','Operations, evidence, entries, citations','Transactions + composite foreign keys','Private network; bounded connection pool'],440,680,320,135,'data',14)
-p.card('files','Private mounted volume · /data',['Original PDF / UTF-8 files only','Random server-generated storage keys','Authorized download through application','No public path; retryable file cleanup'],800,680,320,135,'data',14)
-p.card('provider','External AI provider · OpenAI',['Responses API · structured output','Receives question + selected evidence','Server secret; store:false','No originals, cookies or owner identity','Model chosen in deployment config'],1240,235,320,190,'ai')
+p.card('web','SourceNote · Next.js / TypeScript',['Node.js function runtime · HTTPS route handlers','Static shell + interactive React workspace','Session / notebook / ingestion / evidence / outputs','Zod validation · parameterized SQL · no shared cache'],440,250,680,160)
+p.card('control','Server-owned execution',['Owner + notebook guard on every operation','DB-backed quotas, leases and idempotency','PDF.js in bounded child process; no job queue','Request-triggered expiry + stale-lease recovery'],440,465,680,145,'guard')
+p.card('db','Neon Free · PostgreSQL',['Owners, notebooks, source/chunk text','Operations, evidence, entries, citations','Transactions + composite foreign keys','TLS SQL connection; bounded pool'],440,680,320,135,'data',14)
+p.card('files','Private originals · logical DB storage',['source_blob bytea in the SAME database','4 MiB/file; global storage cap','Authorized download through application','Atomic blob deletion; no paid disk'],800,680,320,135,'data',14)
+p.card('provider','Free AI · Groq (default)',['GPT-OSS 120B · strict JSON schema','Receives question + selected evidence','Server-held GROQ_API_KEY','Cloudflare Qwen adapter also available','No automatic fallback or paid upgrade'],1240,235,320,190,'ai')
 p.card('review','SourceNote project scope',['NotebookLM-inspired; independent project','MVP: text PDF / text → chat → citations','Grounded summary + persistence','No OCR, audio, web import or sharing'],40,600,280,175,'plain',14)
-p.card('delivery','Delivery path',['Local tests → GitHub Actions → build','Release migrations → Railway deploy','Health check: no AI call','Real-provider smoke test before Loom'],1240,600,320,175,'plain',14)
+p.card('delivery','Delivery path',['Local tests → GitHub Actions → build','Migrations → Vercel Hobby deploy','Health check: no AI call','Real-provider smoke test before Loom'],1240,600,320,175,'plain',14)
 p.edge('browser','web','HTTPS\ncookie + JSON\n/ upload')
 p.edge('web','provider','HTTPS\nbounded input','ai')
 p.edge('web','control','in-process calls','guard','bottom','top')
-p.edge('control','db','SQL / private network','data','bottom','top',[(600,645)])
-p.edge('control','files','filesystem I/O','data','bottom','top',[(960,645)])
-p.card('boundary','Trust & privacy boundary',['Browser and uploaded documents are untrusted. Railway stores originals and extracted text; the AI provider receives selected text.','Secure / HttpOnly / SameSite=Lax guest cookie; check Origin + CSRF token on mutations. Render Markdown without raw HTML.','Session lifetime: 7 days; expiry denies access immediately. Cleanup is eventual while the service is running. Provider retention is separate.'],40,875,1030,140,'guard',14)
-p.card('limits','Operational trade-off',['One instance with a mounted volume.','Redeployments can interrupt requests.','No HA / recovery guarantee claimed.','Move storage out before adding replicas.'],1110,875,450,140,'plain',14)
+p.edge('control','db','SQL / TLS','data','bottom','top',[(600,645)])
+p.edge('control','files','SQL / bytea','data','bottom','top',[(960,645)])
+p.card('boundary','Trust & privacy boundary',['Browser and documents are untrusted. Neon stores originals and text; Groq receives only the selected text, titles and question.','Secure / HttpOnly / SameSite=Lax guest cookie; check Origin + CSRF token on mutations. Render Markdown without raw HTML.','Session lifetime: 7 days; expiry denies access immediately. Physical cleanup runs on later workspace access. Provider retention is separate.'],40,875,1030,140,'guard',14)
+p.card('limits','Free-tier trade-off',['Short evidence selections: at most 4k tokens.','Quotas may pause AI; cold starts possible.','Local dev: durable embedded PostgreSQL.','Free accounts only; no paid upgrade action.'],1110,875,450,140,'plain',14)
 
 p=Page('ARCH-02','Source ingestion & grounded answering','Bounded full-context evidence for small review documents. Every path preserves owner, notebook and selected-source scope.',1600,1250)
 p.box('alabel','A  /  INGESTION — request-bound; ready only after a durable transaction',40,185,1500,30,text=True,size=18,bold=True)
-cards=[('validate','1  Validate & reserve',['Session + notebook ownership','PDF signature / UTF-8 / size','Source quota + idempotency key'],40,'guard'),('original','2  Store privately',['Create pending source row','Write temp → atomic rename','Random key; never public'],420,'data'),('extract','3  Extract & split',['Claim processing lease','PDF.js child process ≤ 20 s','Page-local chunks + offsets'],800,'app'),('ready','4  Commit ready',['Replace chunks transactionally','Check lease + deletion state','ready only after all writes'],1180,'data')]
+cards=[('validate','1  Validate & reserve',['Session + notebook ownership','PDF signature / UTF-8 / size','Source quota + idempotency key'],40,'guard'),('original','2  Store privately',['Source + original in one SQL tx','Private source_blob bytea','Temporary disk only for parsing'],420,'data'),('extract','3  Extract & split',['Claim processing lease','PDF.js child process ≤ 20 s','Page-local chunks + offsets'],800,'app'),('ready','4  Commit ready',['Replace chunks transactionally','Check lease + deletion state','ready only after all writes'],1180,'data')]
 for id,title,lines,x,kind in cards:p.card(id,title,lines,x,245,340,145,kind)
 for a,b in [('validate','original'),('original','extract'),('extract','ready')]:p.edge(a,b)
 p.card('failure','Failed ingestion / interrupted request',['Empty, encrypted, scanned, malformed, over-limit → safe error code.','Expired processing lease → failed; user retry claims a new attempt.','One unique source attempt; stale workers cannot commit chunks.'],800,445,720,135,'fail',14)
-p.card('states','Source lifecycle',['pending → processing → ready | failed; failed → processing on retry.','Any active state → deleting → deleted tombstone. No in-place edits.','Startup / periodic sweep reclaims stale work and orphan files.'],40,445,680,135,'plain',14)
+p.card('states','Source lifecycle',['pending → processing → ready | failed; failed → processing on retry.','Any active state → deleted tombstone; text + blob purged atomically.','Request-triggered sweep reclaims expired processing leases.'],40,445,680,135,'plain',14)
 p.edge('extract','failure','error / timeout','fail','bottom','top')
 p.box('blabel','B  /  ANSWERING & SUMMARIES — the same evidence and citation contract',40,625,1500,30,text=True,size=18,bold=True)
 for id,title,lines,x,kind in [
 ('scope','1  Authorize & snapshot',['Intersect supplied source IDs','owner + notebook + ready','Reject any missing / stale ID','Reserve operation + spend cap'],40,'guard'),
-('evidence','2  Build bounded evidence',['All chunks of selected sources','≤ 24k evidence tokens total','Over budget? Ask to select less','Persist stable evidence IDs'],420,'data'),
+('evidence','2  Build bounded evidence',['All chunks of selected sources','≤ 4k evidence tokens total','Over budget? Ask to select less','Persist stable evidence IDs'],420,'data'),
 ('generate','3  Ask model',['Question + evidence only','No earlier answer as evidence','Structured answer blocks + IDs','Documents are untrusted data'],800,'ai'),
 ('verify','4  Validate & commit',['Schema + evidence allow-list','Resolve excerpts from DB','Recheck source versions / scope','Persist answer + citations'],1180,'guard')]:p.card(id,title,lines,x,685,340,175,kind,14)
 for a,b in [('scope','evidence'),('evidence','generate'),('generate','verify')]:p.edge(a,b,kind='ai' if a=='evidence' else 'app')
@@ -101,19 +101,19 @@ p.card('noanswer','Explicit limitation, not a fabricated answer',['No ready sele
 p.card('viewer','5  Inspect the supporting excerpt',['Return validated final text only; streaming deferred.','Citation click → authorize again → stored chunk text + reliable location.','Deleted source → unavailable; never serve stale text.','A valid ID proves provenance, not semantic support: evaluate claims.'],800,925,720,150,'data',14)
 p.edge('verify','viewer','valid result','data','bottom','top',[(1350,895),(1160,895)])
 p.edge('generate','noanswer','insufficient / failed','fail','bottom','top',[(970,895),(400,895)])
-p.card('caps','Proposed demo limits · configurable on the server',['5 MiB/file · 50 PDF pages · 100k extracted characters/source · 10 sources/notebook · 3 notebooks/session · 500k stored characters/session.','≤ 24k evidence tokens + 2k prompt/question overhead · ≤ 1.5k output tokens · 1 generation/session and 3/service · 30/session/day.'],40,1100,1480,100,'plain',13)
+p.card('caps','Implemented demo limits · free-tier defaults',['4 MiB/file · 50 PDF pages · 100k extracted characters/source · 10 sources/notebook · 3 notebooks/session · 500k stored characters/session.','≤ 4k evidence tokens · ≤ 2k completion tokens · 1 generation/session and 3/service · 30/session/day · provider quotas still apply.'],40,1100,1480,100,'plain',13)
 
 p=Page('ARCH-03','Data model / ERD','One relational ownership chain. Arrows show parent → child (1 : many unless labeled); all foreign-key details are in the schema notes.',1800,1430)
 tables=[
-('owner','workspace_owner',['PK id: uuid','token_hash: bytea UNIQUE','created_at, expires_at: timestamptz'],40,220,310,150),
+('owner','workspace_owner',['PK id: uuid','token_hash: text UNIQUE','created_at, expires_at: timestamptz'],40,220,310,150),
 ('notebook','notebook',['PK id: uuid','FK owner_id: uuid','title: text; created_at: timestamptz','UNIQUE(owner_id, id)'],440,220,330,150),
-('source','source',['PK id: uuid; FK notebook_id: uuid','status: source_state; version: int','storage_key: text?; title: text?','mime: text; bytes: bigint','error_code: text?; deleted_at: time?','UNIQUE(notebook_id, id)'],880,220,360,215),
+('source','source',['PK id: uuid; FK notebook_id: uuid','status: text + CHECK; version: int','storage_key: text?; title: text','mime: text; bytes: int','error_code: text?; deleted_at: time?','UNIQUE(notebook_id, id)'],880,220,360,215),
 ('chunk','chunk',['PK id: uuid; FK source_id: uuid','notebook_id: uuid; ordinal: int','text: text; tokens: int','page_no: int?; char_start/end: int','UNIQUE(source_id, ordinal)','UNIQUE(notebook_id, source_id, id)'],1370,220,380,215),
-('quota','quota_bucket',['PK(scope_type, scope_key, window)','reserved_tokens: bigint','used_tokens: bigint; requests: int','Atomic reserve before provider call','Session + service-wide daily buckets'],40,540,310,200),
-('operation','operation',['PK id: uuid; FK notebook_id: uuid','kind: ingest | answer | summary','state: running | succeeded | failed','idempotency_key, request_hash: text','lease_until: time; attempt: int','model, prompt_version: text?','usage: jsonb; error_code: text?','UNIQUE(notebook_id, kind, idem_key)','UNIQUE(notebook_id, id)'],440,505,330,285),
+('blob','source_blob',['PK / FK source_id: uuid','data: bytea NOT NULL','One original per source','Deleted atomically with source text','4 MiB/file; no public object URL'],40,540,310,200),
+('operation','operation',['PK id: uuid; FK notebook_id: uuid','kind: ingest | answer | summary | quiz','state: running | succeeded | failed','idempotency_key, request_hash: text','lease_until: time; attempt: int','model, prompt_version: text?','usage: jsonb; error_code: text?','UNIQUE(notebook_id, kind, idem_key)','UNIQUE(notebook_id, id)'],440,505,330,285),
 ('selection','operation_source',['PK(operation_id, source_id)','FK notebook_id, operation_id','FK notebook_id, source_id','source_version: int','Input-selection snapshot','One source for ingestion operations'],880,535,360,205),
 ('evidence','evidence',['PK id: uuid; notebook_id: uuid','FK operation_id, source_id, chunk_id','ordinal: int; unavailable_at: time?','Immutable membership, no copied text','chunk_id NULL after source purge','UNIQUE(notebook_id, operation_id, id)'],1370,535,380,205),
-('entry','entry',['PK id: uuid; FK notebook_id: uuid','FK operation_id: uuid?; parent_id: uuid?','kind: question | answer | summary | note','body: jsonb?; unavailable_at: time?','UNIQUE(notebook_id, operation_id, id)','UNIQUE(notebook_id, id)','One chat thread per notebook'],440,875,330,235),
+('entry','entry',['PK id: uuid; FK notebook_id: uuid','FK operation_id: uuid?; parent_id: uuid?','kind: question/answer/summary/note/quiz','body: jsonb?; unavailable_at: time?','UNIQUE(notebook_id, operation_id, id)','UNIQUE(notebook_id, id)','One chat thread per notebook'],440,875,330,235),
 ('citation','citation',['PK(entry_id, block_no, ordinal)','FK notebook_id, operation_id, entry_id','FK notebook_id, operation_id, evidence_id','No model-provided quote / page stored','Quote and location resolved on read'],1030,885,570,200),
 ]
 for id,title,lines,x,y,w,h in tables:p.card(id,title,lines,x,y,w,h,'data' if id not in ('operation','quota') else 'guard',14)
@@ -128,8 +128,8 @@ p.edge('chunk','evidence','0..1 : 0..*','data','bottom','top')
 p.edge('operation','entry','1 : 0..*','data','bottom','top')
 p.edge('entry','citation','1 : 0..*','data')
 p.edge('evidence','citation','1 : 0..*','data','bottom','top',[(1560,815),(1315,815)])
-p.card('qnote','Quota is a service guard',['No direct owner FK for global/IP buckets.','Scope keys are opaque or HMAC-hashed.','Short-lived counters; no source text.','Hard global cap limits cookie-reset abuse.'],40,875,310,200,'plain',14)
-p.card('constraints','Integrity & indexes',['All notebook-scoped FKs include notebook_id. Citation FKs also include operation_id: another operation’s evidence cannot be attached.','Evidence references operation_source + matching chunk source. Entry parent FK includes notebook_id; note-copy logic preserves operation provenance.','Index: notebook(owner_id, created_at); source(notebook_id, status); chunk(source_id, ordinal); entry(notebook_id, created_at); operation(state, lease_until).','CHECK: positive sizes / valid locations; enum states; nullable fields shown with ?. SQL details and deletion order: schema-notes.md.'],40,1170,1710,165,'guard',14)
+p.card('qnote','quota_bucket',['PK key: text (scope + time window)','tokens: bigint; requests: int','updated_at: timestamptz','Atomic global/session reservations','No direct owner FK; no source text'],40,875,310,200,'guard',14)
+p.card('constraints','Integrity & indexes',['All notebook-scoped FKs include notebook_id. Citation FKs also include operation_id: another operation’s evidence cannot be attached.','Evidence references operation_source + matching chunk source. Entry parent FK includes notebook_id; note-copy logic preserves operation provenance.','Index: notebook(owner_id, updated_at); source(notebook_id, status); chunk(source_id, ordinal); entry(notebook_id, created_at); operation(state, lease_until).','CHECK: nonnegative source bytes / text length, valid offset end, allowed states. Nullable fields shown with ?. Executable schema: migrations/001_initial.sql.'],40,1170,1710,165,'guard',14)
 
 p=Page('ARCH-04','Question-to-citation sequence','Answer, limitation and provider failure are separate outcomes. No unchecked model text reaches the browser.',1600,1630)
 actors=[('Reviewer UI',160,'app'),('API / session guard',470,'guard'),('Evidence + generation',800,'app'),('PostgreSQL',1120,'data'),('AI provider',1440,'ai')]

@@ -1,0 +1,107 @@
+/* Strengthen useful text while keeping the workspace visually quiet. */
+.welcome p,
+.section-toolbar p,
+.example-banner p,
+.notebook-card p {
+  color: #757e97;
+}
+.nav-notebook,
+.nav-item,
+.rail-empty {
+  color: #68738d;
+}
+.notebook-meta,
+.source-info small,
+.source-selection,
+.source-footer p,
+.studio-intro,
+.studio-empty p,
+.composer-footnote {
+  color: #78849e;
+}
+.source-info strong,
+.studio-tool strong,
+.studio-intro strong,
+.studio-empty h3,
+.artifact-card strong {
+  color: #596b93;
+}
+.studio-tool div > span,
+.artifact-card p,
+.chat-intro > p,
+.suggestions > button {
+  color: #63718b;
+  opacity: 1;
+}
+.source-info strong {
+  font-size: 11px;
+}
+.source-info small {
+  font-size: 9px;
+}
+.panel-heading h2 {
+  font-size: 13px;
+}
+.studio-tool strong {
+  font-size: 11px;
+}
+.studio-tool div > span {
+  font-size: 9px;
+}
+.answer-block {
+  font-size: 12px;
+  color: #52627e;
+}
+.user-message .message-body {
+  font-size: 12px;
+  color: #52628a;
+}
+.suggestions > button {
+  font-size: 10px;
+}
+.composer textarea {
+  font-size: 12px;
+}
+.composer textarea::placeholder {
+  color: #8b98b4;
+}
+.info-content > p,
+.info-feature p,
+.muted {
+  color: #78869f;
+}
+.source-chunk,
+.source-excerpt {
+  color: #566985;
+}
+.test-mode-banner {
+  padding: 6px 24px;
+  background: #fff8e4;
+  border-bottom: 1px solid #f4e6b9;
+  font-size: 10px;
+  color: #9b7a39;
+}
+.test-mode-banner ~ .workspace-content {
+  height: calc(100dvh - 104px);
+}
+@media (max-width: 800px) {
+  .test-mode-banner ~ .workspace-content {
+    height: calc(100dvh - 90px);
+  }
+  .test-mode-banner {
+    font-size: 8px;
+    padding: 5px 15px;
+  }
+  .source-info strong {
+    font-size: 12px;
+  }
+  .source-info small {
+    font-size: 10px;
+  }
+  .studio-tool strong {
+    font-size: 13px;
+  }
+  .studio-tool div > span {
+    font-size: 10px;
+  }
+}

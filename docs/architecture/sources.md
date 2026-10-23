@@ -13,4 +13,4 @@ Official documentation consulted on **2026-10-23**. These support the proposed a
 | [PDF.js Node text example](https://github.com/mozilla/pdf.js/blob/master/examples/node/getinfo.mjs) | Node-side page iteration and text extraction feasibility |
 | [OpenAI structured outputs](https://developers.openai.com/api/docs/guides/structured-outputs) | Structured response contract; application checks remain necessary |
 
-Before implementation, verify the configured model's context/output limits, tokenizer, structured-output support, timeout behavior, account retention and current rates. Pin a compatible Node/Next.js/PDF.js combination and prove extraction inside the actual deployment image. No provider price, exact model, service region or free-tier allowance is assumed here.
+The implementation revision uses Groq Free by user choice. See [the dated free-tier research](../free-tier-research.md) for Groq, optional Cloudflare/Qwen, Gemini comparison, Vercel and Neon sources. Dependencies are pinned through package-lock.json; local PDF extraction was tested. Actual hosted runtime compatibility and real-provider quality still need deployed verification.

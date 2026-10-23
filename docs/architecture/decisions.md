@@ -1,6 +1,6 @@
 # Architecture decision records
 
-All six decisions are **proposed**, dated 2026-10-23. They are a consistent implementation recommendation, not evidence of approval or deployment.
+ADR-01–06 preserve the original **proposed** baseline, dated 2026-10-23. **ADR-07** below records the implemented revision after Ayham required zero spending. It supersedes the hosting, storage, provider, limit and cleanup choices where they differ. Live deployment is still pending.
 
 ## ADR-01 — One TypeScript application on a long-running host
 
@@ -25,3 +25,7 @@ All six decisions are **proposed**, dated 2026-10-23. They are a consistent impl
 ## ADR-06 — Early real deployment with explicit quotas and risk-driven tests
 
 **Requirements:** MVP-09–11 and employer repository/live/Loom deliverables. **Options:** local-only polish until feature complete; deploy an early vertical slice. **Decision:** deploy the core source-to-citation path early, use deterministic mocks in routine CI and bounded real-provider evaluations for grounding. Atomic session/global spend reservations and concurrency leases fail closed. No retry after an ambiguous provider timeout. **Consequences:** credentials and operating budget needed early; implementation must distinguish test mocks from the live provider. Operational limits may reject reviewers under abuse or concurrent load. **Revisit:** measured latency/usage exceeds targets, budget policy changes, or persistent availability is required.
+
+## ADR-07 — Zero-spend implementation revision
+
+**Status:** implemented locally; cloud provisioning and real-provider evaluation pending. **Constraint:** Ayham explicitly requested no spending and selected Groq's free tier. **Options:** Cloudflare Workers AI with Qwen; Groq free structured output; Gemini free tier. For hosting, paid persistent volumes versus Vercel Hobby plus Neon Free. **Decision:** Groq `openai/gpt-oss-120b` by default, Cloudflare Qwen adapter optional. Use small private PostgreSQL `bytea` originals rather than a paid volume. Local development uses durable PGlite; the same SQL schema runs through `pg` when `DATABASE_URL` is supplied. Vercel Hobby/Neon Free is the prepared deployment path, not a claimed deployment. Evidence is bounded at 4k tokens; files at 4 MiB to fit Vercel's payload limit. Cleanup occurs on bootstrap requests, not a background scheduler. **Rationale:** free services, strict response schema, no indexing cost, and atomic source/blob deletion. **Consequences:** tight AI per-minute limits, possible free-service pauses/cold starts, bounded DB storage, and cleanup delayed until a request after expiry. Original diagrams were updated accordingly. No provider billing upgrade, paid fallback or account creation was performed. **Revisit:** measured evaluations fail, free-plan access changes, or documents consistently exceed the short-context demo boundary.
