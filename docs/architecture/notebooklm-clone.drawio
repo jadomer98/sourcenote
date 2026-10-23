@@ -1,0 +1,461 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" agent="SourceNote architecture generator" version="24.7.17" compressed="false">
+  <diagram id="ARCH-01" name="ARCH-01 | System context &amp; deployment containers">
+    <mxGraphModel dx="1600" dy="1100" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1100" math="0" shadow="0" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="brand" value="S O U R C E N O T E   /   ENGINEERING DESIGN" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=13;fontColor=#2563EB;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="25" width="1520" height="25" />
+        </mxCell>
+        <mxCell id="title" value="01  System context &amp; deployment containers" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=30;fontColor=#0F172A;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="65" width="1520" height="48" />
+        </mxCell>
+        <mxCell id="subtitle" value="One deployable application. Durable private data. One explicit boundary where selected evidence leaves the application." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=15;fontColor=#475569;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="120" width="1520" height="45" />
+        </mxCell>
+        <mxCell id="footer" value="ARCH-01  /  Proposed design, not implemented  /  2026-10-23  /  MVP-01–11  /  See manifest and ADRs" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=12;fontColor=#64748B;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="1058" width="1520" height="25" />
+        </mxCell>
+        <mxCell id="host" value="RAILWAY PROJECT  /  selected region to be confirmed  /  proposed infrastructure" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=13;fontColor=#0F172A;fontStyle=1;dashed=1;fillColor=#FAFCFF;verticalAlign=top;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="390" y="190" width="780" height="650" />
+        </mxCell>
+        <mxCell id="browser" value="&lt;b&gt;Reviewer · browser&lt;/b&gt;&lt;br&gt;&lt;br&gt;German UI · isolated guest workspace&lt;br&gt;Notebooks → Sources / Chat / Studio&lt;br&gt;Responsive tabs on narrow screens&lt;br&gt;No provider keys or direct DB access" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=15;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="230" width="280" height="200" />
+        </mxCell>
+        <mxCell id="web" value="&lt;b&gt;SourceNote · Next.js / TypeScript&lt;/b&gt;&lt;br&gt;&lt;br&gt;Single Node.js container · HTTPS route handlers&lt;br&gt;Server-rendered shell + interactive React panels&lt;br&gt;Session / notebook / ingestion / evidence / outputs&lt;br&gt;Zod validation · parameterized SQL · no shared cache" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=15;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="440" y="250" width="680" height="160" />
+        </mxCell>
+        <mxCell id="control" value="&lt;b&gt;Server-owned execution&lt;/b&gt;&lt;br&gt;&lt;br&gt;Owner + notebook guard on every operation&lt;br&gt;DB-backed quotas, leases and idempotency&lt;br&gt;PDF.js in bounded child process; no job queue&lt;br&gt;Startup + 15-min reconciliation while running" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=15;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="440" y="465" width="680" height="145" />
+        </mxCell>
+        <mxCell id="db" value="&lt;b&gt;PostgreSQL service&lt;/b&gt;&lt;br&gt;&lt;br&gt;Owners, notebooks, source/chunk text&lt;br&gt;Operations, evidence, entries, citations&lt;br&gt;Transactions + composite foreign keys&lt;br&gt;Private network; bounded connection pool" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#ECFDF5;strokeColor=#059669;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="440" y="680" width="320" height="135" />
+        </mxCell>
+        <mxCell id="files" value="&lt;b&gt;Private mounted volume · /data&lt;/b&gt;&lt;br&gt;&lt;br&gt;Original PDF / UTF-8 files only&lt;br&gt;Random server-generated storage keys&lt;br&gt;Authorized download through application&lt;br&gt;No public path; retryable file cleanup" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#ECFDF5;strokeColor=#059669;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="800" y="680" width="320" height="135" />
+        </mxCell>
+        <mxCell id="provider" value="&lt;b&gt;External AI provider · OpenAI&lt;/b&gt;&lt;br&gt;&lt;br&gt;Responses API · structured output&lt;br&gt;Receives question + selected evidence&lt;br&gt;Server secret; store:false&lt;br&gt;No originals, cookies or owner identity&lt;br&gt;Model chosen in deployment config" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#F5F3FF;strokeColor=#7C3AED;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=15;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1240" y="235" width="320" height="190" />
+        </mxCell>
+        <mxCell id="review" value="&lt;b&gt;SourceNote project scope&lt;/b&gt;&lt;br&gt;&lt;br&gt;NotebookLM-inspired; independent project&lt;br&gt;MVP: text PDF / text → chat → citations&lt;br&gt;Grounded summary + persistence&lt;br&gt;No OCR, audio, web import or sharing" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="600" width="280" height="175" />
+        </mxCell>
+        <mxCell id="delivery" value="&lt;b&gt;Delivery path&lt;/b&gt;&lt;br&gt;&lt;br&gt;Local tests → GitHub Actions → build&lt;br&gt;Release migrations → Railway deploy&lt;br&gt;Health check: no AI call&lt;br&gt;Real-provider smoke test before Loom" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1240" y="600" width="320" height="175" />
+        </mxCell>
+        <mxCell id="e1" value="HTTPS&lt;br&gt;cookie + JSON&lt;br&gt;/ upload" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#2563EB;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="browser" target="web">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e2" value="HTTPS&lt;br&gt;bounded input" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#7C3AED;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="web" target="provider">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e3" value="in-process calls" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#D97706;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="web" target="control">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e4" value="SQL / private network" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#059669;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="control" target="db">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="600" y="645" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e5" value="filesystem I/O" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#059669;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="control" target="files">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="960" y="645" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="boundary" value="&lt;b&gt;Trust &amp;amp; privacy boundary&lt;/b&gt;&lt;br&gt;&lt;br&gt;Browser and uploaded documents are untrusted. Railway stores originals and extracted text; the AI provider receives selected text.&lt;br&gt;Secure / HttpOnly / SameSite=Lax guest cookie; check Origin + CSRF token on mutations. Render Markdown without raw HTML.&lt;br&gt;Session lifetime: 7 days; expiry denies access immediately. Cleanup is eventual while the service is running. Provider retention is separate." style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="875" width="1030" height="140" />
+        </mxCell>
+        <mxCell id="limits" value="&lt;b&gt;Operational trade-off&lt;/b&gt;&lt;br&gt;&lt;br&gt;One instance with a mounted volume.&lt;br&gt;Redeployments can interrupt requests.&lt;br&gt;No HA / recovery guarantee claimed.&lt;br&gt;Move storage out before adding replicas." style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1110" y="875" width="450" height="140" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="ARCH-02" name="ARCH-02 | Source ingestion &amp; grounded answering">
+    <mxGraphModel dx="1600" dy="1250" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1250" math="0" shadow="0" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="brand" value="S O U R C E N O T E   /   ENGINEERING DESIGN" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=13;fontColor=#2563EB;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="25" width="1520" height="25" />
+        </mxCell>
+        <mxCell id="title" value="02  Source ingestion &amp; grounded answering" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=30;fontColor=#0F172A;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="65" width="1520" height="48" />
+        </mxCell>
+        <mxCell id="subtitle" value="Bounded full-context evidence for small review documents. Every path preserves owner, notebook and selected-source scope." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=15;fontColor=#475569;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="120" width="1520" height="45" />
+        </mxCell>
+        <mxCell id="footer" value="ARCH-02  /  Proposed design, not implemented  /  2026-10-23  /  MVP-01–11  /  See manifest and ADRs" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=12;fontColor=#64748B;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="1208" width="1520" height="25" />
+        </mxCell>
+        <mxCell id="alabel" value="A  /  INGESTION — request-bound; ready only after a durable transaction" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=18;fontColor=#0F172A;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="185" width="1500" height="30" />
+        </mxCell>
+        <mxCell id="validate" value="&lt;b&gt;1  Validate &amp;amp; reserve&lt;/b&gt;&lt;br&gt;&lt;br&gt;Session + notebook ownership&lt;br&gt;PDF signature / UTF-8 / size&lt;br&gt;Source quota + idempotency key" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=15;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="245" width="340" height="145" />
+        </mxCell>
+        <mxCell id="original" value="&lt;b&gt;2  Store privately&lt;/b&gt;&lt;br&gt;&lt;br&gt;Create pending source row&lt;br&gt;Write temp → atomic rename&lt;br&gt;Random key; never public" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#ECFDF5;strokeColor=#059669;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=15;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="420" y="245" width="340" height="145" />
+        </mxCell>
+        <mxCell id="extract" value="&lt;b&gt;3  Extract &amp;amp; split&lt;/b&gt;&lt;br&gt;&lt;br&gt;Claim processing lease&lt;br&gt;PDF.js child process ≤ 20 s&lt;br&gt;Page-local chunks + offsets" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=15;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="800" y="245" width="340" height="145" />
+        </mxCell>
+        <mxCell id="ready" value="&lt;b&gt;4  Commit ready&lt;/b&gt;&lt;br&gt;&lt;br&gt;Replace chunks transactionally&lt;br&gt;Check lease + deletion state&lt;br&gt;ready only after all writes" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#ECFDF5;strokeColor=#059669;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=15;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1180" y="245" width="340" height="145" />
+        </mxCell>
+        <mxCell id="e1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#2563EB;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="validate" target="original">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#2563EB;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="original" target="extract">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#2563EB;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="extract" target="ready">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="failure" value="&lt;b&gt;Failed ingestion / interrupted request&lt;/b&gt;&lt;br&gt;&lt;br&gt;Empty, encrypted, scanned, malformed, over-limit → safe error code.&lt;br&gt;Expired processing lease → failed; user retry claims a new attempt.&lt;br&gt;One unique source attempt; stale workers cannot commit chunks." style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#FFF1F2;strokeColor=#E11D48;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="800" y="445" width="720" height="135" />
+        </mxCell>
+        <mxCell id="states" value="&lt;b&gt;Source lifecycle&lt;/b&gt;&lt;br&gt;&lt;br&gt;pending → processing → ready | failed; failed → processing on retry.&lt;br&gt;Any active state → deleting → deleted tombstone. No in-place edits.&lt;br&gt;Startup / periodic sweep reclaims stale work and orphan files." style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="445" width="680" height="135" />
+        </mxCell>
+        <mxCell id="e4" value="error / timeout" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#E11D48;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="extract" target="failure">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="blabel" value="B  /  ANSWERING &amp; SUMMARIES — the same evidence and citation contract" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=18;fontColor=#0F172A;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="625" width="1500" height="30" />
+        </mxCell>
+        <mxCell id="scope" value="&lt;b&gt;1  Authorize &amp;amp; snapshot&lt;/b&gt;&lt;br&gt;&lt;br&gt;Intersect supplied source IDs&lt;br&gt;owner + notebook + ready&lt;br&gt;Reject any missing / stale ID&lt;br&gt;Reserve operation + spend cap" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="685" width="340" height="175" />
+        </mxCell>
+        <mxCell id="evidence" value="&lt;b&gt;2  Build bounded evidence&lt;/b&gt;&lt;br&gt;&lt;br&gt;All chunks of selected sources&lt;br&gt;≤ 24k evidence tokens total&lt;br&gt;Over budget? Ask to select less&lt;br&gt;Persist stable evidence IDs" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#ECFDF5;strokeColor=#059669;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="420" y="685" width="340" height="175" />
+        </mxCell>
+        <mxCell id="generate" value="&lt;b&gt;3  Ask model&lt;/b&gt;&lt;br&gt;&lt;br&gt;Question + evidence only&lt;br&gt;No earlier answer as evidence&lt;br&gt;Structured answer blocks + IDs&lt;br&gt;Documents are untrusted data" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#F5F3FF;strokeColor=#7C3AED;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="800" y="685" width="340" height="175" />
+        </mxCell>
+        <mxCell id="verify" value="&lt;b&gt;4  Validate &amp;amp; commit&lt;/b&gt;&lt;br&gt;&lt;br&gt;Schema + evidence allow-list&lt;br&gt;Resolve excerpts from DB&lt;br&gt;Recheck source versions / scope&lt;br&gt;Persist answer + citations" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1180" y="685" width="340" height="175" />
+        </mxCell>
+        <mxCell id="e5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#2563EB;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="scope" target="evidence">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#7C3AED;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="evidence" target="generate">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#2563EB;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="generate" target="verify">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="noanswer" value="&lt;b&gt;Explicit limitation, not a fabricated answer&lt;/b&gt;&lt;br&gt;&lt;br&gt;No ready selection → request sources. Over budget → narrow selection.&lt;br&gt;Model reports insufficient evidence → persist a limitation, no citations.&lt;br&gt;Invalid citation / refusal / timeout → safe failure; no partial answer shown." style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#FFF1F2;strokeColor=#E11D48;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="925" width="720" height="150" />
+        </mxCell>
+        <mxCell id="viewer" value="&lt;b&gt;5  Inspect the supporting excerpt&lt;/b&gt;&lt;br&gt;&lt;br&gt;Return validated final text only; streaming deferred.&lt;br&gt;Citation click → authorize again → stored chunk text + reliable location.&lt;br&gt;Deleted source → unavailable; never serve stale text.&lt;br&gt;A valid ID proves provenance, not semantic support: evaluate claims." style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#ECFDF5;strokeColor=#059669;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="800" y="925" width="720" height="150" />
+        </mxCell>
+        <mxCell id="e8" value="valid result" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#059669;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="verify" target="viewer">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="1350" y="895" />
+              <mxPoint x="1160" y="895" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e9" value="insufficient / failed" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#E11D48;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="generate" target="noanswer">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="970" y="895" />
+              <mxPoint x="400" y="895" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="caps" value="&lt;b&gt;Proposed demo limits · configurable on the server&lt;/b&gt;&lt;br&gt;&lt;br&gt;5 MiB/file · 50 PDF pages · 100k extracted characters/source · 10 sources/notebook · 3 notebooks/session · 500k stored characters/session.&lt;br&gt;≤ 24k evidence tokens + 2k prompt/question overhead · ≤ 1.5k output tokens · 1 generation/session and 3/service · 30/session/day." style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=13;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="1100" width="1480" height="100" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="ARCH-03" name="ARCH-03 | Data model / ERD">
+    <mxGraphModel dx="1800" dy="1430" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1430" math="0" shadow="0" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="brand" value="S O U R C E N O T E   /   ENGINEERING DESIGN" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=13;fontColor=#2563EB;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="25" width="1720" height="25" />
+        </mxCell>
+        <mxCell id="title" value="03  Data model / ERD" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=30;fontColor=#0F172A;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="65" width="1720" height="48" />
+        </mxCell>
+        <mxCell id="subtitle" value="One relational ownership chain. Arrows show parent → child (1 : many unless labeled); all foreign-key details are in the schema notes." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=15;fontColor=#475569;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="120" width="1720" height="45" />
+        </mxCell>
+        <mxCell id="footer" value="ARCH-03  /  Proposed design, not implemented  /  2026-10-23  /  MVP-01–11  /  See manifest and ADRs" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=12;fontColor=#64748B;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="1388" width="1720" height="25" />
+        </mxCell>
+        <mxCell id="owner" value="&lt;b&gt;workspace_owner&lt;/b&gt;&lt;br&gt;&lt;br&gt;PK id: uuid&lt;br&gt;token_hash: bytea UNIQUE&lt;br&gt;created_at, expires_at: timestamptz" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#ECFDF5;strokeColor=#059669;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="220" width="310" height="150" />
+        </mxCell>
+        <mxCell id="notebook" value="&lt;b&gt;notebook&lt;/b&gt;&lt;br&gt;&lt;br&gt;PK id: uuid&lt;br&gt;FK owner_id: uuid&lt;br&gt;title: text; created_at: timestamptz&lt;br&gt;UNIQUE(owner_id, id)" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#ECFDF5;strokeColor=#059669;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="440" y="220" width="330" height="150" />
+        </mxCell>
+        <mxCell id="source" value="&lt;b&gt;source&lt;/b&gt;&lt;br&gt;&lt;br&gt;PK id: uuid; FK notebook_id: uuid&lt;br&gt;status: source_state; version: int&lt;br&gt;storage_key: text?; title: text?&lt;br&gt;mime: text; bytes: bigint&lt;br&gt;error_code: text?; deleted_at: time?&lt;br&gt;UNIQUE(notebook_id, id)" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#ECFDF5;strokeColor=#059669;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="220" width="360" height="215" />
+        </mxCell>
+        <mxCell id="chunk" value="&lt;b&gt;chunk&lt;/b&gt;&lt;br&gt;&lt;br&gt;PK id: uuid; FK source_id: uuid&lt;br&gt;notebook_id: uuid; ordinal: int&lt;br&gt;text: text; tokens: int&lt;br&gt;page_no: int?; char_start/end: int&lt;br&gt;UNIQUE(source_id, ordinal)&lt;br&gt;UNIQUE(notebook_id, source_id, id)" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#ECFDF5;strokeColor=#059669;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1370" y="220" width="380" height="215" />
+        </mxCell>
+        <mxCell id="quota" value="&lt;b&gt;quota_bucket&lt;/b&gt;&lt;br&gt;&lt;br&gt;PK(scope_type, scope_key, window)&lt;br&gt;reserved_tokens: bigint&lt;br&gt;used_tokens: bigint; requests: int&lt;br&gt;Atomic reserve before provider call&lt;br&gt;Session + service-wide daily buckets" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="540" width="310" height="200" />
+        </mxCell>
+        <mxCell id="operation" value="&lt;b&gt;operation&lt;/b&gt;&lt;br&gt;&lt;br&gt;PK id: uuid; FK notebook_id: uuid&lt;br&gt;kind: ingest | answer | summary&lt;br&gt;state: running | succeeded | failed&lt;br&gt;idempotency_key, request_hash: text&lt;br&gt;lease_until: time; attempt: int&lt;br&gt;model, prompt_version: text?&lt;br&gt;usage: jsonb; error_code: text?&lt;br&gt;UNIQUE(notebook_id, kind, idem_key)&lt;br&gt;UNIQUE(notebook_id, id)" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="440" y="505" width="330" height="285" />
+        </mxCell>
+        <mxCell id="selection" value="&lt;b&gt;operation_source&lt;/b&gt;&lt;br&gt;&lt;br&gt;PK(operation_id, source_id)&lt;br&gt;FK notebook_id, operation_id&lt;br&gt;FK notebook_id, source_id&lt;br&gt;source_version: int&lt;br&gt;Input-selection snapshot&lt;br&gt;One source for ingestion operations" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#ECFDF5;strokeColor=#059669;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="535" width="360" height="205" />
+        </mxCell>
+        <mxCell id="evidence" value="&lt;b&gt;evidence&lt;/b&gt;&lt;br&gt;&lt;br&gt;PK id: uuid; notebook_id: uuid&lt;br&gt;FK operation_id, source_id, chunk_id&lt;br&gt;ordinal: int; unavailable_at: time?&lt;br&gt;Immutable membership, no copied text&lt;br&gt;chunk_id NULL after source purge&lt;br&gt;UNIQUE(notebook_id, operation_id, id)" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#ECFDF5;strokeColor=#059669;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1370" y="535" width="380" height="205" />
+        </mxCell>
+        <mxCell id="entry" value="&lt;b&gt;entry&lt;/b&gt;&lt;br&gt;&lt;br&gt;PK id: uuid; FK notebook_id: uuid&lt;br&gt;FK operation_id: uuid?; parent_id: uuid?&lt;br&gt;kind: question | answer | summary | note&lt;br&gt;body: jsonb?; unavailable_at: time?&lt;br&gt;UNIQUE(notebook_id, operation_id, id)&lt;br&gt;UNIQUE(notebook_id, id)&lt;br&gt;One chat thread per notebook" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#ECFDF5;strokeColor=#059669;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="440" y="875" width="330" height="235" />
+        </mxCell>
+        <mxCell id="citation" value="&lt;b&gt;citation&lt;/b&gt;&lt;br&gt;&lt;br&gt;PK(entry_id, block_no, ordinal)&lt;br&gt;FK notebook_id, operation_id, entry_id&lt;br&gt;FK notebook_id, operation_id, evidence_id&lt;br&gt;No model-provided quote / page stored&lt;br&gt;Quote and location resolved on read" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#ECFDF5;strokeColor=#059669;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1030" y="885" width="570" height="200" />
+        </mxCell>
+        <mxCell id="e1" value="1 : 0..*" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#059669;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="owner" target="notebook">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e2" value="1 : 0..*" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#059669;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="notebook" target="source">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e3" value="1 : 0..*" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#059669;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="source" target="chunk">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e4" value="1 : 0..*" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#059669;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="notebook" target="operation">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e5" value="1 : 0..*" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#059669;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="operation" target="selection">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e6" value="1 : 0..*" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#059669;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="source" target="selection">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e7" value="1 : 0..*" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#059669;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="selection" target="evidence">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e8" value="0..1 : 0..*" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#059669;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="chunk" target="evidence">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e9" value="1 : 0..*" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#059669;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="operation" target="entry">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e10" value="1 : 0..*" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#059669;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="entry" target="citation">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e11" value="1 : 0..*" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#059669;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="evidence" target="citation">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="1560" y="815" />
+              <mxPoint x="1315" y="815" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="qnote" value="&lt;b&gt;Quota is a service guard&lt;/b&gt;&lt;br&gt;&lt;br&gt;No direct owner FK for global/IP buckets.&lt;br&gt;Scope keys are opaque or HMAC-hashed.&lt;br&gt;Short-lived counters; no source text.&lt;br&gt;Hard global cap limits cookie-reset abuse." style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="875" width="310" height="200" />
+        </mxCell>
+        <mxCell id="constraints" value="&lt;b&gt;Integrity &amp;amp; indexes&lt;/b&gt;&lt;br&gt;&lt;br&gt;All notebook-scoped FKs include notebook_id. Citation FKs also include operation_id: another operation’s evidence cannot be attached.&lt;br&gt;Evidence references operation_source + matching chunk source. Entry parent FK includes notebook_id; note-copy logic preserves operation provenance.&lt;br&gt;Index: notebook(owner_id, created_at); source(notebook_id, status); chunk(source_id, ordinal); entry(notebook_id, created_at); operation(state, lease_until).&lt;br&gt;CHECK: positive sizes / valid locations; enum states; nullable fields shown with ?. SQL details and deletion order: schema-notes.md." style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="1170" width="1710" height="165" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="ARCH-04" name="ARCH-04 | Question-to-citation sequence">
+    <mxGraphModel dx="1600" dy="1630" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1630" math="0" shadow="0" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="brand" value="S O U R C E N O T E   /   ENGINEERING DESIGN" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=13;fontColor=#2563EB;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="25" width="1520" height="25" />
+        </mxCell>
+        <mxCell id="title" value="04  Question-to-citation sequence" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=30;fontColor=#0F172A;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="65" width="1520" height="48" />
+        </mxCell>
+        <mxCell id="subtitle" value="Answer, limitation and provider failure are separate outcomes. No unchecked model text reaches the browser." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=15;fontColor=#475569;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="120" width="1520" height="45" />
+        </mxCell>
+        <mxCell id="footer" value="ARCH-04  /  Proposed design, not implemented  /  2026-10-23  /  MVP-01–11  /  See manifest and ADRs" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=12;fontColor=#64748B;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="1588" width="1520" height="25" />
+        </mxCell>
+        <mxCell id="actor0" value="&lt;b&gt;Reviewer UI&lt;/b&gt;" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=15;fontColor=#0F172A;fontStyle=0;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="195" width="240" height="60" />
+        </mxCell>
+        <mxCell id="life0" value="" style="html=1;endArrow=none;endFill=1;strokeColor=#94A3B8;strokeWidth=1.5;dashed=1;fontFamily=Helvetica;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="160" y="255" />
+            <mxPoint as="targetPoint" x="160" y="1450" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="actor1" value="&lt;b&gt;API / session guard&lt;/b&gt;" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=15;fontColor=#0F172A;fontStyle=0;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="350" y="195" width="240" height="60" />
+        </mxCell>
+        <mxCell id="life1" value="" style="html=1;endArrow=none;endFill=1;strokeColor=#94A3B8;strokeWidth=1.5;dashed=1;fontFamily=Helvetica;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="470" y="255" />
+            <mxPoint as="targetPoint" x="470" y="1450" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="actor2" value="&lt;b&gt;Evidence + generation&lt;/b&gt;" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=15;fontColor=#0F172A;fontStyle=0;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="680" y="195" width="240" height="60" />
+        </mxCell>
+        <mxCell id="life2" value="" style="html=1;endArrow=none;endFill=1;strokeColor=#94A3B8;strokeWidth=1.5;dashed=1;fontFamily=Helvetica;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="800" y="255" />
+            <mxPoint as="targetPoint" x="800" y="1450" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="actor3" value="&lt;b&gt;PostgreSQL&lt;/b&gt;" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#ECFDF5;strokeColor=#059669;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=15;fontColor=#0F172A;fontStyle=0;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1000" y="195" width="240" height="60" />
+        </mxCell>
+        <mxCell id="life3" value="" style="html=1;endArrow=none;endFill=1;strokeColor=#94A3B8;strokeWidth=1.5;dashed=1;fontFamily=Helvetica;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="1120" y="255" />
+            <mxPoint as="targetPoint" x="1120" y="1450" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="actor4" value="&lt;b&gt;AI provider&lt;/b&gt;" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#F5F3FF;strokeColor=#7C3AED;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=15;fontColor=#0F172A;fontStyle=0;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1320" y="195" width="240" height="60" />
+        </mxCell>
+        <mxCell id="life4" value="" style="html=1;endArrow=none;endFill=1;strokeColor=#94A3B8;strokeWidth=1.5;dashed=1;fontFamily=Helvetica;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="1440" y="255" />
+            <mxPoint as="targetPoint" x="1440" y="1450" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m1" value="01  POST question + selected IDs + idempotency key" style="html=1;endArrow=block;endFill=1;strokeColor=#2563EB;strokeWidth=1.5;dashed=0;fontFamily=Helvetica;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="160" y="300" />
+            <mxPoint as="targetPoint" x="470" y="300" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m2" value="02  Authorize session / notebook; reserve operation &amp;amp; quotas" style="html=1;endArrow=block;endFill=1;strokeColor=#D97706;strokeWidth=1.5;dashed=0;fontFamily=Helvetica;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="470" y="355" />
+            <mxPoint as="targetPoint" x="1120" y="355" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m3" value="03  Existing result → reuse; hash mismatch → 409" style="html=1;endArrow=block;endFill=1;strokeColor=#059669;strokeWidth=1.5;dashed=1;fontFamily=Helvetica;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="1120" y="410" />
+            <mxPoint as="targetPoint" x="470" y="410" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m4" value="04  Authorized owner, notebook, exact selected set" style="html=1;endArrow=block;endFill=1;strokeColor=#2563EB;strokeWidth=1.5;dashed=0;fontFamily=Helvetica;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="470" y="465" />
+            <mxPoint as="targetPoint" x="800" y="465" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m5" value="05  Load ready chunks; persist selection + evidence IDs" style="html=1;endArrow=block;endFill=1;strokeColor=#059669;strokeWidth=1.5;dashed=0;fontFamily=Helvetica;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="800" y="520" />
+            <mxPoint as="targetPoint" x="1120" y="520" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m6" value="06  Scoped evidence + versions; reject stale IDs" style="html=1;endArrow=block;endFill=1;strokeColor=#059669;strokeWidth=1.5;dashed=1;fontFamily=Helvetica;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="1120" y="575" />
+            <mxPoint as="targetPoint" x="800" y="575" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="early" value="EARLY EXIT  /  no evidence, oversized context or exhausted quota → useful 4xx; no provider request" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="60" y="605" width="1480" height="40" />
+        </mxCell>
+        <mxCell id="m7" value="07  Question + bounded evidence; structured schema; 45 s deadline" style="html=1;endArrow=block;endFill=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=0;fontFamily=Helvetica;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="800" y="690" />
+            <mxPoint as="targetPoint" x="1440" y="690" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m8" value="08  Answer blocks + evidence IDs OR insufficient evidence" style="html=1;endArrow=block;endFill=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;fontFamily=Helvetica;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="1440" y="745" />
+            <mxPoint as="targetPoint" x="800" y="745" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="altok" value="A  /  VALID ANSWER OR HONEST LIMITATION" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#ECFDF5;strokeColor=#059669;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=1;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="60" y="780" width="1480" height="35" />
+        </mxCell>
+        <mxCell id="m9" value="09  Validate schema / cited IDs; no unchecked quotes" style="html=1;endArrow=block;endFill=1;strokeColor=#D97706;strokeWidth=1.5;dashed=0;fontFamily=Helvetica;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="800" y="850" />
+            <mxPoint as="targetPoint" x="800" y="880" />
+            <Array as="points">
+              <mxPoint x="940" y="850" />
+              <mxPoint x="940" y="880" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m10" value="10  Lock notebook; recheck versions; commit entry + citations + usage" style="html=1;endArrow=block;endFill=1;strokeColor=#059669;strokeWidth=1.5;dashed=0;fontFamily=Helvetica;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="800" y="925" />
+            <mxPoint as="targetPoint" x="1120" y="925" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m11" value="11  Validated answer OR limitation without citations" style="html=1;endArrow=block;endFill=1;strokeColor=#2563EB;strokeWidth=1.5;dashed=1;fontFamily=Helvetica;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="800" y="980" />
+            <mxPoint as="targetPoint" x="160" y="980" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="alterror" value="B  /  TIMEOUT, REFUSAL, INVALID REFERENCES OR SOURCE DELETED DURING GENERATION" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#FFF1F2;strokeColor=#E11D48;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=1;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="60" y="1015" width="1480" height="35" />
+        </mxCell>
+        <mxCell id="m12" value="12  Mark operation failed; reconcile usage reservation" style="html=1;endArrow=block;endFill=1;strokeColor=#E11D48;strokeWidth=1.5;dashed=0;fontFamily=Helvetica;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="800" y="1090" />
+            <mxPoint as="targetPoint" x="1120" y="1090" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m13" value="13  Safe error + explicit retry; no partial output" style="html=1;endArrow=block;endFill=1;strokeColor=#E11D48;strokeWidth=1.5;dashed=1;fontFamily=Helvetica;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="800" y="1145" />
+            <mxPoint as="targetPoint" x="160" y="1145" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="inspect" value="C  /  LATER: OPEN A CITATION FROM A SUCCESSFUL ANSWER" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=1;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="60" y="1185" width="1480" height="35" />
+        </mxCell>
+        <mxCell id="m14" value="14  GET citation for entry / block / ordinal" style="html=1;endArrow=block;endFill=1;strokeColor=#2563EB;strokeWidth=1.5;dashed=0;fontFamily=Helvetica;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="160" y="1260" />
+            <mxPoint as="targetPoint" x="470" y="1260" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m15" value="15  Authorize owner; join entry → evidence → live chunk" style="html=1;endArrow=block;endFill=1;strokeColor=#059669;strokeWidth=1.5;dashed=0;fontFamily=Helvetica;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="470" y="1315" />
+            <mxPoint as="targetPoint" x="1120" y="1315" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m16" value="16  Stored excerpt + page/offset OR source unavailable" style="html=1;endArrow=block;endFill=1;strokeColor=#059669;strokeWidth=1.5;dashed=1;fontFamily=Helvetica;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="1120" y="1370" />
+            <mxPoint as="targetPoint" x="470" y="1370" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m17" value="17  Open source viewer; show exact supporting passage" style="html=1;endArrow=block;endFill=1;strokeColor=#2563EB;strokeWidth=1.5;dashed=1;fontFamily=Helvetica;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="470" y="1425" />
+            <mxPoint as="targetPoint" x="160" y="1425" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="seqnote" value="&lt;b&gt;Recovery semantics&lt;/b&gt;&lt;br&gt;&lt;br&gt;Completed idempotency key returns the existing result; running key returns 202 + operation ID. Reload polls operation status.&lt;br&gt;No automatic provider retry after ambiguous timeout. Unknown spend stays reserved until reconciled; explicit retry uses a new key.&lt;br&gt;A refreshed page may recover a committed answer. Stale lease holders cannot commit. Provider execution is not claimed to be exactly-once." style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=13;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="60" y="1460" width="1480" height="120" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxGraphModel dx="1600" dy="1250" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1250" math="0" shadow="0" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="brand" value="S O U R C E N O T E   /   ENGINEERING DESIGN" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=13;fontColor=#2563EB;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="25" width="1520" height="25" />
+        </mxCell>
+        <mxCell id="title" value="02  Source ingestion &amp; grounded answering" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=30;fontColor=#0F172A;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="65" width="1520" height="48" />
+        </mxCell>
+        <mxCell id="subtitle" value="Bounded full-context evidence for small review documents. Every path preserves owner, notebook and selected-source scope." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=15;fontColor=#475569;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="120" width="1520" height="45" />
+        </mxCell>
+        <mxCell id="footer" value="ARCH-02  /  Proposed design, not implemented  /  2026-10-23  /  MVP-01–11  /  See manifest and ADRs" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=12;fontColor=#64748B;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="1208" width="1520" height="25" />
+        </mxCell>
+        <mxCell id="alabel" value="A  /  INGESTION — request-bound; ready only after a durable transaction" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=18;fontColor=#0F172A;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="185" width="1500" height="30" />
+        </mxCell>
+        <mxCell id="validate" value="&lt;b&gt;1  Validate &amp;amp; reserve&lt;/b&gt;&lt;br&gt;&lt;br&gt;Session + notebook ownership&lt;br&gt;PDF signature / UTF-8 / size&lt;br&gt;Source quota + idempotency key" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=15;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="245" width="340" height="145" />
+        </mxCell>
+        <mxCell id="original" value="&lt;b&gt;2  Store privately&lt;/b&gt;&lt;br&gt;&lt;br&gt;Create pending source row&lt;br&gt;Write temp → atomic rename&lt;br&gt;Random key; never public" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#ECFDF5;strokeColor=#059669;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=15;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="420" y="245" width="340" height="145" />
+        </mxCell>
+        <mxCell id="extract" value="&lt;b&gt;3  Extract &amp;amp; split&lt;/b&gt;&lt;br&gt;&lt;br&gt;Claim processing lease&lt;br&gt;PDF.js child process ≤ 20 s&lt;br&gt;Page-local chunks + offsets" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=15;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="800" y="245" width="340" height="145" />
+        </mxCell>
+        <mxCell id="ready" value="&lt;b&gt;4  Commit ready&lt;/b&gt;&lt;br&gt;&lt;br&gt;Replace chunks transactionally&lt;br&gt;Check lease + deletion state&lt;br&gt;ready only after all writes" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#ECFDF5;strokeColor=#059669;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=15;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1180" y="245" width="340" height="145" />
+        </mxCell>
+        <mxCell id="e1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#2563EB;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="validate" target="original">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#2563EB;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="original" target="extract">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#2563EB;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="extract" target="ready">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="failure" value="&lt;b&gt;Failed ingestion / interrupted request&lt;/b&gt;&lt;br&gt;&lt;br&gt;Empty, encrypted, scanned, malformed, over-limit → safe error code.&lt;br&gt;Expired processing lease → failed; user retry claims a new attempt.&lt;br&gt;One unique source attempt; stale workers cannot commit chunks." style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#FFF1F2;strokeColor=#E11D48;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="800" y="445" width="720" height="135" />
+        </mxCell>
+        <mxCell id="states" value="&lt;b&gt;Source lifecycle&lt;/b&gt;&lt;br&gt;&lt;br&gt;pending → processing → ready | failed; failed → processing on retry.&lt;br&gt;Any active state → deleting → deleted tombstone. No in-place edits.&lt;br&gt;Startup / periodic sweep reclaims stale work and orphan files." style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="445" width="680" height="135" />
+        </mxCell>
+        <mxCell id="e4" value="error / timeout" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#E11D48;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="extract" target="failure">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="blabel" value="B  /  ANSWERING &amp; SUMMARIES — the same evidence and citation contract" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=18;fontColor=#0F172A;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="625" width="1500" height="30" />
+        </mxCell>
+        <mxCell id="scope" value="&lt;b&gt;1  Authorize &amp;amp; snapshot&lt;/b&gt;&lt;br&gt;&lt;br&gt;Intersect supplied source IDs&lt;br&gt;owner + notebook + ready&lt;br&gt;Reject any missing / stale ID&lt;br&gt;Reserve operation + spend cap" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="685" width="340" height="175" />
+        </mxCell>
+        <mxCell id="evidence" value="&lt;b&gt;2  Build bounded evidence&lt;/b&gt;&lt;br&gt;&lt;br&gt;All chunks of selected sources&lt;br&gt;≤ 24k evidence tokens total&lt;br&gt;Over budget? Ask to select less&lt;br&gt;Persist stable evidence IDs" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#ECFDF5;strokeColor=#059669;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="420" y="685" width="340" height="175" />
+        </mxCell>
+        <mxCell id="generate" value="&lt;b&gt;3  Ask model&lt;/b&gt;&lt;br&gt;&lt;br&gt;Question + evidence only&lt;br&gt;No earlier answer as evidence&lt;br&gt;Structured answer blocks + IDs&lt;br&gt;Documents are untrusted data" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#F5F3FF;strokeColor=#7C3AED;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="800" y="685" width="340" height="175" />
+        </mxCell>
+        <mxCell id="verify" value="&lt;b&gt;4  Validate &amp;amp; commit&lt;/b&gt;&lt;br&gt;&lt;br&gt;Schema + evidence allow-list&lt;br&gt;Resolve excerpts from DB&lt;br&gt;Recheck source versions / scope&lt;br&gt;Persist answer + citations" style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1180" y="685" width="340" height="175" />
+        </mxCell>
+        <mxCell id="e5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#2563EB;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="scope" target="evidence">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#7C3AED;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="evidence" target="generate">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#2563EB;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="generate" target="verify">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="noanswer" value="&lt;b&gt;Explicit limitation, not a fabricated answer&lt;/b&gt;&lt;br&gt;&lt;br&gt;No ready selection → request sources. Over budget → narrow selection.&lt;br&gt;Model reports insufficient evidence → persist a limitation, no citations.&lt;br&gt;Invalid citation / refusal / timeout → safe failure; no partial answer shown." style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#FFF1F2;strokeColor=#E11D48;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="925" width="720" height="150" />
+        </mxCell>
+        <mxCell id="viewer" value="&lt;b&gt;5  Inspect the supporting excerpt&lt;/b&gt;&lt;br&gt;&lt;br&gt;Return validated final text only; streaming deferred.&lt;br&gt;Citation click → authorize again → stored chunk text + reliable location.&lt;br&gt;Deleted source → unavailable; never serve stale text.&lt;br&gt;A valid ID proves provenance, not semantic support: evaluate claims." style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#ECFDF5;strokeColor=#059669;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=14;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="800" y="925" width="720" height="150" />
+        </mxCell>
+        <mxCell id="e8" value="valid result" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#059669;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="verify" target="viewer">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="1350" y="895" />
+              <mxPoint x="1160" y="895" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e9" value="insufficient / failed" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#E11D48;fontFamily=Helvetica;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="generate" target="noanswer">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="970" y="895" />
+              <mxPoint x="400" y="895" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="caps" value="&lt;b&gt;Proposed demo limits · configurable on the server&lt;/b&gt;&lt;br&gt;&lt;br&gt;5 MiB/file · 50 PDF pages · 100k extracted characters/source · 10 sources/notebook · 3 notebooks/session · 500k stored characters/session.&lt;br&gt;≤ 24k evidence tokens + 2k prompt/question overhead · ≤ 1.5k output tokens · 1 generation/session and 3/service · 30/session/day." style="rounded=1;arcSize=8;html=1;whiteSpace=wrap;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1.5;align=left;verticalAlign=top;spacing=16;fontFamily=Helvetica;fontSize=13;fontColor=#0F172A;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="1100" width="1480" height="100" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  
