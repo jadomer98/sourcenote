@@ -15,7 +15,7 @@ Organize documents into notebooks, ask questions about selected sources, inspect
 - Generate an overview or three-question knowledge check, save an answer as a note, reopen Studio content and export Markdown with source references.
 - Persist across reloads, use desktop panels or narrow-screen tabs, and enforce server-side ownership, request/cost limits, idempotency and deletion rules.
 
-**Status:** implemented and tested locally. Groq Free is configured as the default provider adapter, but a real key has not yet been supplied for live evaluation. GitHub publication, cloud deployment and Loom recording are pending. Browser screenshots use a clearly marked deterministic test provider; they are not evidence of real model quality. [Full delivery audit](docs/delivery-status.md).
+**Status (2026-10-24):** Neon Free is connected in Frankfurt and real Groq generation works. The local production server passed a source-to-citation smoke test using the hosted database, including binary PDF extraction, original download, saved notes and deletion redaction. GitHub publication, Vercel deployment and Loom recording are pending. Browser screenshots use a clearly marked deterministic test provider. [Results and limitations](docs/testing.md) · [delivery audit](docs/delivery-status.md).
 
 ## Run locally
 
@@ -23,8 +23,9 @@ Requires **Node.js 24+**. No database installation is necessary: PGlite provides
 
 ```powershell
 npm.cmd ci
-Copy-Item .env.example .env.local
+if (!(Test-Path .env.local)) { Copy-Item .env.example .env.local }
 # Set GROQ_API_KEY in .env.local; preserve an existing configured file.
+# With DATABASE_URL configured, run npm.cmd run db:migrate first.
 npm.cmd run dev
 ```
 

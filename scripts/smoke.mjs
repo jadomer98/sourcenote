@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 const base = (process.env.SMOKE_URL || 'http://localhost:3000').replace(/\/$/, '');
 const withAi = process.argv.includes('--ai');
+const withPdf = process.argv.includes('--pdf');
 async function main() {
   const health = await fetch(base + '/api/health');
   assert.equal(health.status, 200);
@@ -13,7 +14,7 @@ async function main() {
     .map((c) => c.split(';')[0])
     .join('; ');
   assert.ok(cookie, 'Use a fresh smoke session');
-  assert.equal(boot.testMode, false, 'A production smoke test must not use deterministic AI');
+  assert.equal(boot.testMode, false, 'A real-provider smoke test must not use deterministic AI');
   const headers = { Cookie: cookie, Origin: base, 'x-csrf-token': boot.csrf };
   async function request(path, options = {}) {
     const res = await fetch(base + '/api/' + path, {
@@ -44,10 +45,33 @@ async function main() {
       'Das Projekt Morgenlicht hat ein genehmigtes Budget von 5.000 Euro. Die Projektleitung übernimmt Mira Keller.',
     );
     body.set('key', randomUUID());
-    const source = await request(`notebooks/${id}/sources`, { method: 'POST', body });
+    let source = await request(`notebooks/${id}/sources`, { method: 'POST', body });
     const ws = await request('notebooks/' + id);
     assert.equal(ws.sources[0].status, 'ready');
     assert.match((await request(`notebooks/${id}/sources/${source.id}`)).chunks[0].text, /5\.000/);
+    if (withPdf) {
+      const { PDFDocument } = await import('pdf-lib');
+      const pdf = await PDFDocument.create();
+      pdf.addPage().drawText('Genehmigtes Budget fuer Projekt Morgenlicht: 5.000 Euro.', {
+        x: 40,
+        y: 700,
+        size: 12,
+      });
+      const bytes = await pdf.save();
+      const form = new FormData();
+      form.set('file', new File([bytes], 'smoke.pdf', { type: 'application/pdf' }));
+      form.set('key', randomUUID());
+      source = await request(`notebooks/${id}/sources`, { method: 'POST', body: form });
+      const preview = await request(`notebooks/${id}/sources/${source.id}`);
+      assert.equal(preview.chunks[0].page_no, 1);
+      assert.match(preview.chunks[0].text, /5\.000/);
+      const original = await fetch(base + `/api/notebooks/${id}/sources/${source.id}/download`, {
+        headers,
+      });
+      assert.equal(original.status, 200);
+      assert.deepEqual(new Uint8Array(await original.arrayBuffer()), bytes);
+      console.log('PASS: binary PDF upload, page extraction and byte-exact original download.');
+    }
     const otherResponse = await fetch(base + '/api/bootstrap');
     const otherCookie = otherResponse.headers
       .getSetCookie()
@@ -71,19 +95,39 @@ async function main() {
       const answered = await request('notebooks/' + id);
       const answer = answered.entries.find((e) => e.kind === 'answer');
       assert.ok(answer?.citations.length, 'Answer must cite the smoke source');
+      console.log('Live answer:', answer.body.blocks.map((b) => b.text).join(' '));
       const excerpt = await request(
         `notebooks/${id}/citations/${answer.id}/${answer.citations[0].evidence_id}`,
       );
       assert.match(excerpt.text, /5\.000/);
+      const note = await request(`notebooks/${id}/notes`, {
+        method: 'POST',
+        body: JSON.stringify({ entryId: answer.id }),
+      });
+      const reloaded = await request('notebooks/' + id);
+      assert.deepEqual(reloaded.entries.find((e) => e.id === note.id)?.body, answer.body);
+      await request(`notebooks/${id}/sources/${source.id}`, { method: 'DELETE' });
+      const redacted = await request('notebooks/' + id);
+      assert.equal(redacted.entries.find((e) => e.id === answer.id)?.body, null);
+      assert.equal(redacted.entries.find((e) => e.id === note.id)?.body, null);
+      assert.equal(
+        (
+          await fetch(
+            base + `/api/notebooks/${id}/citations/${answer.id}/${answer.citations[0].evidence_id}`,
+            { headers },
+          )
+        ).status,
+        404,
+      );
       console.log(
-        'PASS: real-provider answer and stored citation. Inspect semantic wording separately.',
+        'PASS: real-provider answer, stored citation, persisted note and deletion redaction.',
       );
     } else
       console.log(
         'AI check skipped: run with --ai only after a real free-provider key is configured.',
       );
     console.log(
-      'PASS: production HTTP health, isolated session, notebook, source, preview and cross-owner rejection.',
+      'PASS: HTTP health, isolated session, notebook, source, preview and cross-owner rejection.',
     );
   } finally {
     await request('notebooks/' + id, { method: 'DELETE' });

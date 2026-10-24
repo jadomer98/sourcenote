@@ -10,3 +10,4 @@ playwright-report/
 __pycache__/
 .DS_Store
 *.log
+.neon

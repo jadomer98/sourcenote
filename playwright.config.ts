@@ -20,6 +20,8 @@ export default defineConfig({
     reuseExistingServer: false,
     timeout: 120000,
     env: {
+      DATABASE_URL: '',
+      DATABASE_URL_UNPOOLED: '',
       AI_TEST_MODE: 'true',
       DATA_DIR: '.data/e2e',
       APP_ORIGIN: 'http://localhost:3100',

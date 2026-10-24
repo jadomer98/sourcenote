@@ -25,6 +25,7 @@ async function main() {
       const output = validateGenerated(response.output, passages);
       observed.push({
         ...item,
+        evidence: passages.map(({ id, title }) => ({ id, source: title })),
         output,
         elapsedMs: Date.now() - started,
         structuralValidation: 'passed',
@@ -33,6 +34,9 @@ async function main() {
     } catch (error) {
       observed.push({ ...item, error: error instanceof Error ? error.message : 'Provider error' });
     }
+    console.log(
+      `${item.id}: ${observed.at(-1)?.error ? 'provider/validation error' : 'response recorded'}`,
+    );
     // Free Groq quota is shared; use explicit pacing for this bounded evaluation.
     if (config.provider === 'groq' && item !== cases.at(-1))
       await new Promise((resolve) => setTimeout(resolve, 15000));

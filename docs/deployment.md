@@ -1,6 +1,6 @@
 # Deployment and local operation
 
-The prepared zero-spend path is Vercel Hobby + Neon Free + Groq Free. No cloud resources or public URL have been created yet. Use free plans only, no Pro trial, paid domain or paid provider fallback. See [research and current limits](free-tier-research.md).
+The zero-spend path is Vercel Hobby + Neon Free + Groq Free. On 2026-10-24, SourceNote's existing Neon Free project was linked and verified in AWS Frankfurt; the real Groq key is configured locally. Vercel deployment and a public URL are still pending. Use free plans only, no Pro trial, paid domain or paid provider fallback. See [research and current limits](free-tier-research.md).
 
 ## Local start (Windows)
 
@@ -8,26 +8,27 @@ Prerequisites: Node.js 24+, Git. Python is only needed to regenerate architectur
 
 ```powershell
 npm.cmd ci
-Copy-Item .env.example .env.local
+if (!(Test-Path .env.local)) { Copy-Item .env.example .env.local }
 npm.cmd run dev
 ```
 
-Do not overwrite an existing configured `.env.local`. A local configuration was prepared during implementation with an unprinted random session secret; the Groq key is still blank unless Ayham supplies it. Add `GROQ_API_KEY` locally (never to Git), leaving `AI_PROVIDER=groq` and `AI_MODEL=openai/gpt-oss-120b`. Open http://localhost:3000. App data persists in `.data/postgres`; the guest cookie determines workspace access. Without an AI key, source/notebook functions work and the UI clearly states that generation is unavailable.
+Do not overwrite an existing configured `.env.local`: it now contains the supplied Groq key, a random session secret and the Neon URLs. Keep `AI_PROVIDER=groq` and `AI_MODEL=openai/gpt-oss-120b`. Open http://localhost:3000. With `DATABASE_URL`, data persists in Neon; without it, development uses `.data/postgres`. The guest cookie determines workspace access. Without an AI key, source/notebook functions work and the UI clearly states that generation is unavailable.
 
 PowerShell may block `npm.ps1`; use `npm.cmd` as shown. Do not weaken the execution policy. On macOS/Linux, ordinary `npm` is sufficient.
 
 ## Provision the free deployment
 
-1. Create/use a **Neon Free** project in an appropriate region. Obtain its pooled PostgreSQL URL with TLS (`sslmode=require`). Keep it in the deployment secret store. Do not paste it into Git or screenshots.
+1. Use the existing **Neon Free** project `SourceNote` (`cool-salad-21039999`), branch `production`, region `aws-eu-central-1`. The CLI has pulled pooled `DATABASE_URL` and direct `DATABASE_URL_UNPOOLED` into ignored `.env.local`. Keep both in secret stores; do not paste them into Git or screenshots.
 2. Publish this branch to a GitHub repository Ayham owns. Choose visibility suitable for the employer. The current local branch is `feat/sourcenote-implementation`; no remote is configured yet.
 3. Import the repository into a **personal Vercel Hobby** project using the Next.js preset and Node 24. Hobby is for eligible personal/non-commercial work. Connect the prepared branch or merge it into the intended deployment branch first.
 4. Set the production variables below. For a preview use a separate database branch and the preview's exact origin; do not point a preview at private production data by accident.
-5. Deploy. Schema migration 001 is idempotent and guarded by a PostgreSQL advisory transaction lock on initial connection. Alternatively apply `migrations/001_initial.sql` through Neon SQL Editor before the first request. Future migrations need explicit release ordering/version handling rather than editing applied schema in place.
+5. Before the app release, run `npm.cmd run db:migrate` with the target database's **direct** URL. Initial migration 001 is idempotent and protected by an advisory transaction lock. App requests verify schema version 1 and use the **pooled** URL; they do not perform hosted DDL. Future migrations need explicit release ordering/version handling rather than editing applied schema in place.
 6. Open `/api/health`; expect `{"status":"ok","version":"1.0.0"}`. This checks DB reachability without model usage. Run the smoke test below with a real free-provider key.
 
 | Variable | Production value |
 | --- | --- |
 | `DATABASE_URL` | Neon pooled TLS connection URL |
+| `DATABASE_URL_UNPOOLED` | Neon direct TLS URL for migrations; not needed in the Vercel runtime after migration |
 | `AI_PROVIDER` | `groq` |
 | `AI_MODEL` | `openai/gpt-oss-120b` |
 | `GROQ_API_KEY` | Free-tier account key; server secret |
@@ -52,7 +53,25 @@ Do not put secrets in `NEXT_PUBLIC_*` variables. `ALLOW_LOCAL_DATABASE=true` is 
 
 Record the deployed URL, provider/model, date, inputs and observed results in testing/delivery notes before recording the Loom.
 
-An automated API smoke helper is also available: set `SMOKE_URL` to the deployment origin and run `npm.cmd run smoke`. Add `-- --ai` to require a real-provider answer/citation; otherwise the script explicitly skips AI. It creates and cleans up its own isolated notebook. Local production startup for this check was rejected by automatic approval review in this session, so no production HTTP smoke result is claimed.
+An automated API smoke helper is available: set `SMOKE_URL` to the deployment origin and run `npm.cmd run smoke -- --ai --pdf`. This requires a real-provider answer/citation and checks a generated binary PDF, byte-exact original download, saved note, source deletion redaction and cross-owner rejection. Omitting `--ai` explicitly skips AI; omitting `--pdf` uses pasted text only. It cleans up its isolated notebook. This command passed against the local **production** server connected to Neon and Groq on 2026-10-24; it does not prove Vercel hosting yet.
+
+## Neon CLI setup and production start
+
+The installed Neon agent skills recommend preserving `pg` for Next.js on Vercel Fluid compute. The shared pool is registered with `attachDatabasePool` from `@vercel/functions` and uses a five-second idle timeout. [Driver guidance](https://neon.com/docs/connect/choose-connection) · [Vercel pool lifecycle](https://vercel.com/docs/functions/functions-api-reference/vercel-functions-package#attachdatabasepool).
+
+```powershell
+neon.cmd init -y --org-id org-jolly-voice-65504856 --project-id cool-salad-21039999 --branch production --services postgres
+neon.cmd deploy
+npm.cmd run db:migrate
+npm.cmd run build
+npm.cmd run start
+# In another terminal:
+npm.cmd run smoke -- --ai --pdf
+```
+
+The project is already linked locally; `.neon` and `.env.local` stay ignored. Another checkout must link itself explicitly. `neon.ts` enables no optional services: Postgres is implicit, Auth is false, and there are no buckets, functions, realtime subscriptions or AI Gateway calls. `neon deploy` reported no policy changes and pulled three Neon variables while preserving the Groq configuration. The account API reported plan `free`.
+
+`npm run start` loads the root environment, copies static assets and starts Next's generated standalone server. Docker starts that server directly with its packaged assets and host-supplied environment. Routine Vitest and Playwright runs explicitly clear both hosted database URLs; deterministic browser data stays in `.data/e2e`.
 
 ## Operations and rollback
 
