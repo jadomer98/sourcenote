@@ -4,7 +4,7 @@
 
 [Open the live demo](https://sourcenote-mu.vercel.app) · [GitHub repository](https://github.com/jadomer98/sourcenote)
 
-![SourceNote live desktop research workspace with six Studio tools](docs/screenshots/studio-workspace-desktop.png)
+![SourceNote live resizable research workspace with five accent colors](docs/screenshots/flexible-workspace-live.png)
 
 Organize documents into notebooks, ask questions about selected sources, inspect supporting excerpts, and turn useful answers into persistent research outputs.
 
@@ -19,7 +19,7 @@ Organize documents into notebooks, ask questions about selected sources, inspect
 - Arrange your workspace: resize or collapse navigation, drag panel dividers, hide/reopen Sources, Chat or Studio, focus one panel, and retain the layout in your browser. A five-accent palette gives tools distinct visual roles. [Layout controls and colors](docs/design/flexible-workspace.md).
 - Persist across reloads, use desktop panels or narrow-screen tabs, and enforce server-side ownership, request/cost limits, idempotency and deletion rules.
 
-**Status (2026-10-24):** published on Vercel Hobby with Neon Free in Frankfurt and real Groq generation. The public deployment passed PDF extraction/download, answer/citation, saved-note, deletion and owner-isolation checks. All five new Studio formats also passed a public real-Groq browser walkthrough, including scoring, citations, exports, owner usage and mobile layout. The screenshot above comes from that live workflow. GitHub CI passes; Loom recording remains pending. [Results and limitations](docs/testing.md) · [delivery audit](docs/delivery-status.md).
+**Status (2026-10-24):** published on Vercel Hobby with Neon Free in Frankfurt and real Groq generation. The public deployment passed PDF extraction/download, answer/citation, saved-note, deletion and owner-isolation checks. All five new Studio formats also passed a public real-Groq browser walkthrough. The flexible layout passed public resizing, focus, close/reopen, persistence, draft-retention and mobile checks without AI requests. The screenshot above comes from the live deployment. GitHub CI passes; Loom recording remains pending. [Results and limitations](docs/testing.md) · [delivery audit](docs/delivery-status.md).
 
 ## Try the new Studio
 

@@ -1,0 +1,12 @@
+{
+  "base": "https://sourcenote-mu.vercel.app",
+  "date": "2026-10-24T16:17:38.237Z",
+  "aiRequests": 0,
+  "checks": [
+    "sidebar keyboard resize and pane pointer resize",
+    "close all, recover, and retain question draft",
+    "focus restore and compact navigation reload persistence",
+    "usage dashboard remains accessible",
+    "mobile drawer, tabs, close all and recovery"
+  ]
+}
