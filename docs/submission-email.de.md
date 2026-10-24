@@ -9,8 +9,8 @@ vielen Dank für die spannende Aufgabe. Ich habe SourceNote umgesetzt, einen Not
 
 Hier findet Ihr mein Ergebnis:
 
-GitHub-Repository: [GEPRÜFTEN REPOSITORY-LINK EINSETZEN]
-Live-Deployment: [GEPRÜFTEN DEPLOYMENT-LINK EINSETZEN]
+GitHub-Repository: https://github.com/jadomer98/sourcenote
+Live-Deployment: https://sourcenote-mu.vercel.app
 Loom-Video (unter 10 Minuten): [GEPRÜFTEN LOOM-LINK EINSETZEN]
 
 Die Anwendung kann ohne Registrierung in einem isolierten Gast-Arbeitsbereich ausprobiert werden. Über „Beispiel erkunden“ stehen zwei fiktive Quellen mit passenden Fragen bereit. Eigene Text-PDFs, Textdateien und eingefügter Text werden ebenfalls unterstützt.
