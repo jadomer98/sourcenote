@@ -4,6 +4,8 @@ Die kostenlose Loom-Starter-Version erlaubt fünf Minuten pro Aufnahme. Deshalb 
 
 Dies ist ein vorbereitetes Skript, noch kein aufgenommenes Video. Sprich mit deiner eigenen Stimme und passe Aussagen an dein tatsächliches Verständnis an.
 
+Das Studio enthält inzwischen auch Lernkarten, ein interaktives Quiz mit Auswertung, Mindmaps, Berichte und CSV-Tabellen. Für eine kurze Aufnahme kannst du den Quellenüberblick durch Lernkarten ersetzen: eine Karte aufdecken, den Beleg zeigen und als gelernt markieren. Erkläre, dass Wiederholen und Exporte keine weiteren KI-Aufrufe brauchen. Nicht alle Werkzeuge nacheinander generieren: Das Minutenlimit des kostenlosen Zugangs gilt weiterhin. „Nutzung & Limits“ zeigt die Messwerte; den privaten Eigentümer-Code und `.env.local` während der Aufnahme geschlossen halten.
+
 Vorbereitung: [Live-App](https://sourcenote-mu.vercel.app), [Repository](https://github.com/jadomer98/sourcenote), [Architektur](https://github.com/jadomer98/sourcenote/blob/main/docs/architecture.md) und [CI](https://github.com/jadomer98/sourcenote/actions) in eigenen Tabs öffnen. Einen frischen Gastbereich verwenden. Nur diese Tabs aufnehmen; Schlüssel, Konto-Einstellungen und E-Mails geschlossen halten. Im Browser auf angenehme Lesbarkeit zoomen.
 
 | Zeit | Aktion | Sprechtext / Stichworte |

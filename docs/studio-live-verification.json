@@ -1,6 +1,6 @@
 {
-  "base": "http://localhost:3200",
-  "date": "2026-10-24T15:23:21.332Z",
+  "base": "https://sourcenote-mu.vercel.app",
+  "date": "2026-10-24T15:32:00.223Z",
   "provider": "real Groq",
   "features": [
     {
@@ -15,20 +15,20 @@
     },
     {
       "kind": "mindmap",
-      "blocks": 7,
-      "citations": 9
+      "blocks": 6,
+      "citations": 8
     },
     {
       "kind": "report",
       "blocks": 4,
-      "citations": 7
+      "citations": 8
     },
     {
       "kind": "table",
-      "blocks": 6,
-      "citations": 6
+      "blocks": 5,
+      "citations": 5
     }
   ],
-  "measuredTokens": 33169,
+  "measuredTokens": 24450,
   "deletedNotebookUsageRetained": true
 }

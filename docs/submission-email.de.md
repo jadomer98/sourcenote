@@ -5,7 +5,7 @@ Im ursprünglichen E-Mail-Thread und mit dem bestehenden Betreff antworten. Die 
 ```text
 Hallo liebes Everlast-Team,
 
-vielen Dank für die spannende Aufgabe. Ich habe SourceNote umgesetzt, einen NotebookLM-inspirierten Recherchebereich mit Quellenverwaltung, quellenbasiertem Chat, überprüfbaren Belegen und einem Studio für Zusammenfassungen, Wissenschecks und Notizen.
+vielen Dank für die spannende Aufgabe. Ich habe SourceNote umgesetzt, einen NotebookLM-inspirierten Recherchebereich mit Quellenverwaltung, quellenbasiertem Chat, überprüfbaren Belegen und einem Studio für Zusammenfassungen, Lernkarten, interaktive Wissenschecks, Mindmaps, Berichte und Datentabellen.
 
 Hier findet Ihr mein Ergebnis:
 

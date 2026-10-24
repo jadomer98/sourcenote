@@ -4,7 +4,7 @@
 
 [Open the live demo](https://sourcenote-mu.vercel.app) · [GitHub repository](https://github.com/jadomer98/sourcenote)
 
-![SourceNote live desktop research workspace](docs/screenshots/live-workspace-desktop.png)
+![SourceNote live desktop research workspace with six Studio tools](docs/screenshots/studio-workspace-desktop.png)
 
 Organize documents into notebooks, ask questions about selected sources, inspect supporting excerpts, and turn useful answers into persistent research outputs.
 
@@ -18,7 +18,7 @@ Organize documents into notebooks, ask questions about selected sources, inspect
 - Inspect your real token usage and app limits. A separate owner code unlocks project-wide counters and timestamped Groq rate-limit snapshots; API keys never reach the browser. [Studio and usage guide](docs/studio-and-usage.md).
 - Persist across reloads, use desktop panels or narrow-screen tabs, and enforce server-side ownership, request/cost limits, idempotency and deletion rules.
 
-**Status (2026-10-24):** published on Vercel Hobby with Neon Free in Frankfurt and real Groq generation. The public deployment passed PDF extraction/download, answer/citation, saved-note, deletion and owner-isolation checks. The public UI also passed a real-provider summary, reload and mobile Studio check. The screenshot above comes from that live workflow. GitHub CI passes; Loom recording remains pending. [Results and limitations](docs/testing.md) · [delivery audit](docs/delivery-status.md).
+**Status (2026-10-24):** published on Vercel Hobby with Neon Free in Frankfurt and real Groq generation. The public deployment passed PDF extraction/download, answer/citation, saved-note, deletion and owner-isolation checks. All five new Studio formats also passed a public real-Groq browser walkthrough, including scoring, citations, exports, owner usage and mobile layout. The screenshot above comes from that live workflow. GitHub CI passes; Loom recording remains pending. [Results and limitations](docs/testing.md) · [delivery audit](docs/delivery-status.md).
 
 ## Try the new Studio
 

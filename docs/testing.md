@@ -8,11 +8,11 @@ Latest execution: **2026-10-24**, Windows, Node 24.19.0; GitHub CI on Ubuntu/Nod
 | `npm.cmd run test:e2e` | All 10 desktop/mobile Chromium tests passed with the clearly labeled deterministic test provider |
 | `npm.cmd run build` | Optimized Next.js compilation and all static/API routes passed |
 | `neon.cmd deploy` | Existing production policy matched; Postgres-only use; 3 Neon variables pulled into ignored `.env.local` |
-| `npm.cmd run db:migrate` | Neon direct-connection migration passed; schema version 1 |
+| `npm.cmd run db:migrate` | Neon direct-connection migrations passed; schema versions 1 and 2 |
 | `npm.cmd run start` then `npm.cmd run smoke -- --ai --pdf` | Standalone production HTTP workflow passed against actual Neon/Groq |
 | Public `SMOKE_URL=https://sourcenote-mu.vercel.app`, `npm.cmd run smoke -- --ai --pdf` | All PDF, real AI/citation, note, deletion and access-isolation checks passed on Vercel |
 | Real-provider public browser check | Desktop demo, real answer/citation, note, summary, reload and mobile Studio passed; `live-*.png` screenshots inspected |
-| GitHub Actions | Linux check/build and all browser tests passed; [verified main run](https://github.com/jadomer98/sourcenote/actions/runs/40095885866) |
+| GitHub Actions | Linux check/build and all 10 browser tests passed; [verified Studio main run](https://github.com/jadomer98/sourcenote/actions/runs/40107234663) |
 | `npm.cmd audit --omit=dev --audit-level=high` | 0 reported production dependency vulnerabilities |
 | `python scripts/validate_architecture.py` (2026-10-23) | Four native pages and equivalent standalone XML passed structural checks |
 
