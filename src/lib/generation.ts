@@ -13,8 +13,9 @@ import {
   type Passage,
   type Provider,
 } from './provider';
-import type { Generated } from './types';
-type Kind = 'answer' | 'summary' | 'quiz';
+import type { Generated, GenerationKind } from './types';
+import { isStudioKind, schemaForStudio, studioInstructions, studioTools } from './studio';
+type Kind = GenerationKind;
 type Selected = { id: string; version: number; status: string; title: string };
 export async function generate(
   owner: string,
@@ -37,8 +38,10 @@ export async function generate(
   const passages: Passage[] = [];
   let selected: Selected[] = [];
   let reserved = 0;
+  const quotaDay = new Date().toISOString().slice(0, 10);
+  let measuredUsage: number | null = null;
   const existing = await db.transaction(async (tx) => {
-    const day = new Date().toISOString().slice(0, 10);
+    const day = quotaDay;
     const globalKey = 'global:' + day;
     await tx.query('INSERT INTO quota_bucket(key) VALUES($1) ON CONFLICT DO NOTHING', [globalKey]);
     await tx.query('SELECT key FROM quota_bucket WHERE key=$1 FOR UPDATE', [globalKey]);
@@ -108,7 +111,12 @@ export async function generate(
     // A margin covers chat framing and tokenizer differences for open models.
     reserved =
       Math.ceil(
-        tokens(systemPrompt + promptFor(question, passages) + JSON.stringify(outputSchema)) * 1.25,
+        tokens(
+          systemPrompt +
+            (isStudioKind(kind) ? studioInstructions[kind] : '') +
+            promptFor(question, passages) +
+            JSON.stringify(isStudioKind(kind) ? schemaForStudio(kind) : outputSchema),
+        ) * 1.25,
       ) +
       config.outputTokens +
       200;
@@ -183,6 +191,13 @@ export async function generate(
       "INSERT INTO operation(id,notebook_id,kind,state,idempotency_key,request_hash,lease_until,model,prompt_version,reserved_tokens) VALUES($1,$2,$3,'running',$4,$5,now()+interval '90 seconds',$6,'grounded-v1',$7)",
       [id, notebook, kind, key, requestHash, config.model, reserved],
     );
+    await tx.query('INSERT INTO ai_usage(id,owner_id,provider,model,kind) VALUES($1,$2,$3,$4,$5)', [
+      id,
+      owner,
+      process.env.AI_TEST_MODE === 'true' ? 'test' : config.provider,
+      config.model,
+      kind,
+    ]);
     for (const s of selected)
       await tx.query('INSERT INTO operation_source VALUES($1,$2,$3,$4)', [
         notebook,
@@ -217,8 +232,26 @@ export async function generate(
     return { id: existing.id, state: existing.state };
   }
   try {
-    const response = await provider(question, passages);
-    const output = validateGenerated(response.output, passages);
+    const response = await provider(question, passages, {
+      kind,
+      onTelemetry: async (data) => {
+        measuredUsage = data.totalTokens;
+        await db.query(
+          'UPDATE ai_usage SET http_status=$2,input_tokens=$3,output_tokens=$4,total_tokens=$5,provider_limits=$6::jsonb WHERE id=$1',
+          [
+            id,
+            data.httpStatus,
+            data.inputTokens,
+            data.outputTokens,
+            data.totalTokens,
+            JSON.stringify(data.limits),
+          ],
+        );
+      },
+    });
+    measuredUsage = response.usage;
+    await db.query('UPDATE ai_usage SET total_tokens=$2 WHERE id=$1', [id, response.usage]);
+    const output = validateGenerated(response.output, passages, kind);
     await db.transaction(async (tx) => {
       await ownedNotebook(tx, owner, notebook, true);
       const [op] = await tx.query<{ state: string; valid: boolean }>(
@@ -246,8 +279,7 @@ export async function generate(
         409,
       );
       const entry = randomUUID();
-      const title =
-        kind === 'summary' ? 'Quellenüberblick' : kind === 'quiz' ? 'Wissenscheck' : null;
+      const title = studioTools.find((t) => t.kind === kind)?.title || null;
       await tx.query(
         'INSERT INTO entry(id,notebook_id,operation_id,kind,title,body) VALUES($1,$2,$3,$4,$5,$6::jsonb)',
         [entry, notebook, id, kind, title, JSON.stringify(output)],
@@ -266,9 +298,10 @@ export async function generate(
         id,
         JSON.stringify({ total_tokens: response.usage }),
       ]);
+      await tx.query("UPDATE ai_usage SET state='succeeded' WHERE id=$1", [id]);
       if (response.usage !== null)
         await tx.query('UPDATE quota_bucket SET tokens=greatest(0,tokens-$2+$3) WHERE key=$1', [
-          'global:' + new Date().toISOString().slice(0, 10),
+          'global:' + quotaDay,
           reserved,
           response.usage,
         ]);
@@ -288,6 +321,13 @@ export async function generate(
       "UPDATE operation SET state='failed',error_code=$2,error_message=$3 WHERE id=$1 AND state='running'",
       [id, appError.code, appError.message],
     );
+    await db.query("UPDATE ai_usage SET state='failed' WHERE id=$1", [id]);
+    if (measuredUsage !== null)
+      await db.query('UPDATE quota_bucket SET tokens=greatest(0,tokens-$2+$3) WHERE key=$1', [
+        'global:' + quotaDay,
+        reserved,
+        measuredUsage,
+      ]);
     throw appError;
   }
 }

@@ -14,6 +14,9 @@ export async function maintain() {
     await tx.query(
       "UPDATE operation SET state='failed',error_code='INTERRUPTED',error_message='Die Anfrage wurde unterbrochen. Bitte erneut versuchen.' WHERE state='running' AND lease_until<now()",
     );
+    await tx.query(
+      "UPDATE ai_usage SET state='failed' WHERE state='pending' AND created_at<now()-interval '2 minutes'",
+    );
     const expired = await tx.query<{ id: string }>(
       'SELECT id FROM workspace_owner WHERE expires_at<now() LIMIT 10 FOR UPDATE',
     );

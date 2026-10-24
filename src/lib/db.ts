@@ -1,7 +1,7 @@
 import { PGlite } from '@electric-sql/pglite';
 import { Pool, type PoolClient } from 'pg';
 import { attachDatabasePool } from '@vercel/functions';
-import { readFile, mkdir } from 'node:fs/promises';
+import { readFile, readdir, mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import { config, checkProductionConfig } from './config';
 
@@ -48,7 +48,7 @@ async function connect(): Promise<Database> {
       close: () => pool.end(),
     };
     try {
-      const versions = await db.query('SELECT version FROM schema_version WHERE version = 1');
+      const versions = await db.query('SELECT version FROM schema_version WHERE version = 2');
       if (!versions.length) throw new Error('Run npm run db:migrate before starting the app.');
     } catch (error) {
       await pool.end();
@@ -56,13 +56,13 @@ async function connect(): Promise<Database> {
     }
     return db;
   }
-  const migration = await readFile(path.join(process.cwd(), 'migrations/001_initial.sql'), 'utf8');
   await mkdir(config.dataDir, { recursive: true });
   const pg = new PGlite(
     process.env.TEST_DATABASE === 'memory' ? undefined : path.join(config.dataDir, 'postgres'),
   );
   await pg.waitReady;
-  await pg.exec(migration);
+  for (const file of (await readdir('migrations')).filter((f) => /^\d+.*\.sql$/.test(f)).sort())
+    await pg.exec(await readFile(path.join('migrations', file), 'utf8'));
   const adapt = (client: Pick<PGlite, 'query'>): Sql => ({
     query: async <T extends object>(sql: string, params: unknown[] = []) =>
       (await client.query<T>(sql, params)).rows,

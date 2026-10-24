@@ -16,6 +16,7 @@ import { generate, resolveCitation, saveNote } from '@/lib/generation';
 import { seedDemo } from '@/lib/demo';
 import { getOriginal } from '@/lib/storage';
 import { maintain } from '@/lib/maintenance';
+import { authorizeUsageOwner, readUsage } from '@/lib/usage';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
@@ -28,7 +29,9 @@ const bookInput = z.object({
 const generationInput = z.object({
   sourceIds: z.array(uuid).min(1).max(10),
   question: z.string().trim().min(2).max(1500),
-  kind: z.enum(['answer', 'summary', 'quiz']).default('answer'),
+  kind: z
+    .enum(['answer', 'summary', 'quiz', 'flashcards', 'mindmap', 'report', 'table'])
+    .default('answer'),
   key: uuid,
 });
 async function boundedBody(request: NextRequest) {
@@ -104,7 +107,12 @@ async function handler(request: NextRequest, { params }: { params: Promise<{ pat
       return response;
     }
     let result: unknown;
-    if (p[0] === 'notebooks' && p.length === 1) {
+    if (p[0] === 'usage' && p.length === 1 && method === 'GET') {
+      result = await readUsage(owner);
+    } else if (p[0] === 'usage' && p[1] === 'owner' && p.length === 2 && method === 'POST') {
+      authorizeUsageOwner(request.headers.get('x-usage-token'));
+      result = await readUsage(owner, true);
+    } else if (p[0] === 'notebooks' && p.length === 1) {
       if (method === 'POST') {
         const data = bookInput.parse(await (await boundedBody(request)).json());
         result = { id: await createNotebook(owner, data.title, data.emoji, data.color) };
@@ -193,7 +201,7 @@ async function handler(request: NextRequest, { params }: { params: Promise<{ pat
         const db = await database();
         await ownedNotebook(db, owner, notebook);
         const rows = await db.query(
-          "DELETE FROM entry WHERE id=$1 AND notebook_id=$2 AND kind IN ('note','summary','quiz') RETURNING id",
+          "DELETE FROM entry WHERE id=$1 AND notebook_id=$2 AND kind IN ('note','summary','quiz','flashcards','mindmap','report','table') RETURNING id",
           [uuid.parse(p[3]), notebook],
         );
         invariant(rows.length, 'NOT_FOUND', 'Inhalt nicht gefunden.', 404);

@@ -4,8 +4,8 @@ Latest execution: **2026-10-24**, Windows, Node 24.19.0; GitHub CI on Ubuntu/Nod
 
 | Command | Result |
 | --- | --- |
-| `npm.cmd run check` | Type generation, TypeScript, ESLint and all 24 backend/provider tests passed |
-| `npm.cmd run test:e2e` | All 8 desktop/mobile Chromium tests passed with the clearly labeled deterministic test provider |
+| `npm.cmd run check` | Type generation, TypeScript, ESLint and all 31 backend/provider tests passed |
+| `npm.cmd run test:e2e` | All 10 desktop/mobile Chromium tests passed with the clearly labeled deterministic test provider |
 | `npm.cmd run build` | Optimized Next.js compilation and all static/API routes passed |
 | `neon.cmd deploy` | Existing production policy matched; Postgres-only use; 3 Neon variables pulled into ignored `.env.local` |
 | `npm.cmd run db:migrate` | Neon direct-connection migration passed; schema version 1 |
@@ -75,3 +75,13 @@ The forest/paper color update is on `feat/forest-paper-colors`, based on the pre
 - Cloudflare has boundary tests but was not called live. Docker remains unbuilt because Docker is unavailable.
 - diagrams.net editor rendering remains a manual check; native XML and approximate previews were checked earlier.
 - No external penetration test, formal accessibility audit, load benchmark, backup/restore test or production-readiness claim.
+
+## Studio and usage verification (2026-10-24)
+
+The expanded suite includes strict structured-content validation, invalid evidence, quiz choices, acyclic mind maps, rectangular tables, CSV formula escaping, idempotent usage accounting, owner authorization, and usage retained after source/notebook deletion. Provider telemetry is tested before truncated-output rejection.
+
+All five formats were generated with actual Groq through an isolated Neon branch copied from production. Browser checks exercised card reveal/learning marks, scored quiz answers, SVG/CSV downloads, report rendering, real citations, private owner metrics, mobile layout, absence of page errors and ledger survival after deleting the synthetic notebook. Minute-limit waits were respected. A shortcut-label encoding error found by this check was corrected before publication.
+
+The first Neon test-branch request attempted a custom suspend timeout unsupported on Free; retrying with default suspend settings succeeded without an upgrade. Migration 002 applied on the isolated branch and the temporary branch was deleted afterwards. No production credentials were overwritten for test isolation.
+
+The separate `studio-live-verification.json` records the latest real-provider run and its target. Screenshots `studio-*.png` use real generation; the original `home-*`/`workspace-*` screenshots remain clearly marked deterministic test-provider captures. Owner screenshots contain counters only, never the owner code or API key. The existing original-PDF production smoke remains relevant; publication checks for the extension are recorded in the delivery audit.

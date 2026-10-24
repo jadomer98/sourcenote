@@ -1,7 +1,8 @@
 import { z } from 'zod';
 import { config } from './config';
 import { AppError, invariant } from './errors';
-import type { Generated } from './types';
+import type { Generated, GenerationKind } from './types';
+import { isStudioKind, parseStudio, schemaForStudio, studioInstructions } from './studio';
 export type Passage = { id: string; text: string; title: string; page: number | null };
 export const outputSchema = {
   type: 'object',
@@ -52,7 +53,48 @@ export function promptFor(question: string, passages: Passage[]) {
     })),
   });
 }
-export function validateGenerated(value: unknown, passages: Passage[]): Generated {
+export function validateGenerated(
+  value: unknown,
+  passages: Passage[],
+  kind: GenerationKind = 'answer',
+): Generated {
+  if (isStudioKind(kind)) {
+    let studio: Generated;
+    try {
+      studio = parseStudio(value, kind);
+    } catch {
+      throw new AppError(
+        'INVALID_RESPONSE',
+        'Die KI hat keinen vollständigen Lerninhalt geliefert. Bitte erneut versuchen.',
+        502,
+      );
+    }
+    if (studio.outcome === 'insufficient') {
+      invariant(
+        studio.blocks.every((b) => b.evidence_ids.length === 0),
+        'INVALID_CITATION',
+        'Unbelegte Inhalte wurden zurückgehalten.',
+        502,
+      );
+      return {
+        outcome: 'insufficient',
+        blocks: [
+          {
+            text: 'Die ausgewählten Quellen enthalten nicht genug Informationen für diesen Inhalt. Bitte andere Quellen auswählen.',
+            evidence_ids: [],
+          },
+        ],
+      };
+    }
+    validateGenerated(
+      {
+        outcome: studio.outcome,
+        blocks: studio.blocks.map((b) => ({ text: b.text, evidence_ids: b.evidence_ids })),
+      },
+      passages,
+    );
+    return studio;
+  }
   const result = parsedSchema.safeParse(value);
   invariant(
     result.success,
@@ -101,11 +143,21 @@ export function validateGenerated(value: unknown, passages: Passage[]): Generate
   }
   return output;
 }
+export type ProviderTelemetry = {
+  inputTokens: number | null;
+  outputTokens: number | null;
+  totalTokens: number | null;
+  httpStatus: number;
+  limits: Record<string, number | string>;
+};
 export type Provider = (
   question: string,
   passages: Passage[],
+  options?: { kind?: GenerationKind; onTelemetry?: (data: ProviderTelemetry) => Promise<void> },
 ) => Promise<{ output: unknown; usage: number | null }>;
-export const callProvider: Provider = async (question, passages) => {
+export const callProvider: Provider = async (question, passages, options) => {
+  const kind = options?.kind || 'answer';
+  const schema = isStudioKind(kind) ? schemaForStudio(kind) : outputSchema;
   if (process.env.AI_TEST_MODE === 'true') {
     invariant(
       process.env.NODE_ENV !== 'production',
@@ -120,6 +172,32 @@ export const callProvider: Provider = async (question, passages) => {
         504,
       );
     const insufficient = /wetter|hauptstadt|unsupported|aktienkurs/i.test(question);
+    if (isStudioKind(kind)) {
+      const fact = passages[0].text.slice(0, 120);
+      const blocks = Array.from({ length: kind === 'quiz' ? 3 : 4 }, (_, i) => ({
+        text: fact,
+        evidence_ids: [passages[0].id],
+        ...(kind === 'flashcards' || kind === 'quiz'
+          ? { question: `Was steht in der Quelle? Frage ${i + 1}` }
+          : {}),
+        ...(kind === 'quiz'
+          ? {
+              options: [fact, 'Nicht im Dokument A', 'Nicht im Dokument B', 'Nicht im Dokument C'],
+              correct: 0,
+            }
+          : {}),
+        ...(kind === 'mindmap' ? { parent: i === 0 ? -1 : i === 3 ? 1 : 0 } : {}),
+        ...(kind === 'table' ? { cells: [`Eintrag ${i + 1}`, fact] } : {}),
+      }));
+      return {
+        output: {
+          outcome: 'answer',
+          blocks,
+          ...(kind === 'table' ? { columns: ['Eintrag', 'Information'] } : {}),
+        },
+        usage: 100,
+      };
+    }
     return {
       output: {
         outcome: insufficient ? 'insufficient' : 'answer',
@@ -145,7 +223,16 @@ export const callProvider: Provider = async (question, passages) => {
   let key: string;
   let body: object;
   const messages = [
-    { role: 'system', content: systemPrompt },
+    {
+      role: 'system',
+      content:
+        systemPrompt +
+        (isStudioKind(kind)
+          ? '\n' +
+            studioInstructions[kind] +
+            '\nFalls zu wenig belegt ist: outcome=insufficient und blocks=[], bei Tabellen außerdem columns=[].'
+          : ''),
+    },
     { role: 'user', content: promptFor(question, passages) },
   ];
   if (config.provider === 'cloudflare') {
@@ -166,7 +253,7 @@ export const callProvider: Provider = async (question, passages) => {
     body = {
       messages,
       max_tokens: config.outputTokens,
-      response_format: { type: 'json_schema', json_schema: outputSchema },
+      response_format: { type: 'json_schema', json_schema: schema },
     };
   } else {
     invariant(config.provider === 'groq', 'CONFIG', 'Unbekannter KI-Anbieter.', 503);
@@ -179,7 +266,7 @@ export const callProvider: Provider = async (question, passages) => {
       reasoning_effort: 'low',
       response_format: {
         type: 'json_schema',
-        json_schema: { name: 'grounded_answer', strict: true, schema: outputSchema },
+        json_schema: { name: 'grounded_' + kind, strict: true, schema },
       },
     };
   }
@@ -200,6 +287,38 @@ export const callProvider: Provider = async (question, passages) => {
       504,
     );
   }
+  type Completion = {
+    success?: boolean;
+    result?: { response?: unknown; usage?: Record<string, unknown> };
+    usage?: Record<string, unknown>;
+    choices?: { finish_reason?: string; message?: { content?: unknown } }[];
+  };
+  let value: Completion;
+  try {
+    const raw = await response.json();
+    value = raw && typeof raw === 'object' ? raw : {};
+  } catch {
+    value = {};
+  }
+  const count = (v: unknown): number | null =>
+    typeof v === 'number' && Number.isSafeInteger(v) && v >= 0 ? v : null;
+  const rawUsage = config.provider === 'cloudflare' ? value.result?.usage : value.usage;
+  const limits: Record<string, number | string> = {};
+  for (const name of ['limit-requests', 'limit-tokens', 'remaining-requests', 'remaining-tokens']) {
+    const raw = response.headers.get('x-ratelimit-' + name);
+    if (raw !== null && /^\d+$/.test(raw)) limits[name] = Number(raw);
+  }
+  for (const name of ['reset-requests', 'reset-tokens', 'retry-after']) {
+    const raw = response.headers.get(name === 'retry-after' ? name : 'x-ratelimit-' + name);
+    if (raw && /^[\d.hmsµu]+$/.test(raw) && raw.length < 64) limits[name] = raw;
+  }
+  await options?.onTelemetry?.({
+    inputTokens: count(rawUsage?.prompt_tokens),
+    outputTokens: count(rawUsage?.completion_tokens),
+    totalTokens: count(rawUsage?.total_tokens),
+    httpStatus: response.status,
+    limits,
+  });
   if (response.status === 429)
     throw new AppError(
       'PROVIDER_LIMIT',
@@ -212,7 +331,6 @@ export const callProvider: Provider = async (question, passages) => {
       'Der KI-Anbieter konnte die Anfrage nicht ausführen. Bitte Zugang und Modellkonfiguration prüfen.',
       502,
     );
-  const value = await response.json();
   let content: unknown;
   let usage: number | null = null;
   if (config.provider === 'cloudflare') {
@@ -223,7 +341,7 @@ export const callProvider: Provider = async (question, passages) => {
       502,
     );
     content = value.result?.response;
-    usage = value.result?.usage?.total_tokens ?? null;
+    usage = count(value.result?.usage?.total_tokens);
   } else {
     invariant(
       value.choices?.[0]?.finish_reason === 'stop',
@@ -232,7 +350,7 @@ export const callProvider: Provider = async (question, passages) => {
       502,
     );
     content = value.choices?.[0]?.message?.content;
-    usage = value.usage?.total_tokens ?? null;
+    usage = count(value.usage?.total_tokens);
   }
   if (typeof content === 'object' && content !== null) return { output: content, usage };
   try {

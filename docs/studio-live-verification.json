@@ -1,0 +1,34 @@
+{
+  "base": "http://localhost:3200",
+  "date": "2026-10-24T15:23:21.332Z",
+  "provider": "real Groq",
+  "features": [
+    {
+      "kind": "flashcards",
+      "blocks": 4,
+      "citations": 4
+    },
+    {
+      "kind": "quiz",
+      "blocks": 3,
+      "citations": 5
+    },
+    {
+      "kind": "mindmap",
+      "blocks": 7,
+      "citations": 9
+    },
+    {
+      "kind": "report",
+      "blocks": 4,
+      "citations": 7
+    },
+    {
+      "kind": "table",
+      "blocks": 6,
+      "citations": 6
+    }
+  ],
+  "measuredTokens": 33169,
+  "deletedNotebookUsageRetained": true
+}

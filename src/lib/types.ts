@@ -27,13 +27,28 @@ export type Citation = {
   block_no: number;
   ordinal: number;
 };
-export type Block = { text: string; evidence_ids: string[] };
-export type Generated = { outcome: 'answer' | 'insufficient'; blocks: Block[] };
+export type StudioKind = 'flashcards' | 'quiz' | 'mindmap' | 'report' | 'table';
+export type GenerationKind = 'answer' | 'summary' | StudioKind;
+export type Block = {
+  text: string;
+  evidence_ids: string[];
+  question?: string;
+  options?: string[];
+  correct?: number;
+  parent?: number;
+  cells?: string[];
+};
+export type Generated = {
+  outcome: 'answer' | 'insufficient';
+  blocks: Block[];
+  format?: StudioKind;
+  columns?: string[];
+};
 export type Entry = {
   id: string;
   notebook_id: string;
   operation_id: string | null;
-  kind: 'question' | 'answer' | 'summary' | 'note' | 'quiz';
+  kind: 'question' | 'note' | GenerationKind;
   title: string | null;
   body: Generated | null;
   unavailable_at: string | null;
@@ -56,4 +71,40 @@ export type Bootstrap = {
   notebooks: Notebook[];
   usage: number;
   requestLimit: number;
+};
+export type UsageData = {
+  scope: 'project' | 'workspace';
+  provider: string;
+  model: string;
+  connected: boolean;
+  testMode: boolean;
+  day: string;
+  refreshAt: string;
+  today: {
+    requests: number;
+    measured: number;
+    input: number;
+    output: number;
+    unknown: number;
+    failed: number;
+    lifetime: number;
+    since: string | null;
+  };
+  attempts: number;
+  requestLimit: number | null;
+  budget: { charged: number; limit: number } | null;
+  providerSnapshot: { at: string; limits: Record<string, number | string> } | null;
+  recent: { kind: string; state: string; total_tokens: number | null; created_at: string }[];
+  limits: {
+    notebooks: number;
+    sources: number;
+    fileMiB: number;
+    pdfPages: number;
+    textChars: number;
+    evidenceTokens: number;
+    outputTokens: number;
+    dailyRequests: number;
+    storageMiB: number;
+    retentionDays: number;
+  };
 };

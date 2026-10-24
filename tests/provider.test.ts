@@ -62,6 +62,35 @@ describe('free-provider boundary', () => {
       code: 'INVALID_RESPONSE',
     });
   });
+  it('reports tokens and correctly scoped rate headers before rejecting truncation', async () => {
+    process.env.GROQ_API_KEY = 'test-key';
+    const telemetry = vi.fn(async () => {});
+    vi.stubGlobal('fetch', async () =>
+      Response.json(
+        {
+          choices: [{ finish_reason: 'length' }],
+          usage: { prompt_tokens: 120, completion_tokens: 30, total_tokens: 150 },
+        },
+        {
+          headers: {
+            'x-ratelimit-limit-requests': '1000',
+            'x-ratelimit-limit-tokens': '8000',
+            'x-ratelimit-remaining-tokens': '7500',
+          },
+        },
+      ),
+    );
+    await expect(
+      callProvider('Budget?', passages, { onTelemetry: telemetry }),
+    ).rejects.toMatchObject({ code: 'INVALID_RESPONSE' });
+    expect(telemetry).toHaveBeenCalledWith({
+      inputTokens: 120,
+      outputTokens: 30,
+      totalTokens: 150,
+      httpStatus: 200,
+      limits: { 'limit-requests': 1000, 'limit-tokens': 8000, 'remaining-tokens': 7500 },
+    });
+  });
   it('uses the Cloudflare schema convention when explicitly configured', async () => {
     process.env.AI_PROVIDER = 'cloudflare';
     process.env.CLOUDFLARE_ACCOUNT_ID = 'a'.repeat(32);

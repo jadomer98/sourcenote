@@ -16,3 +16,11 @@ Updated 2026-10-24. This is an evidence-based status, not a completed-submission
 | German email reply | Two verified links filled | Loom placeholder remains; email not sent |
 
 Zero-spend constraint: no paid service, subscription, provider fallback or billing upgrade was used. The employer's entire submission is not complete until the GitHub, public deployment and recording links exist.
+
+## Studio extension rollout
+
+- Preserved `feat/forest-paper-colors` at `ea161a932eeeea70156b8d535f932476d614812c`; created and pushed `feat/studio-learning-usage` before editing.
+- Added source-cited flashcards, interactive scored quizzes, collapsible mindmaps with SVG, reports, data tables with CSV, and a separate private owner usage view.
+- Local type/lint, 31 backend/provider tests and 10 desktop/mobile browser tests passed. Real Groq and Neon test-branch walkthrough passed for all five formats and owner usage.
+- Production migration/deployment and public extension verification are the final rollout steps; the following publication entry will record their outcome.
+- Loom recording and email submission remain separate and unfinished.

@@ -14,10 +14,15 @@ Organize documents into notebooks, ask questions about selected sources, inspect
 - Upload text PDFs, UTF-8 text/Markdown files, or paste text. Preview extracted content, inspect reliable PDF pages, see useful failure states and retry processing.
 - Select the sources available for each new question. Full-context evidence is bounded; oversized selections receive an actionable error.
 - Generate source-grounded answers and inspect citations resolved from stored source text. Invalid citation IDs are rejected; insufficient evidence has an explicit outcome.
-- Generate an overview or three-question knowledge check, save an answer as a note, reopen Studio content and export Markdown with source references.
+- Create cited summaries, flip-through flashcards, scored multiple-choice quizzes, collapsible mind maps, reports and data tables. Retain Studio results, export Markdown, CSV or SVG, and save chat answers as notes. Learning progress persists in the same browser without repeat AI calls.
+- Inspect your real token usage and app limits. A separate owner code unlocks project-wide counters and timestamped Groq rate-limit snapshots; API keys never reach the browser. [Studio and usage guide](docs/studio-and-usage.md).
 - Persist across reloads, use desktop panels or narrow-screen tabs, and enforce server-side ownership, request/cost limits, idempotency and deletion rules.
 
 **Status (2026-10-24):** published on Vercel Hobby with Neon Free in Frankfurt and real Groq generation. The public deployment passed PDF extraction/download, answer/citation, saved-note, deletion and owner-isolation checks. The public UI also passed a real-provider summary, reload and mobile Studio check. The screenshot above comes from that live workflow. GitHub CI passes; Loom recording remains pending. [Results and limitations](docs/testing.md) · [delivery audit](docs/delivery-status.md).
+
+## Try the new Studio
+
+Choose **Beispiel erkunden**, then use **Lernkarten**, **Wissenscheck**, **Mindmap**, **Bericht** or **Datentabelle** in Studio. Results open automatically. For account visibility, choose **Nutzung & Limits**; the default view belongs only to your guest workspace. The optional owner code is different from your API key. Counters report measured tokens, unknown usage and conservative budget reservations separately; free-provider limits still apply.
 
 ## Run locally
 

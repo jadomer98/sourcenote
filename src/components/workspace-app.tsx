@@ -2,6 +2,10 @@
 
 import { useEffect, useId, useRef, useState, type ReactNode, type FormEvent } from 'react';
 import {
+  Activity,
+  Layers,
+  GitBranch,
+  Table2,
   ArrowDownToLine,
   ArrowLeft,
   ArrowRight,
@@ -33,10 +37,21 @@ import {
   X,
 } from 'lucide-react';
 import Markdown from 'react-markdown';
-import type { Bootstrap, Notebook, Source, Entry, Workspace, Citation } from '@/lib/types';
+import { StudioContent } from './studio-content';
+import { UsageDashboard } from './usage-dashboard';
+import { studioTools } from '@/lib/studio';
+import type {
+  Bootstrap,
+  Notebook,
+  Source,
+  Entry,
+  Workspace,
+  Citation,
+  GenerationKind,
+} from '@/lib/types';
 
 type DialogState = {
-  type: 'create' | 'rename' | 'delete' | 'add' | 'info' | 'viewer' | 'artifact';
+  type: 'create' | 'rename' | 'delete' | 'add' | 'info' | 'viewer' | 'artifact' | 'usage';
   source?: Source;
   entry?: Entry;
   title?: string;
@@ -273,7 +288,7 @@ export function WorkspaceApp() {
   useEffect(() => {
     if (
       workspace?.entries.some((e) => e.kind === 'answer' || e.kind === 'question') ||
-      (busy && ['answer', 'summary', 'quiz'].includes(busy))
+      (busy && ['answer', ...studioTools.map((t) => t.kind)].includes(busy))
     ) {
       const pane = chatEnd.current?.parentElement;
       pane?.scrollTo({ top: pane.scrollHeight, behavior: 'smooth' });
@@ -369,14 +384,14 @@ export function WorkspaceApp() {
       await refreshBootstrap();
     });
   }
-  async function ask(text = question, kind: 'answer' | 'summary' | 'quiz' = 'answer') {
+  async function ask(text = question, kind: GenerationKind = 'answer') {
     if (!workspace || !text.trim() || busy || remoteBusy) return;
     const id = workspace.notebook.id;
     setPendingQuestion(kind === 'answer' ? text : '');
     if (kind === 'answer') setQuestion('');
     await run(kind, async () => {
       try {
-        await api(`notebooks/${id}/generate`, {
+        const result = await api<{ id: string }>(`notebooks/${id}/generate`, {
           method: 'POST',
           body: JSON.stringify({
             sourceIds: selected,
@@ -387,11 +402,12 @@ export function WorkspaceApp() {
         });
         if (kind !== 'answer') {
           setTab('studio');
-          notify(
-            kind === 'summary'
-              ? 'Dein Quellenüberblick ist bereit.'
-              : 'Dein Wissenscheck ist bereit.',
+          notify((studioTools.find((t) => t.kind === kind)?.title || 'Inhalt') + ' ist bereit.');
+          const next = await refreshWorkspace();
+          const created = next?.entries.find(
+            (e) => e.operation_id === result.id && e.kind === kind,
           );
+          if (created) setDialog({ type: 'artifact', entry: created });
         }
       } finally {
         await refreshWorkspace();
@@ -432,6 +448,13 @@ export function WorkspaceApp() {
       (entry.body?.blocks
         .map(
           (block, i) =>
+            (block.question ? '### ' + block.question + '\n\n' : '') +
+            (block.options
+              ? block.options
+                  .map((o, j) => '- ' + o + (j === block.correct ? ' (richtig)' : ''))
+                  .join('\n') + '\n\n'
+              : '') +
+            (block.cells ? block.cells.join(' | ') + '\n' : '') +
             block.text +
             '\n' +
             entry.citations
@@ -448,6 +471,23 @@ export function WorkspaceApp() {
     URL.revokeObjectURL(url);
     notify('Als Markdown exportiert.');
   }
+  function renderCitations(entry: Entry, i: number) {
+    return entry.citations
+      .filter((c) => c.block_no === i)
+      .map((c, index) => (
+        <button
+          className="citation"
+          title={`Beleg aus ${c.title}`}
+          aria-label={`Beleg ${index + 1} aus ${c.title} öffnen`}
+          key={c.evidence_id}
+          onClick={() => void openCitation(entry, c)}
+        >
+          <FileText size={11} />
+          {index + 1}
+          {c.page_no ? ` · S. ${c.page_no}` : ''}
+        </button>
+      ));
+  }
   function renderEntry(entry: Entry) {
     if (!entry.body)
       return (
@@ -458,21 +498,7 @@ export function WorkspaceApp() {
     return entry.body.blocks.map((block, i) => (
       <div className="answer-block" key={i}>
         <SafeMarkdown text={block.text} />
-        {entry.citations
-          .filter((c) => c.block_no === i)
-          .map((c, index) => (
-            <button
-              className="citation"
-              title={`Beleg aus ${c.title}`}
-              aria-label={`Beleg ${index + 1} aus ${c.title} öffnen`}
-              key={c.evidence_id}
-              onClick={() => void openCitation(entry, c)}
-            >
-              <FileText size={11} />
-              {index + 1}
-              {c.page_no ? ` · S. ${c.page_no}` : ''}
-            </button>
-          ))}
+        {renderCitations(entry, i)}
       </div>
     ));
   }
@@ -483,8 +509,8 @@ export function WorkspaceApp() {
   const ready = workspace?.sources.filter((s) => s.status === 'ready') || [];
   const chat = workspace?.entries.filter((e) => e.kind === 'question' || e.kind === 'answer') || [];
   const artifacts =
-    workspace?.entries.filter((e) => ['summary', 'note', 'quiz'].includes(e.kind)) || [];
-  const isGeneration = !!busy && ['answer', 'summary', 'quiz'].includes(busy);
+    workspace?.entries.filter((e) => e.kind !== 'answer' && e.kind !== 'question') || [];
+  const isGeneration = !!busy && ['answer', ...studioTools.map((t) => t.kind)].includes(busy);
   return (
     <div className={`app-shell ${workspace ? 'in-notebook' : ''}`}>
       <a className="skip-link" href="#main">
@@ -525,6 +551,15 @@ export function WorkspaceApp() {
           )}
         </nav>
         <div className="rail-bottom">
+          <button
+            className="nav-item"
+            onClick={() => {
+              setRailOpen(false);
+              setDialog({ type: 'usage' });
+            }}
+          >
+            <Activity size={18} /> Nutzung & Limits
+          </button>
           <div className="private-badge">
             <ShieldCheck size={17} />
             <div>
@@ -573,6 +608,16 @@ export function WorkspaceApp() {
             )}
           </div>
           <div className="topbar-end">
+            <button
+              className="usage-shortcut"
+              aria-label="Nutzung und Limits öffnen"
+              onClick={() => setDialog({ type: 'usage' })}
+            >
+              <Activity size={16} />
+              <span>
+                {bootstrap?.usage || 0}/{bootstrap?.requestLimit || 30} heute
+              </span>
+            </button>
             <span className="topbar-private">
               <ShieldCheck size={14} />
               Privater Bereich
@@ -1133,52 +1178,48 @@ export function WorkspaceApp() {
                     <br />
                     <strong>etwas, das bleibt.</strong>
                   </p>
-                  <button
-                    className="studio-tool summary-tool"
-                    disabled={!selected.length || !!busy || remoteBusy || !bootstrap?.aiReady}
-                    onClick={() =>
-                      void ask(
-                        'Erstelle einen prägnanten, gut strukturierten Überblick über die ausgewählten Quellen mit Zielen, Kernaussagen und offenen Fragen.',
-                        'summary',
-                      )
-                    }
-                  >
-                    <span className="tool-icon">
-                      <FileText size={23} />
-                    </span>
-                    <div>
-                      <strong>Quellenüberblick</strong>
-                      <span>Das Wesentliche auf einen Blick</span>
-                    </div>
-                    {busy === 'summary' ? (
-                      <LoaderCircle size={16} className="spin" />
-                    ) : (
-                      <Plus size={17} />
-                    )}
-                  </button>
-                  <button
-                    className="studio-tool quiz-tool"
-                    disabled={!selected.length || !!busy || remoteBusy || !bootstrap?.aiReady}
-                    onClick={() =>
-                      void ask(
-                        'Erstelle einen Wissenscheck: drei Fragen mit kurzen Antworten auf Basis der Quellen. Belege jede Antwort.',
-                        'quiz',
-                      )
-                    }
-                  >
-                    <span className="tool-icon">
-                      <Lightbulb size={23} />
-                    </span>
-                    <div>
-                      <strong>Wissenscheck</strong>
-                      <span>Verstehen, was du gelesen hast</span>
-                    </div>
-                    {busy === 'quiz' ? (
-                      <LoaderCircle size={16} className="spin" />
-                    ) : (
-                      <Plus size={17} />
-                    )}
-                  </button>
+                  <div className="studio-tools-grid">
+                    {studioTools.map((tool) => {
+                      const Icon = {
+                        summary: FileText,
+                        flashcards: Layers,
+                        quiz: Lightbulb,
+                        mindmap: GitBranch,
+                        report: NotebookPen,
+                        table: Table2,
+                      }[tool.kind];
+                      return (
+                        <button
+                          key={tool.kind}
+                          className={`studio-tool ${tool.kind}-tool`}
+                          disabled={!selected.length || !!busy || remoteBusy || !bootstrap?.aiReady}
+                          onClick={() =>
+                            void ask(
+                              tool.title + ' aus den ausgewählten Quellen erstellen.',
+                              tool.kind,
+                            )
+                          }
+                        >
+                          <span className="tool-icon">
+                            <Icon size={22} />
+                          </span>
+                          <div>
+                            <strong>{tool.title}</strong>
+                            <span>{tool.description}</span>
+                          </div>
+                          {busy === tool.kind ? (
+                            <LoaderCircle size={16} className="spin" />
+                          ) : (
+                            <Plus size={16} />
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <p className="studio-footnote studio-generation-hint">
+                    Einmal erstellen. Immer wieder nutzen. Jede Erstellung zählt als eine
+                    KI-Anfrage.
+                  </p>
                   <div className="studio-divider">
                     <span>GESPEICHERTE INHALTE</span>
                     <span>{artifacts.length}</span>
@@ -1194,6 +1235,14 @@ export function WorkspaceApp() {
                           <StickyNote size={18} />
                         ) : entry.kind === 'quiz' ? (
                           <Lightbulb size={18} />
+                        ) : entry.kind === 'flashcards' ? (
+                          <Layers size={18} />
+                        ) : entry.kind === 'mindmap' ? (
+                          <GitBranch size={18} />
+                        ) : entry.kind === 'table' ? (
+                          <Table2 size={18} />
+                        ) : entry.kind === 'report' ? (
+                          <NotebookPen size={18} />
                         ) : (
                           <FileText size={18} />
                         )}
@@ -1273,14 +1322,16 @@ export function WorkspaceApp() {
                   ? 'Notebook löschen?'
                   : dialog.type === 'add'
                     ? 'Wissen beginnt mit einer Quelle'
-                    : dialog.type === 'info'
-                      ? 'Über SourceNote'
-                      : dialog.type === 'artifact'
-                        ? dialog.entry?.title || 'Gespeicherter Inhalt'
-                        : dialog.title || 'Quelle'
+                    : dialog.type === 'usage'
+                      ? 'Nutzung & Limits'
+                      : dialog.type === 'info'
+                        ? 'Über SourceNote'
+                        : dialog.type === 'artifact'
+                          ? dialog.entry?.title || 'Gespeicherter Inhalt'
+                          : dialog.title || 'Quelle'
           }
           onClose={() => setDialog(null)}
-          wide={dialog.type === 'viewer' || dialog.type === 'artifact'}
+          wide={dialog.type === 'viewer' || dialog.type === 'artifact' || dialog.type === 'usage'}
         >
           {(dialog.type === 'create' || dialog.type === 'rename') && (
             <form
@@ -1548,9 +1599,24 @@ export function WorkspaceApp() {
                   </button>
                 </div>
               </div>
-              {renderEntry(dialog.entry)}
+              {dialog.entry.body?.format ? (
+                <StudioContent
+                  key={dialog.entry.id}
+                  entry={dialog.entry}
+                  renderBlock={(i) => (
+                    <div className="answer-block">
+                      <SafeMarkdown text={dialog.entry!.body!.blocks[i].text} />
+                      {renderCitations(dialog.entry!, i)}
+                    </div>
+                  )}
+                  citations={(i) => renderCitations(dialog.entry!, i)}
+                />
+              ) : (
+                renderEntry(dialog.entry)
+              )}
             </div>
           )}
+          {dialog.type === 'usage' && <UsageDashboard csrf={bootstrap?.csrf || ''} />}
           {dialog.type === 'info' && (
             <div className="modal-body info-content">
               <div className="info-brand">

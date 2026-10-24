@@ -69,3 +69,9 @@ Provider credentials are server environment variables only. Error responses and 
 | Employer delivery | README, deployment/demo/submission docs | all four | Repository/live app published and real AI tested; Loom recording remains pending |
 
 See [tests](testing.md), [deployment](deployment.md), [diagram manifest](architecture/README.md) and [delivery audit](delivery-status.md).
+
+## Studio and usage extension (2026-10-24)
+
+Migration 002 extends operation/entry kinds for flashcards, mindmaps, reports and tables; quizzes now support structured choices and scoring. Strict provider schemas are checked again server-side, including citations, rectangular table rows and acyclic bounded map hierarchies. All artifacts share source-change and deletion invalidation. Browser study progress is separate from stored source content.
+
+The `ai_usage` ledger has no operation/notebook foreign key, so deleting those records cannot erase token history. Its owner reference becomes null on guest expiry. Actual usage is recorded before answer validation; unknown usage retains conservative reservations. Owner-only account snapshots require a separate secret in addition to session/CSRF checks. See [complete design and limitations](studio-and-usage.md). The original draw.io batch depicts the original core pipeline; this extension is documented here and does not claim regenerated diagrams.

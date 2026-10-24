@@ -26,3 +26,12 @@ Start with `GET /api/bootstrap`: returns `{csrf,expiresAt,aiReady,provider,model
 No unchecked model tokens are streamed. Generation waits for schema/reference/quote validation and durable commit. To recover after reload, GET the workspace and poll while an operation is running. A failed request keeps its safe error; an explicit new attempt uses a new UUID key. Reusing a key with different input returns 409.
 
 Errors are `{error: safeGermanMessage, code: stableCode}`: 400 invalid input/unsupported file; 401 missing/expired session; 403 Origin/CSRF; 404 missing or unauthorized resource; 409 selection/idempotency/state conflict; 413 upload/context too large; 429 application/provider quota; 502 invalid/provider output; 503 missing provider/configuration; 504 provider timeout/network; 500 unexpected internal error with no stack or private text returned. Clients should show the message and allow the documented recovery; they must not silently retry uncertain generation.
+
+## Studio and usage extension
+
+`POST /api/notebooks/:id/generate` also accepts `kind=flashcards|mindmap|report|table`; `quiz` now creates structured multiple-choice questions. Bodies retain blocks and add validated format-specific metadata. Existing text-only artifacts remain readable. Entry deletion accepts the new Studio kinds.
+
+- `GET /api/usage`: guest-scoped measured usage, request counters, limits and recent metadata. No account-wide snapshot.
+- `POST /api/usage/owner`: project-wide aggregates and latest provider-header snapshot. Requires `x-usage-token` matching the separate `USAGE_ADMIN_TOKEN`, plus existing Origin/CSRF protection. Missing or invalid owner code returns 403. Responses are `no-store`. No prompt text, document content or credential is returned.
+
+See [data semantics and owner access](studio-and-usage.md).

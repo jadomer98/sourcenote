@@ -1,6 +1,6 @@
 import nextEnv from '@next/env';
 import { Client } from 'pg';
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 nextEnv.loadEnvConfig(process.cwd());
 async function main() {
   if (process.env.DATABASE_URL) {
@@ -12,7 +12,8 @@ async function main() {
       await client.connect();
       await client.query('BEGIN');
       await client.query('SELECT pg_advisory_xact_lock(73826501)');
-      await client.query(await readFile('migrations/001_initial.sql', 'utf8'));
+      for (const file of (await readdir('migrations')).filter((f) => /^\d+.*\.sql$/.test(f)).sort())
+        await client.query(await readFile('migrations/' + file, 'utf8'));
       await client.query('COMMIT');
       const { rows } = await client.query('SELECT version FROM schema_version ORDER BY version');
       console.log(
