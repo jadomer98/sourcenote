@@ -12,7 +12,7 @@ Latest execution: **2026-10-24**, Windows, Node 24.19.0; GitHub CI on Ubuntu/Nod
 | `npm.cmd run start` then `npm.cmd run smoke -- --ai --pdf` | Standalone production HTTP workflow passed against actual Neon/Groq |
 | Public `SMOKE_URL=https://sourcenote-mu.vercel.app`, `npm.cmd run smoke -- --ai --pdf` | All PDF, real AI/citation, note, deletion and access-isolation checks passed on Vercel |
 | Real-provider public browser check | Desktop demo, real answer/citation, note, summary, reload and mobile Studio passed; `live-*.png` screenshots inspected |
-| GitHub Actions | Linux check/build and all 10 browser tests passed; [verified Studio main run](https://github.com/jadomer98/sourcenote/actions/runs/40107234663) |
+| GitHub Actions | Linux check/build and all 18 browser tests passed; [verified dark-workspace main run](https://github.com/jadomer98/sourcenote/actions/runs/40113067620) |
 | `npm.cmd audit --omit=dev --audit-level=high` | 0 reported production dependency vulnerabilities |
 | `python scripts/validate_architecture.py` (2026-10-23) | Four native pages and equivalent standalone XML passed structural checks |
 
@@ -99,3 +99,7 @@ The public deployment also passed resizing (pointer and keyboard), visibility/re
 The new `feat/dark-notebook-workspace` branch preserves `feat/flexible-panels-colors` at `45c67c9`. A compact header, initially collapsed navigation, black chat canvas, charcoal panels and pinned Studio tools replace the preceding layout. Panel controls and persisted data remain available. [Design and rollback details](design/dark-workspace.md).
 
 Local type generation, TypeScript, ESLint and all 35 service/provider/layout tests pass. The optimized production build passes. All 18 desktop/mobile browser cases pass; two duplicate desktop-only checks are skipped in the mobile project. New checks measure usable space at 1280×720, composer size and multiline growth, answer readability, pinned tools after four generated artifacts, mobile rename and page fitting. Existing source/citation, learning tools, usage, resizing, hiding, focus and persistence checks still pass. The `dark-workspace-laptop.png` and `dark-workspace-mobile.png` captures use the explicitly labeled deterministic test provider.
+
+The public deployment passed a real Groq answer with stored citations, dark source preview, saved note, reload persistence, usage view, navigation expand/collapse, pane focus/restore, close/reopen, phone tabs and rename. At 1280×720, measured panel height is 638 px, reading area height 494 px, and the initial composer height 64 px. Checked widths 801, 900, 1024, 1280, 1600 and 1920 fit without page overflow. There were no browser page errors. Only the synthetic QA notebook was deleted. [Live verification record](design/dark-live-verification.json); screenshots `dark-*-live.png` show the actual public deployment with test mode disabled. No dependency, schema, provider or paid service changed.
+
+Both [main CI](https://github.com/jadomer98/sourcenote/actions/runs/40113067620) and [feature CI](https://github.com/jadomer98/sourcenote/actions/runs/40113065328) passed checks, build and the full browser suite on Linux for implementation `b2cd012`.

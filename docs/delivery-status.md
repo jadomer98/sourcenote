@@ -34,3 +34,13 @@ Preserved `feat/studio-learning-usage` at `d76f7e0860007403d1b7c59509e4b1fe535ee
 Local verification: 35 service/provider/layout tests, 16 browser tests (two desktop-only project instances skipped on mobile), targeted palette contrast checks and breakpoint fitting. Production build passed. Both [main CI](https://github.com/jadomer98/sourcenote/actions/runs/40110668820) and [feature CI](https://github.com/jadomer98/sourcenote/actions/runs/40110667187) passed. Implementation commit `859b349` deployed as `dpl_CRMhK5te67PtsVQbwGn8A6PL54Nr` (READY).
 
 Public verification passed navigation and panel resizing, focus/restore, full-close recovery, draft preservation, reload persistence, mobile tabs/drawer and usage access. There were no page errors, page-level overflow or AI requests. Only synthetic QA notebooks were removed; the user's notebooks were untouched. See the [verification record](design/flexible-live-verification.json) and `flexible-*-live.png` screenshots. No backend schema, provider, credentials or paid services changed. The original branch still points to `d76f7e0` on GitHub.
+
+## Dark workspace iteration
+
+Preserved `feat/flexible-panels-colors` at `45c67c9aa552763a1731e23d5f8c9360e9118156`. Created and pushed `feat/dark-notebook-workspace` before implementation. A black canvas, charcoal panels, compact single header, initially closed navigation, smaller growing composer and pinned Studio tool tiles follow the supplied reference while retaining panel resizing, visibility and focus controls. Display preferences use a new browser key; the preceding release's preferences and stored notebooks are preserved.
+
+Local checks passed: type generation, TypeScript, ESLint, 35 service/provider/layout tests, 18 desktop/mobile browser tests (two redundant desktop-only project instances skipped), and production compilation. Implementation `b2cd012` deployed through Git to Vercel production as `dpl_9WfRYMSVyUommTiDzczrBwqGMVgh` (READY).
+
+Both [main CI](https://github.com/jadomer98/sourcenote/actions/runs/40113067620) and [feature CI](https://github.com/jadomer98/sourcenote/actions/runs/40113065328) passed the same checks, build and full browser suite on Linux.
+
+The public browser walkthrough passed real Groq answer/citation, dark preview, note persistence, usage counters, navigation, pane focus/restore and close/reopen, breakpoint fitting, phone tabs and rename. A 1280×720 viewport provides 638-pixel panels, a 494-pixel reading area and 64-pixel composer. Screenshots were inspected. See the [verification record](design/dark-live-verification.json) and `dark-*-live.png` images. Vercel reconfirmed `hobby`; no dependency, schema or paid service changed. Only the synthetic QA notebook was removed.

@@ -4,7 +4,7 @@
 
 [Open the live demo](https://sourcenote-mu.vercel.app) · [GitHub repository](https://github.com/jadomer98/sourcenote)
 
-![SourceNote live resizable research workspace with five accent colors](docs/screenshots/flexible-workspace-live.png)
+![SourceNote live dark research workspace with compact panels and colored Studio tools](docs/screenshots/dark-workspace-live.png)
 
 Organize documents into notebooks, ask questions about selected sources, inspect supporting excerpts, and turn useful answers into persistent research outputs.
 
@@ -19,7 +19,7 @@ Organize documents into notebooks, ask questions about selected sources, inspect
 - Read in a dark workspace with a compact header, collapsible navigation, a growing question composer and pinned Studio tools. Resize panel dividers, hide/reopen Sources, Chat or Studio, focus one panel, and retain the layout in your browser. Colored tool icons distinguish formats. [Dark workspace and controls](docs/design/dark-workspace.md).
 - Persist across reloads, use desktop panels or narrow-screen tabs, and enforce server-side ownership, request/cost limits, idempotency and deletion rules.
 
-**Status (2026-10-24):** published on Vercel Hobby with Neon Free in Frankfurt and real Groq generation. The public deployment passed PDF extraction/download, answer/citation, saved-note, deletion and owner-isolation checks. All five new Studio formats also passed a public real-Groq browser walkthrough. The flexible layout passed public resizing, focus, close/reopen, persistence, draft-retention and mobile checks without AI requests. The screenshot above comes from the live deployment. GitHub CI passes; Loom recording remains pending. [Results and limitations](docs/testing.md) · [delivery audit](docs/delivery-status.md).
+**Status (2026-10-24):** published on Vercel Hobby with Neon Free in Frankfurt and real Groq generation. The public deployment passed PDF extraction/download, answer/citation, saved-note, deletion and owner-isolation checks. All five new Studio formats also passed a public real-Groq browser walkthrough. The latest dark workspace passed public laptop geometry, real answer/citation, note persistence, usage, panel controls and mobile checks. The screenshot above comes from the live deployment. Loom recording remains pending. [Results and limitations](docs/testing.md) · [delivery audit](docs/delivery-status.md).
 
 ## Try the new Studio
 

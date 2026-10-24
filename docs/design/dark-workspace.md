@@ -21,6 +21,8 @@ Tests exercise actual viewport use at 1280×720, compact/multiline composer boun
 
 The live verification record and screenshots are captured separately from deterministic test-provider screenshots. No quota or ingestion protections were disabled to accommodate testing.
 
+The [public verification](dark-live-verification.json) passed with real Groq and Neon. At 1280×720 the panel height is 638 pixels, reading area height 494 pixels and initial composer height 64 pixels. The source preview, saved note, usage, panel controls, reload and phone navigation were also exercised. The `dark-*-live.png` images come from this production run.
+
 ## Rollback
 
 Starting branch `feat/flexible-panels-colors` remains at `45c67c9aa552763a1731e23d5f8c9360e9118156`. The new branch `feat/dark-notebook-workspace` was created and pushed before implementation. The preceding light design and its browser layout key remain available from the preserved release. No history was rewritten.

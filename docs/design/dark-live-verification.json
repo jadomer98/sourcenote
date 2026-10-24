@@ -1,0 +1,17 @@
+{
+  "base": "https://sourcenote-mu.vercel.app",
+  "date": "2026-10-24T16:48:10.317Z",
+  "realGeneration": true,
+  "checks": [
+    "black theme, full-width default, laptop working height and compact composer",
+    "real Groq answer, stored citation, dark preview and note",
+    "navigation expand/collapse, pane focus/restore and close/reopen",
+    "dark usage, reload persistence, breakpoint fitting, phone tabs and rename"
+  ],
+  "dimensions": {
+    "viewport": "1280x720",
+    "panelHeight": 638,
+    "composerHeight": 64,
+    "readingHeight": 494
+  }
+}
