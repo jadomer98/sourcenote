@@ -26,3 +26,9 @@ Zero-spend constraint: no paid service, subscription, provider fallback or billi
 - Public real-provider verification passed for all five formats, their interactive controls, saved citations, CSV/SVG exports, owner-only usage and mobile layout. Deleting the synthetic notebook retained measured token history. See [machine-readable record](studio-live-verification.json) and `studio-*.png` screenshots. No provider or owner credentials appear in these artifacts.
 - Vercel API reconfirmed team `jad-9443` is on `hobby`. No paid resource or fallback was added. Owner access is a server-only Vercel secret; the local copy is in ignored `.data/owner-access.txt`, outside Git.
 - Loom recording and email submission remain separate and unfinished.
+
+## Flexible layout iteration
+
+Preserved `feat/studio-learning-usage` at `d76f7e0860007403d1b7c59509e4b1fe535ee992`. Created and pushed `feat/flexible-panels-colors` before editing. Added a five-accent palette, resizable/collapsible navigation, independent Sources/Chat/Studio resizing and visibility, focus/restore, all-closed recovery and browser-local layout persistence. Mobile tabs and the navigation drawer retain their separate layout.
+
+Local verification: 35 service/provider/layout tests, 16 browser tests (two desktop-only project instances skipped on mobile), targeted palette contrast checks and breakpoint fitting. Production publication and final public layout verification follow the normal Git/Vercel workflow. No backend schema, provider, credentials or paid services changed.

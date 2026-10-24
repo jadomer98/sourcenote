@@ -4,8 +4,8 @@ Latest execution: **2026-10-24**, Windows, Node 24.19.0; GitHub CI on Ubuntu/Nod
 
 | Command | Result |
 | --- | --- |
-| `npm.cmd run check` | Type generation, TypeScript, ESLint and all 31 backend/provider tests passed |
-| `npm.cmd run test:e2e` | All 10 desktop/mobile Chromium tests passed with the clearly labeled deterministic test provider |
+| `npm.cmd run check` | Type generation, TypeScript, ESLint and all 35 service/provider/layout tests passed |
+| `npm.cmd run test:e2e` | 16 desktop/mobile Chromium tests passed; two redundant desktop-only checks skipped on mobile; clearly labeled deterministic test provider |
 | `npm.cmd run build` | Optimized Next.js compilation and all static/API routes passed |
 | `neon.cmd deploy` | Existing production policy matched; Postgres-only use; 3 Neon variables pulled into ignored `.env.local` |
 | `npm.cmd run db:migrate` | Neon direct-connection migrations passed; schema versions 1 and 2 |
@@ -85,3 +85,9 @@ All five formats were generated with actual Groq through an isolated Neon branch
 The first Neon test-branch request attempted a custom suspend timeout unsupported on Free; retrying with default suspend settings succeeded without an upgrade. Migration 002 applied on the isolated branch and the temporary branch was deleted afterwards. No production credentials were overwritten for test isolation.
 
 The separate `studio-live-verification.json` records the latest real-provider run and its target. Screenshots `studio-*.png` use real generation; the original `home-*`/`workspace-*` screenshots remain clearly marked deterministic test-provider captures. Owner screenshots contain counters only, never the owner code or API key. The existing original-PDF production smoke remains relevant; publication checks for the extension are recorded in the delivery audit.
+
+## Flexible workspace verification (2026-10-24)
+
+The layout iteration adds four preference/size-bound tests and browser coverage for pointer resizing, keyboard resizing, sidebar collapse and usable icon navigation, reload persistence, focus/restore, closing all three panes, reopening panes without losing an in-progress draft, and the mobile navigation drawer. The viewport matrix covers 801, 900, 1024, 1280, 1600 and 1920 pixels with no page-level horizontal overflow. Tool-label contrast is checked at 4.5:1 or greater across five distinct accent families. This is a targeted color check, not a formal accessibility audit.
+
+All 16 browser cases passed locally; the two skipped project instances duplicate desktop color/matrix checks on mobile, whose interactions have separate coverage. Existing source-to-citation and Studio/usage journeys still pass. No AI tokens are consumed by these deterministic tests or the display controls. [Design and keyboard details](design/flexible-workspace.md).

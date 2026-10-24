@@ -1,6 +1,14 @@
 'use client';
 
-import { useEffect, useId, useRef, useState, type ReactNode, type FormEvent } from 'react';
+import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+  type FormEvent,
+} from 'react';
 import {
   Activity,
   Layers,
@@ -25,6 +33,7 @@ import {
   MessageCircle,
   NotebookPen,
   PanelLeftClose,
+  PanelLeftOpen,
   Pencil,
   Plus,
   Search,
@@ -39,6 +48,13 @@ import {
 import Markdown from 'react-markdown';
 import { StudioContent } from './studio-content';
 import { UsageDashboard } from './usage-dashboard';
+import {
+  PanelActions,
+  SidebarResizeHandle,
+  WorkspacePanels,
+  updateLayout,
+  useLayoutPreferences,
+} from './workspace-layout';
 import { studioTools } from '@/lib/studio';
 import type {
   Bootstrap,
@@ -143,6 +159,7 @@ function date(value: string) {
 }
 
 export function WorkspaceApp() {
+  const layout = useLayoutPreferences();
   const [bootstrap, setBootstrap] = useState<Bootstrap | null>(null);
   const [workspace, setWorkspace] = useState<Workspace | null>(null);
   const [loading, setLoading] = useState(true);
@@ -512,23 +529,53 @@ export function WorkspaceApp() {
     workspace?.entries.filter((e) => e.kind !== 'answer' && e.kind !== 'question') || [];
   const isGeneration = !!busy && ['answer', ...studioTools.map((t) => t.kind)].includes(busy);
   return (
-    <div className={`app-shell ${workspace ? 'in-notebook' : ''}`}>
+    <div
+      className={`app-shell ${workspace ? 'in-notebook' : ''} ${layout.sidebarCollapsed ? 'nav-compact' : ''}`}
+      style={{ '--navigation-width': `${layout.sidebarWidth}px` } as CSSProperties}
+    >
       <a className="skip-link" href="#main">
         Zum Inhalt springen
       </a>
-      <aside className={`nav-rail ${railOpen ? 'open' : ''}`} aria-label="Hauptnavigation">
-        <button className="brand" onClick={() => goHome()} aria-label="SourceNote Startseite">
-          <Logo />
-          <span>
-            Source<span className="brand-light">Note</span>
-          </span>
-        </button>
-        <button className={`nav-item ${!workspace ? 'active' : ''}`} onClick={() => goHome()}>
+      <aside
+        id="main-navigation"
+        className={`nav-rail ${railOpen ? 'open' : ''}`}
+        aria-label="Hauptnavigation"
+      >
+        <div className="sidebar-heading">
+          <button className="brand" onClick={() => goHome()} aria-label="SourceNote Startseite">
+            <Logo />
+            <span>
+              Source<span className="brand-light">Note</span>
+            </span>
+          </button>
+          <button
+            className="icon-button sidebar-minimize"
+            aria-label="Seitenleiste minimieren"
+            title="Seitenleiste minimieren"
+            onClick={() => updateLayout((s) => ({ ...s, sidebarCollapsed: true }))}
+          >
+            <PanelLeftClose size={18} />
+          </button>
+          <button
+            className="icon-button sidebar-mobile-close"
+            aria-label="Navigationsmenü schließen"
+            onClick={() => setRailOpen(false)}
+          >
+            <X size={18} />
+          </button>
+        </div>
+        <button
+          className={`nav-item ${!workspace ? 'active' : ''}`}
+          aria-label="Meine Notebooks"
+          title="Meine Notebooks"
+          onClick={() => goHome()}
+        >
           <Home size={18} />
-          Meine Notebooks<span>{bootstrap?.notebooks.length || 0}</span>
+          <span className="nav-label">Meine Notebooks</span>
+          <span className="nav-count">{bootstrap?.notebooks.length || 0}</span>
         </button>
         <div className="rail-section-label">
-          DEIN ARBEITSBEREICH
+          <span className="section-label-text">DEIN ARBEITSBEREICH</span>
           <button onClick={showCreate} className="icon-button" aria-label="Notebook erstellen">
             <Plus size={16} />
           </button>
@@ -538,12 +585,14 @@ export function WorkspaceApp() {
             <button
               key={n.id}
               className={`nav-notebook ${workspace?.notebook.id === n.id ? 'selected' : ''}`}
+              aria-label={n.title}
+              title={n.title}
               onClick={() => void openNotebook(n.id)}
             >
               <span className={`mini-book ${n.color}`}>
                 <BookIcon name={n.emoji} size={15} />
               </span>
-              <span>{n.title}</span>
+              <span className="notebook-nav-title">{n.title}</span>
             </button>
           ))}
           {bootstrap?.notebooks.length === 0 && (
@@ -553,12 +602,15 @@ export function WorkspaceApp() {
         <div className="rail-bottom">
           <button
             className="nav-item"
+            aria-label="Nutzung & Limits"
+            title="Nutzung & Limits"
             onClick={() => {
               setRailOpen(false);
               setDialog({ type: 'usage' });
             }}
           >
-            <Activity size={18} /> Nutzung & Limits
+            <Activity size={18} />
+            <span className="nav-label">Nutzung & Limits</span>
           </button>
           <div className="private-badge">
             <ShieldCheck size={17} />
@@ -567,10 +619,18 @@ export function WorkspaceApp() {
               <span>Isoliert. Für 7 Tage gespeichert.</span>
             </div>
           </div>
-          <button className="nav-item" onClick={() => setDialog({ type: 'info' })}>
+          <button
+            className="nav-item"
+            aria-label="Über SourceNote"
+            title="Über SourceNote"
+            onClick={() => {
+              setRailOpen(false);
+              setDialog({ type: 'info' });
+            }}
+          >
             <CircleHelp size={18} />
-            Über SourceNote
-            <ArrowUp size={14} className="rotate" />
+            <span className="nav-label">Über SourceNote</span>
+            <ArrowUp size={14} className="rotate nav-external" />
           </button>
           <div className="profile">
             <span className="avatar">G</span>
@@ -581,6 +641,7 @@ export function WorkspaceApp() {
             <span className="online-dot" />
           </div>
         </div>
+        <SidebarResizeHandle />
       </aside>
       {railOpen && (
         <button
@@ -593,7 +654,21 @@ export function WorkspaceApp() {
         <header className="topbar">
           <div className="breadcrumb">
             <button
+              className="icon-button desktop-nav-toggle"
+              aria-controls="main-navigation"
+              aria-label={
+                layout.sidebarCollapsed ? 'Navigation ausklappen' : 'Navigation einklappen'
+              }
+              title={layout.sidebarCollapsed ? 'Navigation ausklappen' : 'Navigation einklappen'}
+              aria-expanded={!layout.sidebarCollapsed}
+              onClick={() => updateLayout((s) => ({ ...s, sidebarCollapsed: !s.sidebarCollapsed }))}
+            >
+              {layout.sidebarCollapsed ? <PanelLeftOpen size={20} /> : <PanelLeftClose size={20} />}
+            </button>
+            <button
               className="icon-button mobile-menu"
+              aria-controls="main-navigation"
+              aria-expanded={railOpen}
               onClick={() => setRailOpen((v) => !v)}
               aria-label="Navigation öffnen"
             >
@@ -845,21 +920,7 @@ export function WorkspaceApp() {
                 </button>
               </div>
             </div>
-            <div className="mobile-tabs" role="tablist" aria-label="Notebook-Bereiche">
-              {(['sources', 'chat', 'studio'] as const).map((t) => (
-                <button role="tab" aria-selected={tab === t} key={t} onClick={() => setTab(t)}>
-                  {t === 'sources' ? (
-                    <FileText size={16} />
-                  ) : t === 'chat' ? (
-                    <MessageCircle size={16} />
-                  ) : (
-                    <Sparkles size={16} />
-                  )}{' '}
-                  {t === 'sources' ? 'Quellen' : t === 'chat' ? 'Chat' : 'Studio'}
-                </button>
-              ))}
-            </div>
-            <div className="workspace-grid">
+            <WorkspacePanels activeTab={tab} onActiveTabChange={setTab}>
               <section
                 className={`sources-panel panel ${tab === 'sources' ? 'mobile-active' : ''}`}
                 aria-label="Quellen"
@@ -869,9 +930,16 @@ export function WorkspaceApp() {
                     <FileText size={17} />
                     Quellen <span className="count">{workspace.sources.length}</span>
                   </h2>
-                  <button className="icon-button" onClick={showAdd} aria-label="Quelle hinzufügen">
-                    <Plus size={18} />
-                  </button>
+                  <div className="panel-heading-right">
+                    <button
+                      className="icon-button panel-extra"
+                      onClick={showAdd}
+                      aria-label="Quelle hinzufügen"
+                    >
+                      <Plus size={18} />
+                    </button>
+                    <PanelActions panel="sources" />
+                  </div>
                 </div>
                 <button className="add-source" onClick={showAdd} disabled={!!busy}>
                   <Plus size={17} />
@@ -996,10 +1064,13 @@ export function WorkspaceApp() {
                     <MessageCircle size={18} />
                     Chat
                   </h2>
-                  <span className="grounded-label">
-                    <span />
-                    Quellenbasiert
-                  </span>
+                  <div className="panel-heading-right">
+                    <span className="grounded-label panel-extra">
+                      <span />
+                      Quellenbasiert
+                    </span>
+                    <PanelActions panel="chat" />
+                  </div>
                 </div>
                 <div className="chat-scroll" role="log" aria-label="Gespräch" aria-live="polite">
                   {!chat.length && !pendingQuestion && (
@@ -1170,7 +1241,10 @@ export function WorkspaceApp() {
                     <Sparkles size={18} />
                     Studio
                   </h2>
-                  <span className="count">{artifacts.length}</span>
+                  <div className="panel-heading-right">
+                    <span className="count panel-extra">{artifacts.length}</span>
+                    <PanelActions panel="studio" />
+                  </div>
                 </div>
                 <div className="studio-scroll">
                   <p className="studio-intro">
@@ -1286,7 +1360,7 @@ export function WorkspaceApp() {
                   Aus deinen Quellen. Für deine Ideen.
                 </div>
               </section>
-            </div>
+            </WorkspacePanels>
           </main>
         )}
       </div>
