@@ -2,7 +2,9 @@
 
 **Deine Quellen. Klare Antworten.** A German research workspace inspired by NotebookLM, built for Ayham's Everlast Consulting recruitment assignment. Independent project; not affiliated with Google.
 
-![SourceNote desktop research workspace](docs/screenshots/workspace-desktop.png)
+[Open the live demo](https://sourcenote-mu.vercel.app) · [GitHub repository](https://github.com/jadomer98/sourcenote)
+
+![SourceNote live desktop research workspace](docs/screenshots/live-workspace-desktop.png)
 
 Organize documents into notebooks, ask questions about selected sources, inspect supporting excerpts, and turn useful answers into persistent research outputs.
 
@@ -15,11 +17,11 @@ Organize documents into notebooks, ask questions about selected sources, inspect
 - Generate an overview or three-question knowledge check, save an answer as a note, reopen Studio content and export Markdown with source references.
 - Persist across reloads, use desktop panels or narrow-screen tabs, and enforce server-side ownership, request/cost limits, idempotency and deletion rules.
 
-**Status (2026-10-24):** [GitHub repository](https://github.com/jadomer98/sourcenote) published. Neon Free is connected in Frankfurt and real Groq generation works. The local production server passed a source-to-citation smoke test using the hosted database, including binary PDF extraction, original download, saved notes and deletion redaction. Vercel deployment and Loom recording are pending. Browser screenshots use a clearly marked deterministic test provider. [Results and limitations](docs/testing.md) · [delivery audit](docs/delivery-status.md).
+**Status (2026-10-24):** published on Vercel Hobby with Neon Free in Frankfurt and real Groq generation. The public deployment passed PDF extraction/download, answer/citation, saved-note, deletion and owner-isolation checks. The public UI also passed a real-provider summary, reload and mobile Studio check. The screenshot above comes from that live workflow. GitHub CI passes; Loom recording remains pending. [Results and limitations](docs/testing.md) · [delivery audit](docs/delivery-status.md).
 
 ## Run locally
 
-Requires **Node.js 24+**. No database installation is necessary: PGlite provides durable local PostgreSQL. With `DATABASE_URL`, the same schema uses a PostgreSQL server through `pg`.
+Requires **Node.js 24.x**. No database installation is necessary: PGlite provides durable local PostgreSQL. With `DATABASE_URL`, the same schema uses a PostgreSQL server through `pg`.
 
 ```powershell
 npm.cmd ci
@@ -60,9 +62,9 @@ docs/             Decisions, diagrams, test evidence and recruitment handoff
 - [Implemented architecture](docs/architecture.md) · [ADRs](docs/architecture/decisions.md) · [schema/lifecycle](docs/architecture/schema-notes.md) · [HTTP contract](docs/api.md)
 - [Native draw.io architecture](docs/architecture/notebooklm-clone.drawio) · [page manifest and imports](docs/architecture/README.md)
 - [Zero-spend research](docs/free-tier-research.md) · [deployment/runbook](docs/deployment.md)
-- [AI assistance and validation](docs/ai-usage.md) · [8:30 German Loom script](docs/demo-script.md) · [German reply draft](docs/submission-email.de.md)
+- [AI assistance and validation](docs/ai-usage.md) · [4:30 German Loom script](docs/demo-script.md) · [German reply draft](docs/submission-email.de.md)
 
-Free deployment target: **Vercel Hobby + Neon Free + Groq Free**. Original files are bounded private PostgreSQL blobs, so no paid disk or bucket is needed. Required variables and live smoke tests are documented. No hosted URL or recording URL is fabricated; add verified links here after publication.
+Deployed on **Vercel Hobby + Neon Free + Groq Free**. Original files are bounded private PostgreSQL blobs, so no paid disk or bucket is needed. Production deploys automatically from `main`; other Git branches do not deploy automatically or receive production secrets. Required variables and release migrations are documented. A Loom recording URL is not available yet.
 
 ## Deliberate limits
 

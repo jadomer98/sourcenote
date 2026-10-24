@@ -4,7 +4,7 @@
   "private": true,
   "description": "A source-grounded research workspace inspired by NotebookLM",
   "engines": {
-    "node": ">=24.0.0"
+    "node": "24.x"
   },
   "scripts": {
     "dev": "next dev --webpack",

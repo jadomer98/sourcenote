@@ -10,9 +10,9 @@ Updated 2026-10-24. This is an evidence-based status, not a completed-submission
 | Automated verification | Complete local checks | Type/lint, service/provider tests, real PDF and desktop/mobile browser workflow; see testing.md |
 | Real free AI workflow | Production HTTP smoke passed; evaluation limitation recorded | Real Groq answer cited the uploaded PDF; five of six evaluation responses passed validation and semantic inspection; one was safely rejected for invalid evidence |
 | Neon Free database | Connected and migrated | Existing SourceNote project in Frankfurt; plan `free`, PostgreSQL 18.6, schema 1; pooled app and direct migration URLs configured without printing credentials |
-| GitHub repository link | Blocked on account/repository access | No remote configured; GitHub integration not confirmed connected |
-| Live deployment link | Pending Vercel access/publication | Neon is working; local production test is complete, public Vercel URL is still absent |
-| Loom ≤10 minutes | Incomplete; recording required | German 8:30 script ready; no recording/account access supplied |
-| German email reply | Draft prepared | Replace three marked placeholders only after verified links exist; email not sent |
+| GitHub repository link | Published; CI verified | https://github.com/jadomer98/sourcenote — `main` and implementation branch pushed; Linux checks/build/browser tests pass |
+| Live deployment link | Published and tested | https://sourcenote-mu.vercel.app — Vercel Hobby, Node 24, Frankfurt functions, actual Neon/Groq; anonymous access and real PDF-to-citation smoke pass |
+| Loom ≤10 minutes | Recording still required | German 4:30 script ready, fitting Loom Starter's free five-minute limit; no recording link is claimed |
+| German email reply | Two verified links filled | Loom placeholder remains; email not sent |
 
 Zero-spend constraint: no paid service, subscription, provider fallback or billing upgrade was used. The employer's entire submission is not complete until the GitHub, public deployment and recording links exist.

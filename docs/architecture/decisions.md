@@ -1,6 +1,6 @@
 # Architecture decision records
 
-ADR-01–06 preserve the original **proposed** baseline, dated 2026-10-23. **ADR-07** records the zero-spend revision; **ADR-08** records verified Neon integration. These supersede the earlier hosting, storage, provider, limit and cleanup choices where they differ. Public Vercel deployment is still pending.
+ADR-01–06 preserve the original **proposed** baseline, dated 2026-10-23. **ADR-07** records the zero-spend revision; **ADR-08** records verified Neon integration. These supersede the earlier hosting, storage, provider, limit and cleanup choices where they differ. ADR-09 below records verified public GitHub/Vercel publication.
 
 ## ADR-01 — One TypeScript application on a long-running host
 
@@ -33,3 +33,7 @@ ADR-01–06 preserve the original **proposed** baseline, dated 2026-10-23. **ADR
 ## ADR-08 — Verified Neon connection and explicit release migration
 
 **Date:** 2026-10-24. **Status:** implemented and tested. **Decision:** reuse Ayham's existing Neon Free project in Frankfurt and production branch, enabling only Postgres. Preserve `pg` for the Node.js/Vercel runtime, register its shared pool with `attachDatabasePool`, and use the pooled application URL. Apply versioned SQL through the direct URL with an advisory transaction lock before release; app startup checks the schema version without hosted DDL. PGlite retains automatic initial schema setup locally. Vitest/Playwright explicitly clear both hosted URLs. **Evidence:** schema 1 on PostgreSQL 18.6; production HTTP PDF-to-citation workflow with real Groq, persisted note, byte-exact download and deletion redaction passed. **Consequences:** deployment must run migrations before the app release. No optional Neon services or billing upgrades were used. Public Vercel hosting remains separate work; see [verification evidence](../testing.md).
+
+## ADR-09 ? Public deployment with production-only secrets
+
+**Date:** 2026-10-24. **Status:** published and verified. **Decision:** publish the repository at https://github.com/jadomer98/sourcenote and the app at https://sourcenote-mu.vercel.app, using Vercel team `jad-9443` on Hobby. Pin Node 24; use Frankfurt functions alongside Frankfurt Neon. Connect GitHub and deploy automatically from `main` only. Production secrets are stored as Vercel sensitive variables via stdin; other branches receive neither automatic deployments nor these secrets. Keep preview/deployment URLs protected while allowing anonymous access on the stable production domain. **Evidence:** Vercel Linux build and public health, binary PDF, original download, Groq answer/citation, note, deletion/isolation, summary/reload and mobile Studio checks passed. GitHub Linux CI passed. **Consequence:** release migrations remain explicit, and previews require their own database/origin configuration before enabling. Loom narration and its recording URL remain outstanding.

@@ -1,10 +1,10 @@
 # Deployment and local operation
 
-The zero-spend path is Vercel Hobby + Neon Free + Groq Free. On 2026-10-24, SourceNote's existing Neon Free project was linked and verified in AWS Frankfurt; the real Groq key is configured locally. Vercel deployment and a public URL are still pending. Use free plans only, no Pro trial, paid domain or paid provider fallback. See [research and current limits](free-tier-research.md).
+The live app is **https://sourcenote-mu.vercel.app**; source is **https://github.com/jadomer98/sourcenote**. On 2026-10-24, Vercel team `jad-9443` reported Hobby, Neon reported Free, and actual Groq generation passed on the public deployment. Functions and Neon are in Frankfurt; Vercel's build ran in its default US build region. Use free plans only, no Pro trial, paid domain or paid provider fallback. See [research and current limits](free-tier-research.md).
 
 ## Local start (Windows)
 
-Prerequisites: Node.js 24+, Git. Python is only needed to regenerate architecture diagrams. No local PostgreSQL or Docker installation is required.
+Prerequisites: Node.js 24.x, Git. Python is only needed to regenerate architecture diagrams. No local PostgreSQL or Docker installation is required.
 
 ```powershell
 npm.cmd ci
@@ -19,9 +19,9 @@ PowerShell may block `npm.ps1`; use `npm.cmd` as shown. Do not weaken the execut
 ## Provision the free deployment
 
 1. Use the existing **Neon Free** project `SourceNote` (`cool-salad-21039999`), branch `production`, region `aws-eu-central-1`. The CLI has pulled pooled `DATABASE_URL` and direct `DATABASE_URL_UNPOOLED` into ignored `.env.local`. Keep both in secret stores; do not paste them into Git or screenshots.
-2. Publish this branch to a GitHub repository Ayham owns. Choose visibility suitable for the employer. The current local branch is `feat/sourcenote-implementation`; no remote is configured yet.
-3. Import the repository into a **personal Vercel Hobby** project using the Next.js preset and Node 24. Hobby is for eligible personal/non-commercial work. Connect the prepared branch or merge it into the intended deployment branch first.
-4. Set the production variables below. For a preview use a separate database branch and the preview's exact origin; do not point a preview at private production data by accident.
+2. The public repository `jadomer98/sourcenote` now contains `main` and `feat/sourcenote-implementation`. Keep Git changes on the implementation branch and update `main` deliberately for production.
+3. Vercel project `sourcenote` is linked to that GitHub repository and deploys production from `main`. Next.js, Node `24.x`, `npm ci`, and `npm run build` are configured. Hobby is for eligible personal/non-commercial work.
+4. Production variables below are configured. Secret values were sent through stdin, not command arguments or logs. Other branches are excluded from automatic deployments in `vercel.json`; previews need their own isolated database and exact origin before enabling them.
 5. Before the app release, run `npm.cmd run db:migrate` with the target database's **direct** URL. Initial migration 001 is idempotent and protected by an advisory transaction lock. App requests verify schema version 1 and use the **pooled** URL; they do not perform hosted DDL. Future migrations need explicit release ordering/version handling rather than editing applied schema in place.
 6. Open `/api/health`; expect `{"status":"ok","version":"1.0.0"}`. This checks DB reachability without model usage. Run the smoke test below with a real free-provider key.
 
@@ -53,7 +53,7 @@ Do not put secrets in `NEXT_PUBLIC_*` variables. `ALLOW_LOCAL_DATABASE=true` is 
 
 Record the deployed URL, provider/model, date, inputs and observed results in testing/delivery notes before recording the Loom.
 
-An automated API smoke helper is available: set `SMOKE_URL` to the deployment origin and run `npm.cmd run smoke -- --ai --pdf`. This requires a real-provider answer/citation and checks a generated binary PDF, byte-exact original download, saved note, source deletion redaction and cross-owner rejection. Omitting `--ai` explicitly skips AI; omitting `--pdf` uses pasted text only. It cleans up its isolated notebook. This command passed against the local **production** server connected to Neon and Groq on 2026-10-24; it does not prove Vercel hosting yet.
+An automated API smoke helper is available: set `SMOKE_URL=https://sourcenote-mu.vercel.app` and run `npm.cmd run smoke -- --ai --pdf`. This requires a real-provider answer/citation and checks a generated binary PDF, byte-exact original download, saved note, source deletion redaction and cross-owner rejection. Omitting `--ai` explicitly skips AI; omitting `--pdf` uses pasted text only. It cleans up its isolated notebook. It passed on both the local production server and the actual public Vercel deployment on 2026-10-24. A separate public browser check passed real summary generation, saved-note reload and mobile Studio.
 
 ## Neon CLI setup and production start
 
