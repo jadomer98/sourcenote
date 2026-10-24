@@ -1,0 +1,25 @@
+{
+  "base": "https://sourcenote-mu.vercel.app",
+  "at": "2026-10-24T18:47:52.276Z",
+  "realProvider": true,
+  "checks": [
+    "real Groq answer with verified short source quote; original PDF bytes unchanged; actual page 4 rendered and highlighted; text fallback",
+    "real generated flashcards; whole-card and keyboard flip; correct/wrong counts; citation return; rating and position persistence",
+    "public mobile PDF and flashcards fit; actual expanded allowances; no browser page errors"
+  ],
+  "limits": {
+    "notebooks": 10,
+    "sources": 20,
+    "fileMiB": 4,
+    "pdfPages": 200,
+    "textChars": 100000,
+    "evidenceTokens": 4000,
+    "outputTokens": 2000,
+    "dailyRequests": 200,
+    "storageMiB": 50,
+    "retentionDays": 7
+  },
+  "measuredTokens": 7415,
+  "citedPage": 4,
+  "originalBytesUnchanged": true
+}

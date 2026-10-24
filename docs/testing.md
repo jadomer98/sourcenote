@@ -12,7 +12,7 @@ Latest execution: **2026-10-24**, Windows, Node 24.19.0; GitHub CI on Ubuntu/Nod
 | `npm.cmd run start` then `npm.cmd run smoke -- --ai --pdf` | Standalone production HTTP workflow passed against actual Neon/Groq |
 | Public `SMOKE_URL=https://sourcenote-mu.vercel.app`, `npm.cmd run smoke -- --ai --pdf` | All PDF, real AI/citation, note, deletion and access-isolation checks passed on Vercel |
 | Real-provider public browser check | Desktop demo, real answer/citation, note, summary, reload and mobile Studio passed; `live-*.png` screenshots inspected |
-| GitHub Actions | Linux check/build and all 18 browser tests passed; [verified dark-workspace main run](https://github.com/jadomer98/sourcenote/actions/runs/40113067620) |
+| GitHub Actions | Linux check/build and all 22 browser tests passed; [verified PDF/flashcard main run](https://github.com/jadomer98/sourcenote/actions/runs/40122196084) |
 | `npm.cmd audit --omit=dev --audit-level=high` | 0 reported production dependency vulnerabilities |
 | `python scripts/validate_architecture.py` (2026-10-23) | Four native pages and equivalent standalone XML passed structural checks |
 
@@ -108,4 +108,8 @@ Both [main CI](https://github.com/jadomer98/sourcenote/actions/runs/40113067620)
 
 The `feat/flashcards-pdf-evidence` iteration adds full-card flipping, persisted correct/wrong self-assessment, original PDF rendering and verified quotation highlights. The duplicate fixed-minute quota gate is removed; provider cooldown preserves the question and never auto-submits. Notebook/source/page/daily-request allowances increase while file, storage, context and shared budget protection remain. [Behavior, limits, tests and rollback](design/flashcards-pdf-evidence.md).
 
-All 43 service/provider/layout tests, type/lint and the optimized build pass. The full suite passed 22 browser cases plus two skips; the six PDF/flashcard/cooldown cases passed again after phone-scroll and rotated-page checks were refined. The generated `pdf-highlight-*` and `flashcards-rated-*` screenshots use the labeled deterministic provider. The public walkthrough and screenshots are recorded separately after deployment.
+All 43 service/provider/layout tests, type/lint and the optimized build pass. The full suite passed 22 browser cases plus two skips; the six PDF/flashcard/cooldown cases passed again after phone-scroll and rotated-page checks were refined. The generated `pdf-highlight-*` and `flashcards-rated-*` screenshots use the labeled deterministic provider.
+
+The final public walkthrough passed real Groq answer/flashcard generation using the provided five-page PDF, byte-for-byte original preservation, precise original-page highlighting, fallback text, whole-card/keyboard flipping, correct/wrong counters, citation return, persisted rating/position, mobile fitting and live expanded limits. [Machine-readable record](flashcards-pdf-live-verification.json). Images `original-pdf*-live.png` and `flashcards*-live.png` are from the real public deployment, without a test provider. Earlier live passes exposed one semantic overstatement and one overly strict precision-anchor rejection; their mitigation, safe recovery and remaining wording limitations are recorded in the design document. The user’s original file was unchanged and only synthetic QA notebooks were removed.
+
+Final implementation `ff92985` passed [main CI](https://github.com/jadomer98/sourcenote/actions/runs/40122196084) and [feature CI](https://github.com/jadomer98/sourcenote/actions/runs/40122193809), including all 43 tests, optimized build and all 22 browser cases on Linux.

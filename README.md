@@ -21,6 +21,8 @@ Organize documents into notebooks, ask questions about selected sources, inspect
 
 **Status (2026-10-24):** published on Vercel Hobby with Neon Free in Frankfurt and real Groq generation. The public deployment passed PDF extraction/download, answer/citation, saved-note, deletion and owner-isolation checks. All five new Studio formats also passed a public real-Groq browser walkthrough. The latest dark workspace passed public laptop geometry, real answer/citation, note persistence, usage, panel controls and mobile checks. The screenshot above comes from the live deployment. Loom recording remains pending. [Results and limitations](docs/testing.md) · [delivery audit](docs/delivery-status.md).
 
+The latest iteration adds original PDF page highlights, full-card self-assessment and provider-driven cooldown recovery. It passed a public walkthrough with the supplied five-page biography and real Groq. [Controls, expanded allowances, screenshots and remaining model-wording limitations](docs/design/flashcards-pdf-evidence.md).
+
 ## Try the new Studio
 
 Choose **Beispiel erkunden**, then use **Lernkarten**, **Wissenscheck**, **Mindmap**, **Bericht** or **Datentabelle** in Studio. Results open automatically. For account visibility, choose **Nutzung & Limits**; the default view belongs only to your guest workspace. The optional owner code is different from your API key. Counters report measured tokens, unknown usage and conservative budget reservations separately; free-provider limits still apply.
