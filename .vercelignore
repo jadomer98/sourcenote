@@ -1,0 +1,12 @@
+.git/
+.next/
+node_modules/
+.data/
+.env*
+.neon
+.vercel/
+coverage/
+test-results/
+playwright-report/
+*.log
+__pycache__/
