@@ -55,6 +55,10 @@ PASS: Neon notebook and source persisted across full server stop, rebuild and re
 PASS: standalone production page and JavaScript assets return HTTP 200.
 ```
 
+## Forest and paper palette
+
+The forest/paper color update is on `feat/forest-paper-colors`, based on the preserved `feat/sourcenote-implementation` commit `28adc4f`. Type/lint, all 24 backend/provider tests, all 8 desktop/mobile browser tests and production compilation passed. The actual public UI passed real Groq answer/citation, note, summary, reload and mobile Studio checks with the forest palette; the current `live-*.png` screenshots show this run. [Palette research, measured contrast and rollback](design/color-research.md).
+
 ## Bounded Groq evaluation
 
 `npm.cmd run evaluate` runs six synthetic cases against a real provider. [Recorded responses](evaluation-results.json) include evidence-ID-to-source mappings for successful cases. Five responses passed structural validation and inspection against the fixtures: budget breakdown, source exclusion, conflicting approval status, outside-knowledge refusal and prompt-injection handling. The financial payback case was **rejected for invalid evidence**; it is not counted as a successful answer or refusal. The application withheld it. This sample does not establish general factual accuracy or reliability.

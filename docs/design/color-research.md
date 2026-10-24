@@ -38,6 +38,8 @@ The existing CSS now uses semantic color variables throughout; the previous read
 
 All 8 existing desktop/mobile browser tests passed with the new palette. Representative home/workspace screenshots were visually inspected. A computed-style review then checked 248 visible text occurrences across home, notebook creation, workspace, answer/citations, citation dialog, mobile chat, mobile Studio and the mobile navigation drawer. The lowest sampled contrast was **4.74:1**, with no sampled text failures. Both main-surface and sidebar keyboard focus were visibly styled with solid 3px outlines. [Recorded samples](color-verification.json).
 
+Additional token checks: input borders are **3.08:1** against paper and **3.36:1** against panels; focus colors are **4.78:1** against paper and **8.91:1** against the forest rail. Type/lint, 24 backend/provider tests and the production build passed. On the public forest deployment, actual Groq answer/citation, saved note, summary, reload and mobile Studio checks also passed. `docs/screenshots/live-*.png` now show that public workflow without deterministic test mode.
+
 The review excluded disabled controls, hidden elements and decorative illustrations; modal/drawer checks were limited to the active surface. Token/sample measurements do not constitute a full accessibility audit, and the background approximation does not certify every gradient or composite state.
 
 ## Return to the previous version
