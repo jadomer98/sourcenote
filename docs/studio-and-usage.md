@@ -4,7 +4,7 @@ SourceNote extends the existing Groq text model rather than adding paid media pr
 
 | Tool | Complete workflow |
 | --- | --- |
-| Lernkarten | Generate source-grounded question/answer cards, reveal answers and citations, navigate, mark learned, reset. Progress persists in the same browser. |
+| Lernkarten | Click anywhere on a card (or Enter/Space) to flip it. Reveal, self-assess with **Falsch**/**Richtig**, and advance. Counts reflect one current rating per card; revising a rating replaces it. Position and ratings persist in this browser; reset clears both. Citations are separate controls and can return to the card. Existing learned marks become correct ratings. |
 | Wissenscheck | Generate three questions with four choices each; answer once per question, see feedback and evidence, receive a score, revisit questions and restart. Progress persists in the same browser. Older text-only quizzes still display normally. |
 | Mindmap | Generate a validated rooted hierarchy, expand/collapse branches, open node citations, export a standalone SVG and Markdown. |
 | Bericht | Generate a cited briefing with findings and open questions, retain it in Studio, export Markdown. |

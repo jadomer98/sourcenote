@@ -32,13 +32,14 @@ export const config = {
     return positive('GLOBAL_STORAGE_BYTES', 100 * 1024 * 1024);
   },
   get dailyRequests() {
-    return positive('SESSION_DAILY_REQUESTS', 30);
+    return positive('SESSION_DAILY_REQUESTS', 200);
   },
   fileBytes: 4 * 1024 * 1024,
   textChars: 100_000,
   totalChars: 500_000,
-  sources: 10,
-  notebooks: 3,
+  pdfPages: 200,
+  sources: 20,
+  notebooks: 10,
   evidenceTokens: 4_000,
   outputTokens: 2000,
   leaseSeconds: 90,

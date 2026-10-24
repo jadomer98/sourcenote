@@ -1,6 +1,15 @@
 'use client';
 import { useEffect, useState, type ReactNode } from 'react';
-import { ArrowLeft, ArrowRight, Check, RotateCcw, Download, Layers, GitBranch } from 'lucide-react';
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  X,
+  RotateCcw,
+  Download,
+  Layers,
+  GitBranch,
+} from 'lucide-react';
 import type { Entry } from '@/lib/types';
 import { csvCell } from '@/lib/studio';
 
@@ -18,17 +27,32 @@ export function StudioContent({
   citations,
 }: {
   entry: Entry;
-  renderBlock: (i: number) => ReactNode;
+  renderBlock: (i: number, withCitations?: boolean) => ReactNode;
   citations: (i: number) => ReactNode;
 }) {
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(() => {
+    try {
+      const value = Number(localStorage.getItem('sourcenote:learning-position:' + entry.id));
+      return Number.isInteger(value) && value >= 0 && value < (entry.body?.blocks.length || 0)
+        ? value
+        : 0;
+    } catch {
+      return 0;
+    }
+  });
   const [flipped, setFlipped] = useState(false);
   const [collapsed, setCollapsed] = useState<number[]>([]);
   const storageKey = 'sourcenote:learning:' + entry.id;
   const [progress, setProgress] = useState<Record<number, number>>(() => {
     try {
       const parsed = JSON.parse(localStorage.getItem(storageKey) || '{}');
-      return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return {};
+      const max = entry.body?.format === 'quiz' ? 3 : 1;
+      return Object.fromEntries(
+        (entry.body?.blocks || []).flatMap((_, i) =>
+          Number.isInteger(parsed[i]) && parsed[i] >= 0 && parsed[i] <= max ? [[i, parsed[i]]] : [],
+        ),
+      );
     } catch {
       return {};
     }
@@ -36,10 +60,11 @@ export function StudioContent({
   useEffect(() => {
     try {
       localStorage.setItem(storageKey, JSON.stringify(progress));
+      localStorage.setItem('sourcenote:learning-position:' + entry.id, String(index));
     } catch {
       /* Learning remains usable without local storage. */
     }
-  }, [progress, storageKey]);
+  }, [progress, storageKey, index, entry.id]);
   const body = entry.body;
   if (!body || !body.format || body.outcome === 'insufficient')
     return (
@@ -59,56 +84,89 @@ export function StudioContent({
     setIndex(0);
     setFlipped(false);
   };
-  if (body.format === 'flashcards')
+  if (body.format === 'flashcards') {
+    const correct = blocks.filter((_, i) => progress[i] === 1).length;
+    const wrong = blocks.filter((_, i) => progress[i] === 0).length;
+    const grade = (value: number) => {
+      setProgress((old) => ({ ...old, [index]: value }));
+      if (index < blocks.length - 1) move(1);
+    };
     return (
       <div className="learning-view">
         <div className="learning-meta">
           <span>
             <Layers size={16} /> Karte {index + 1} von {blocks.length}
           </span>
-          <span>{Object.keys(progress).length} gelernt</span>
+          <span aria-live="polite">
+            {correct + wrong} von {blocks.length} bewertet
+          </span>
         </div>
-        <div className="flashcard">
+        <button
+          className="flashcard"
+          aria-label={flipped ? 'Frage zeigen' : 'Antwort aufdecken'}
+          aria-pressed={flipped}
+          onClick={() => setFlipped(!flipped)}
+        >
           <span className="eyebrow">{flipped ? 'DIE ANTWORT' : 'EINE FRAGE AN DICH'}</span>
           {flipped ? (
-            <div className="flashcard-answer">{renderBlock(index)}</div>
+            <div className="flashcard-answer">{renderBlock(index, false)}</div>
           ) : (
             <h3>{blocks[index].question}</h3>
           )}
-          <button className="secondary" onClick={() => setFlipped(!flipped)}>
-            {flipped ? 'Frage zeigen' : 'Antwort aufdecken'}
-          </button>
-        </div>
-        <div className="learning-controls">
+          <span className="flashcard-hint">{flipped ? 'Frage zeigen' : 'Antwort aufdecken'}</span>
+        </button>
+        {flipped && (
+          <div className="flashcard-citations" aria-label="Belege zur Antwort">
+            {citations(index)}
+          </div>
+        )}
+        <div className="learning-controls flashcard-controls">
           <button className="secondary" aria-label="Vorherige Karte" onClick={() => move(-1)}>
             <ArrowLeft size={17} />
           </button>
           <button
-            className={index in progress ? 'secondary' : 'primary'}
-            onClick={() =>
-              setProgress((old) => {
-                const next = { ...old };
-                if (index in next) delete next[index];
-                else next[index] = 1;
-                return next;
-              })
-            }
+            className="grade-button wrong"
+            disabled={!flipped}
+            aria-label={`Falsch · ${wrong}`}
+            aria-pressed={progress[index] === 0}
+            onClick={() => grade(0)}
           >
-            <Check size={16} />{' '}
-            {index in progress ? 'Gelernt · rückgängig' : 'Als gelernt markieren'}
+            <X size={19} />
+            <span>Falsch</span>
+            <strong>{wrong}</strong>
+          </button>
+          <button
+            className="grade-button correct"
+            disabled={!flipped}
+            aria-label={`Richtig · ${correct}`}
+            aria-pressed={progress[index] === 1}
+            onClick={() => grade(1)}
+          >
+            <Check size={19} />
+            <span>Richtig</span>
+            <strong>{correct}</strong>
           </button>
           <button className="secondary" aria-label="Nächste Karte" onClick={() => move(1)}>
             <ArrowRight size={17} />
           </button>
         </div>
+        {correct + wrong === blocks.length && (
+          <p className="flashcard-result" role="status">
+            Alle Karten bewertet: {correct} richtig · {wrong} falsch. Du kannst jede Bewertung beim
+            Wiederholen ändern.
+          </p>
+        )}
         <button className="text-link" onClick={reset}>
           <RotateCcw size={14} /> Lernstand zurücksetzen
         </button>
         <p className="studio-footnote">
-          Dein Lernstand bleibt in diesem Browser gespeichert. Wiederholen kostet keine KI-Tokens.
+          Klicke irgendwo auf die Karte oder nutze Enter/Leertaste. Aufdecken, dann selbst bewerten.
+          Bewertung und Position bleiben in diesem Browser gespeichert. Wiederholen kostet keine
+          KI-Tokens.
         </p>
       </div>
     );
+  }
   if (body.format === 'quiz') {
     const chosen = progress[index];
     const answered = Number.isInteger(chosen) && chosen >= 0 && chosen < 4;

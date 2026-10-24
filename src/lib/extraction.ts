@@ -77,7 +77,7 @@ export async function extract(
       else if (stderr.includes('ENCRYPTED'))
         message = 'Diese PDF ist passwortgeschützt. Bitte eine ungeschützte Kopie hochladen.';
       else if (stderr.includes('PAGE_LIMIT'))
-        message = 'Bitte eine PDF mit höchstens 50 Seiten verwenden.';
+        message = 'Bitte eine PDF mit höchstens 200 Seiten verwenden.';
       else if (stderr.includes('TEXT_LIMIT'))
         message = 'Die PDF enthält mehr als 100.000 Zeichen. Bitte kürzen.';
       reject(new AppError('EXTRACTION', message));

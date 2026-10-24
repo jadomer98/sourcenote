@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import type { Generated, GenerationKind, StudioKind } from './types';
+import { sourceQuotesSchema, sourceQuotesParsed } from './source-quotes';
 
 export const studioTools = [
   { kind: 'summary', title: 'Quellenüberblick', description: 'Das Wesentliche auf einen Blick' },
@@ -27,6 +28,7 @@ export function schemaForStudio(kind: StudioKind) {
   const properties: Record<string, object> = {
     text: { type: 'string' },
     evidence_ids: { type: 'array', items: { type: 'string' } },
+    source_quotes: sourceQuotesSchema,
   };
   if (kind === 'flashcards' || kind === 'quiz') properties.question = { type: 'string' };
   if (kind === 'quiz') {
@@ -62,6 +64,7 @@ export function parseStudio(value: unknown, kind: StudioKind): Generated {
       .min(1)
       .max(kind === 'mindmap' ? 220 : 2500),
     evidence_ids: z.array(z.string()).max(12),
+    source_quotes: sourceQuotesParsed,
   };
   if (kind === 'flashcards' || kind === 'quiz') block.question = z.string().min(4).max(350);
   if (kind === 'quiz') {

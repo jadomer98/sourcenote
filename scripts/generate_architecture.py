@@ -101,7 +101,7 @@ p.card('noanswer','Explicit limitation, not a fabricated answer',['No ready sele
 p.card('viewer','5  Inspect the supporting excerpt',['Return validated final text only; streaming deferred.','Citation click → authorize again → stored chunk text + reliable location.','Deleted source → unavailable; never serve stale text.','A valid ID proves provenance, not semantic support: evaluate claims.'],800,925,720,150,'data',14)
 p.edge('verify','viewer','valid result','data','bottom','top',[(1350,895),(1160,895)])
 p.edge('generate','noanswer','insufficient / failed','fail','bottom','top',[(970,895),(400,895)])
-p.card('caps','Implemented demo limits · free-tier defaults',['4 MiB/file · 50 PDF pages · 100k extracted characters/source · 10 sources/notebook · 3 notebooks/session · 500k stored characters/session.','≤ 4k evidence tokens · ≤ 2k completion tokens · 1 generation/session and 3/service · 30/session/day · provider quotas still apply.'],40,1100,1480,100,'plain',13)
+p.card('caps','Implemented demo limits · free-tier defaults',['4 MiB/file · 200 PDF pages · 100k extracted characters/source · 20 sources/notebook · 10 notebooks/session · 500k stored characters/session.','≤ 4k evidence tokens · ≤ 2k completion tokens · 1 generation/session and 3/service · 200/session/day · provider quotas still apply.'],40,1100,1480,100,'plain',13)
 
 p=Page('ARCH-03','Data model / ERD','One relational ownership chain. Arrows show parent → child (1 : many unless labeled); all foreign-key details are in the schema notes.',1800,1430)
 tables=[
@@ -164,7 +164,7 @@ p.box('inspect','C  /  LATER: OPEN A CITATION FROM A SUCCESSFUL ANSWER',60,1185,
 msg(14,0,1,1260,'GET citation for entry / block / ordinal')
 msg(15,1,3,1315,'Authorize owner; join entry → evidence → live chunk','data')
 msg(16,3,1,1370,'Stored excerpt + page/offset OR source unavailable','data',True)
-msg(17,1,0,1425,'Open source viewer; show exact supporting passage',reply=True)
+msg(17,1,0,1425,'Original PDF page + verified quote highlight; text fallback',reply=True)
 p.card('seqnote','Recovery semantics',['Completed idempotency key returns the existing result; running key returns 202 + operation ID. Reload polls operation status.','No automatic provider retry after ambiguous timeout. Unknown spend stays reserved until reconciled; explicit retry uses a new key.','A refreshed page may recover a committed answer. Stale lease holders cannot commit. Provider execution is not claimed to be exactly-once.'],60,1460,1480,120,'plain',13)
 
 def main():

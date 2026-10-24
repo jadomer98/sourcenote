@@ -11,10 +11,10 @@ Organize documents into notebooks, ask questions about selected sources, inspect
 ## What works
 
 - Create, search, rename and delete notebooks in an isolated seven-day guest workspace.
-- Upload text PDFs, UTF-8 text/Markdown files, or paste text. Preview extracted content, inspect reliable PDF pages, see useful failure states and retry processing.
+- Upload text PDFs, UTF-8 text/Markdown files, or paste text. Open original PDF pages with source-verified highlights, page/zoom controls, text fallback and private download. Failed processing can be retried.
 - Select the sources available for each new question. Full-context evidence is bounded; oversized selections receive an actionable error.
 - Generate source-grounded answers and inspect citations resolved from stored source text. Invalid citation IDs are rejected; insufficient evidence has an explicit outcome.
-- Create cited summaries, flip-through flashcards, scored multiple-choice quizzes, collapsible mind maps, reports and data tables. Retain Studio results, export Markdown, CSV or SVG, and save chat answers as notes. Learning progress persists in the same browser without repeat AI calls.
+- Create cited summaries, full-card flashcards with correct/wrong self-assessment, scored multiple-choice quizzes, collapsible mind maps, reports and data tables. Retain Studio results, export Markdown, CSV or SVG, and save chat answers as notes. Learning progress and card position persist in the same browser without repeat AI calls.
 - Inspect your real token usage and app limits. A separate owner code unlocks project-wide counters and timestamped Groq rate-limit snapshots; API keys never reach the browser. [Studio and usage guide](docs/studio-and-usage.md).
 - Read in a dark workspace with a compact header, collapsible navigation, a growing question composer and pinned Studio tools. Resize panel dividers, hide/reopen Sources, Chat or Studio, focus one panel, and retain the layout in your browser. Colored tool icons distinguish formats. [Dark workspace and controls](docs/design/dark-workspace.md).
 - Persist across reloads, use desktop panels or narrow-screen tabs, and enforce server-side ownership, request/cost limits, idempotency and deletion rules.
@@ -75,7 +75,7 @@ Deployed on **Vercel Hobby + Neon Free + Groq Free**. Original files are bounded
 
 ## Deliberate limits
 
-4 MiB/file, 50 PDF pages, 100k text characters/source, 10 sources/notebook, 3 notebooks/workspace and 4k evidence tokens per generation. Defaults allow 30 attempts/session/day and conservative shared usage/storage budgets. Free-provider limits can require waiting or reducing the selection. These limits serve a focused review demo, not a production-scale claim.
+4 MiB/file, 200 PDF pages, 100k text characters/source, 20 sources/notebook, 10 notebooks/workspace and 4k evidence tokens per generation. Defaults allow 200 attempts/session/day, still subject to the configured shared token/storage budgets and actual free-provider quotas. The duplicate app minute gate has been removed: Groq's response controls pacing, with a countdown and preserved question on rate-limit errors. Large source selections may still exceed the 4k evidence allowance; there is no retrieval/search system or automatic paid fallback.
 
 OCR/scanned PDFs, audio overviews, external web/YouTube imports, collaboration, login recovery and payments are deferred. Earlier answers are not used as evidence for follow-up questions; ask standalone questions. Valid citation IDs establish provenance, not semantic correctness. Deleting a source redacts outputs that depended on its selection. The UI explains guest lifetime and third-party AI processing; use the synthetic demo sources for review.
 

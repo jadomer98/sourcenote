@@ -15,12 +15,33 @@ test('Studio tools: cards, scored quiz, mindmap, report, CSV and usage on deskto
   await page.getByRole('button', { name: /Lernkarten Wissen aufdecken/ }).click();
   let dialog = page.getByRole('dialog');
   await expect(dialog.getByText('Karte 1 von 4', { exact: true })).toBeVisible();
-  await dialog.getByRole('button', { name: 'Antwort aufdecken' }).click();
+  await dialog.locator('button.flashcard').click({ position: { x: 12, y: 12 } });
   await expect(dialog.getByRole('button', { name: /Beleg 1/ }).first()).toBeVisible();
-  await dialog.getByRole('button', { name: 'Als gelernt markieren' }).click();
-  await expect(dialog.getByText('1 gelernt', { exact: true })).toBeVisible();
-  await dialog.getByRole('button', { name: 'Nächste Karte', exact: true }).click();
+  await dialog.getByRole('button', { name: 'Richtig · 0', exact: true }).click();
+  await expect(dialog.getByRole('button', { name: 'Richtig · 1', exact: true })).toBeVisible();
   await expect(dialog.getByText('Karte 2 von 4', { exact: true })).toBeVisible();
+  await dialog.locator('button.flashcard').focus();
+  await page.keyboard.press('Enter');
+  await dialog.getByRole('button', { name: 'Falsch · 0', exact: true }).click();
+  await expect(dialog.getByRole('button', { name: 'Falsch · 1', exact: true })).toBeVisible();
+  await dialog.getByRole('button', { name: 'Vorherige Karte', exact: true }).click();
+  await dialog.locator('button.flashcard').focus();
+  await page.keyboard.press('Space');
+  await dialog.getByRole('button', { name: 'Richtig · 1', exact: true }).click();
+  await expect(dialog.getByRole('button', { name: 'Richtig · 2', exact: true })).toBeVisible();
+  await expect(dialog.getByRole('button', { name: 'Falsch · 0', exact: true })).toBeVisible();
+  await page.screenshot({
+    path: `docs/screenshots/flashcards-rated-${isMobile ? 'mobile' : 'desktop'}.png`,
+    fullPage: true,
+  });
+  await page.reload();
+  if (isMobile) await page.getByRole('tab', { name: 'Studio', exact: true }).click();
+  await page.locator('.artifact-card').filter({ hasText: 'Lernkarten' }).click();
+  dialog = page.getByRole('dialog');
+  await expect(dialog.getByText('Karte 3 von 4', { exact: true })).toBeVisible();
+  await expect(dialog.getByRole('button', { name: 'Richtig · 2', exact: true })).toBeVisible();
+  await dialog.getByRole('button', { name: 'Lernstand zurücksetzen', exact: true }).click();
+  await expect(dialog.getByText('0 von 4 bewertet', { exact: true })).toBeVisible();
   await dialog.getByRole('button', { name: 'Schließen', exact: true }).click();
   await page.getByRole('button', { name: /Wissenscheck Drei Fragen/ }).click();
   dialog = page.getByRole('dialog');

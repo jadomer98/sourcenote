@@ -15,6 +15,7 @@ import {
 } from './provider';
 import type { Generated, GenerationKind } from './types';
 import { isStudioKind, schemaForStudio, studioInstructions, studioTools } from './studio';
+import { findTextRange } from './pdf-text';
 type Kind = GenerationKind;
 type Selected = { id: string; version: number; status: string; title: string };
 export async function generate(
@@ -161,25 +162,9 @@ export async function generate(
       'Das KI-Tagesbudget der Demo ist aufgebraucht. Bitte morgen erneut versuchen.',
       429,
     );
-    if (
-      config.provider === 'groq' &&
-      provider === callProvider &&
-      process.env.AI_TEST_MODE !== 'true'
-    ) {
-      const minute = 'minute:' + new Date().toISOString().slice(0, 16);
-      await tx.query('INSERT INTO quota_bucket(key) VALUES($1) ON CONFLICT DO NOTHING', [minute]);
-      const [m] = await tx.query<{ tokens: string }>(
-        'SELECT tokens FROM quota_bucket WHERE key=$1',
-        [minute],
-      );
-      invariant(
-        Number(m.tokens) + reserved <= 8000,
-        'MINUTE_LIMIT',
-        'Das kostenlose Minutenlimit ist gerade belegt. Bitte in einer Minute erneut versuchen.',
-        429,
-      );
-      await tx.query('UPDATE quota_bucket SET tokens=tokens+$2 WHERE key=$1', [minute, reserved]);
-    }
+    // Groq's actual response headers govern its rolling rate window. A second fixed-minute
+    // reservation bucket used to reject sequential requests even when cached/unused tokens
+    // left provider capacity. Keep concurrency and daily reservations, not that duplicate gate.
     await tx.query(
       'UPDATE quota_bucket SET tokens=tokens+$2,requests=requests+1,updated_at=now() WHERE key=$1',
       [globalKey, reserved],
@@ -188,7 +173,7 @@ export async function generate(
       sessionKey,
     ]);
     await tx.query(
-      "INSERT INTO operation(id,notebook_id,kind,state,idempotency_key,request_hash,lease_until,model,prompt_version,reserved_tokens) VALUES($1,$2,$3,'running',$4,$5,now()+interval '90 seconds',$6,'grounded-v1',$7)",
+      "INSERT INTO operation(id,notebook_id,kind,state,idempotency_key,request_hash,lease_until,model,prompt_version,reserved_tokens) VALUES($1,$2,$3,'running',$4,$5,now()+interval '90 seconds',$6,'grounded-v2-quotes',$7)",
       [id, notebook, kind, key, requestHash, config.model, reserved],
     );
     await tx.query('INSERT INTO ai_usage(id,owner_id,provider,model,kind) VALUES($1,$2,$3,$4,$5)', [
@@ -343,10 +328,14 @@ export async function resolveCitation(
     text: string;
     page_no: number | null;
     char_start: number;
+    char_end: number;
     source_id: string;
     title: string;
+    mime: string;
+    body: Generated;
+    block_no: number;
   }>(
-    `SELECT ch.text,ch.page_no,ch.char_start,s.id AS source_id,s.title FROM citation c JOIN evidence e ON e.id=c.evidence_id JOIN chunk ch ON ch.id=e.chunk_id JOIN source s ON s.id=ch.source_id JOIN entry en ON en.id=c.entry_id WHERE c.notebook_id=$1 AND c.entry_id=$2 AND c.evidence_id=$3 AND s.status='ready' AND e.unavailable_at IS NULL AND en.unavailable_at IS NULL`,
+    `SELECT ch.text,ch.page_no,ch.char_start,ch.char_end,s.id AS source_id,s.title,s.mime,en.body,c.block_no FROM citation c JOIN evidence e ON e.id=c.evidence_id JOIN chunk ch ON ch.id=e.chunk_id JOIN source s ON s.id=ch.source_id JOIN entry en ON en.id=c.entry_id WHERE c.notebook_id=$1 AND c.entry_id=$2 AND c.evidence_id=$3 AND s.status='ready' AND e.unavailable_at IS NULL AND en.unavailable_at IS NULL`,
     [notebook, entry, evidence],
   );
   invariant(
@@ -355,7 +344,23 @@ export async function resolveCitation(
     'Dieser Beleg ist nicht mehr verfügbar. Die Quelle wurde möglicherweise entfernt.',
     404,
   );
-  return row;
+  const quote = row.body?.blocks[row.block_no]?.source_quotes?.find(
+    (q) => q.evidence_id === evidence,
+  );
+  const range = quote && findTextRange(row.text, quote.text);
+  return {
+    text: row.text,
+    page_no: row.page_no,
+    char_start: row.char_start,
+    char_end: row.char_end,
+    source_id: row.source_id,
+    title: row.title,
+    mime: row.mime,
+    highlight_text: range ? row.text.slice(range.start, range.end) : row.text,
+    highlight_start: row.char_start + (range?.start || 0),
+    highlight_end: range ? row.char_start + range.end : row.char_end,
+    precise: !!range,
+  };
 }
 export async function saveNote(owner: string, notebook: string, entryId: string) {
   const db = await database();

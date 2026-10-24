@@ -45,11 +45,14 @@ describe('free-provider boundary', () => {
   });
   it('does not retry rate limits or switch to a paid provider', async () => {
     process.env.GROQ_API_KEY = 'test-key';
-    const mock = vi.fn(async () => new Response('', { status: 429 }));
+    const mock = vi.fn(
+      async () => new Response('', { status: 429, headers: { 'retry-after': '9' } }),
+    );
     vi.stubGlobal('fetch', mock);
     await expect(callProvider('Budget?', passages)).rejects.toMatchObject({
       code: 'PROVIDER_LIMIT',
       status: 429,
+      retryAfter: 9,
     });
     expect(mock).toHaveBeenCalledTimes(1);
   });

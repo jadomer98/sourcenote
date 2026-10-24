@@ -17,7 +17,7 @@ try {
         .replaceAll('\\', '/') + '/',
   });
   const pdf = await task.promise;
-  if (pdf.numPages > 50) throw new Error('PAGE_LIMIT');
+  if (pdf.numPages > 200) throw new Error('PAGE_LIMIT');
   const pages = [];
   let length = 0;
   for (let n = 1; n <= pdf.numPages; n++) {

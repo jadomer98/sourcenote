@@ -45,6 +45,8 @@ import {
 import Markdown from 'react-markdown';
 import { StudioContent } from './studio-content';
 import { UsageDashboard } from './usage-dashboard';
+import { SourceViewer } from './source-viewer';
+import type { PdfExcerpt } from './pdf-reader';
 import {
   PanelActions,
   SidebarResizeHandle,
@@ -72,8 +74,10 @@ type DialogState = {
   text?: string;
   page?: number | null;
   chunks?: { text: string; page_no: number | null }[];
+  pdfExcerpt?: PdfExcerpt;
+  returnEntry?: Entry;
 } | null;
-type ApiError = Error & { code?: string };
+type ApiError = Error & { code?: string; retryAfter?: number };
 const suggestions = [
   'Was sind die wichtigsten Ziele und Maßnahmen?',
   'Wie setzt sich das Budget zusammen?',
@@ -137,15 +141,18 @@ function Modal({
     </dialog>
   );
 }
-function SafeMarkdown({ text }: { text: string }) {
+function SafeMarkdown({ text, links = true }: { text: string; links?: boolean }) {
   return (
     <Markdown
       components={{
-        a: ({ href, children }) => (
-          <a href={href} target="_blank" rel="noopener noreferrer">
-            {children}
-          </a>
-        ),
+        a: ({ href, children }) =>
+          links ? (
+            <a href={href} target="_blank" rel="noopener noreferrer">
+              {children}
+            </a>
+          ) : (
+            <span>{children}</span>
+          ),
       }}
     >
       {text}
@@ -163,6 +170,8 @@ export function WorkspaceApp() {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState('');
+  const [retrySeconds, setRetrySeconds] = useState(0);
+  const [retryUntil, setRetryUntil] = useState(0);
   const [toast, setToast] = useState('');
   const [search, setSearch] = useState('');
   const [dialog, setDialog] = useState<DialogState>(null);
@@ -200,6 +209,7 @@ export function WorkspaceApp() {
     if (!response.ok) {
       const e = new Error(data.error || 'Die Anfrage ist fehlgeschlagen.') as ApiError;
       e.code = data.code;
+      e.retryAfter = data.retryAfter;
       throw e;
     }
     return data;
@@ -314,6 +324,15 @@ export function WorkspaceApp() {
     const timer = setTimeout(() => setToast(''), 4500);
     return () => clearTimeout(timer);
   }, [toast]);
+  useEffect(() => {
+    if (!retryUntil) return;
+    const timer = setInterval(() => {
+      const remaining = Math.max(0, Math.ceil((retryUntil - Date.now()) / 1000));
+      setRetrySeconds(remaining);
+      if (!remaining) clearInterval(timer);
+    }, 250);
+    return () => clearInterval(timer);
+  }, [retryUntil]);
   const remoteBusy = workspace?.operations.some((o) => o.state === 'running') || false;
   useEffect(() => {
     if (
@@ -332,6 +351,14 @@ export function WorkspaceApp() {
       await fn();
     } catch (e) {
       setError((e as Error).message);
+      const wait = (e as ApiError).retryAfter;
+      if (typeof wait === 'number' && Number.isFinite(wait) && wait > 0) {
+        const seconds = Math.min(86400, Math.ceil(wait));
+        setRetrySeconds(seconds);
+        // This async action runs after a request fails, never during rendering.
+        // eslint-disable-next-line react-hooks/purity
+        setRetryUntil(Date.now() + seconds * 1000);
+      }
     } finally {
       setBusy(null);
     }
@@ -400,7 +427,7 @@ export function WorkspaceApp() {
     });
   }
   async function ask(text = question, kind: GenerationKind = 'answer') {
-    if (!workspace || !text.trim() || busy || remoteBusy) return;
+    if (!workspace || !text.trim() || busy || remoteBusy || retrySeconds > 0) return;
     const id = workspace.notebook.id;
     setPendingQuestion(kind === 'answer' ? text : '');
     if (kind === 'answer') {
@@ -427,6 +454,17 @@ export function WorkspaceApp() {
           );
           if (created) setDialog({ type: 'artifact', entry: created });
         }
+      } catch (error) {
+        if (kind === 'answer') {
+          setQuestion(text);
+          requestAnimationFrame(() => {
+            if (composer.current) {
+              composer.current.style.height = 'auto';
+              composer.current.style.height = Math.min(composer.current.scrollHeight, 128) + 'px';
+            }
+          });
+        }
+        throw error;
       } finally {
         await refreshWorkspace();
         await refreshBootstrap();
@@ -444,10 +482,31 @@ export function WorkspaceApp() {
   }
   async function openCitation(entry: Entry, citation: Citation) {
     await run('citation', async () => {
-      const result = await api<{ text: string; title: string; page_no: number | null }>(
-        `notebooks/${entry.notebook_id}/citations/${entry.id}/${citation.evidence_id}`,
-      );
-      setDialog({ type: 'viewer', title: result.title, text: result.text, page: result.page_no });
+      const result = await api<{
+        text: string;
+        title: string;
+        source_id: string;
+        page_no: number | null;
+        highlight_text: string;
+        highlight_start: number;
+        precise: boolean;
+      }>(`notebooks/${entry.notebook_id}/citations/${entry.id}/${citation.evidence_id}`);
+      setDialog({
+        type: 'viewer',
+        title: result.title,
+        text: result.highlight_text,
+        page: result.page_no,
+        source: workspace?.sources.find((s) => s.id === result.source_id),
+        pdfExcerpt: result.page_no
+          ? {
+              text: result.highlight_text,
+              page: result.page_no,
+              start: result.highlight_start,
+              precise: result.precise,
+            }
+          : undefined,
+        returnEntry: dialog?.type === 'artifact' ? entry : undefined,
+      });
     });
   }
   async function save(entry: Entry) {
@@ -734,7 +793,7 @@ export function WorkspaceApp() {
             >
               <Activity size={16} />
               <span>
-                {bootstrap?.usage || 0}/{bootstrap?.requestLimit || 30} heute
+                {bootstrap?.usage || 0}/{bootstrap?.requestLimit || 200} heute
               </span>
             </button>
             <span className="topbar-private">
@@ -754,7 +813,14 @@ export function WorkspaceApp() {
         {error && (
           <div className="error-banner" role="alert">
             <CircleHelp size={17} />
-            <span>{error}</span>
+            <span>
+              {error}
+              {retrySeconds > 0 && (
+                <small className="retry-countdown">
+                  Noch {retrySeconds} Sekunden · Deine Frage bleibt erhalten.
+                </small>
+              )}
+            </span>
             <button
               className="icon-button"
               onClick={() => setError('')}
@@ -1093,7 +1159,9 @@ export function WorkspaceApp() {
                         {suggestions.map((s, i) => (
                           <button
                             key={s}
-                            disabled={!selected.length || !!busy || !bootstrap?.aiReady}
+                            disabled={
+                              !selected.length || !!busy || retrySeconds > 0 || !bootstrap?.aiReady
+                            }
                             onClick={() => void ask(s)}
                           >
                             <span>
@@ -1216,6 +1284,7 @@ export function WorkspaceApp() {
                           !selected.length ||
                           !!busy ||
                           remoteBusy ||
+                          retrySeconds > 0 ||
                           !bootstrap?.aiReady
                         }
                       >
@@ -1228,9 +1297,11 @@ export function WorkspaceApp() {
                     </div>
                   </form>
                   <p className="composer-footnote">
-                    KI kann Fehler machen. Prüfe die Belege.
+                    {retrySeconds > 0
+                      ? `Erneut möglich in ${retrySeconds} Sekunden.`
+                      : 'KI kann Fehler machen. Prüfe die Belege.'}
                     <span>
-                      {bootstrap?.usage || 0}/{bootstrap?.requestLimit || 30} heute
+                      {bootstrap?.usage || 0}/{bootstrap?.requestLimit || 200} heute
                     </span>
                   </p>
                 </div>
@@ -1266,7 +1337,13 @@ export function WorkspaceApp() {
                           className={`studio-tool ${tool.kind}-tool`}
                           aria-label={tool.title + ' ' + tool.description}
                           title={tool.description}
-                          disabled={!selected.length || !!busy || remoteBusy || !bootstrap?.aiReady}
+                          disabled={
+                            !selected.length ||
+                            !!busy ||
+                            remoteBusy ||
+                            retrySeconds > 0 ||
+                            !bootstrap?.aiReady
+                          }
                           onClick={() =>
                             void ask(
                               tool.title + ' aus den ausgewählten Quellen erstellen.',
@@ -1561,7 +1638,9 @@ export function WorkspaceApp() {
                     </span>
                     <strong>Datei hier ablegen</strong>
                     <p>oder klicken, um eine Datei auszuwählen</p>
-                    <small>Text-PDF, TXT oder Markdown · maximal 4 MiB · 50 PDF-Seiten</small>
+                    <small>
+                      Text-PDF, TXT oder Markdown · maximal 4 MiB · 200 PDF-Seiten · 100.000 Zeichen
+                    </small>
                   </button>
                   <p className="upload-hint">
                     <CircleHelp size={15} />
@@ -1613,38 +1692,18 @@ export function WorkspaceApp() {
             </div>
           )}
           {dialog.type === 'viewer' && (
-            <div className="modal-body source-viewer">
-              <div className="viewer-meta">
-                <span className="pill">
-                  <FileText size={13} />
-                  {dialog.text ? 'Zitierter Originalauszug' : 'Extrahierter Quelltext'}
-                </span>
-                {dialog.source && (
-                  <a
-                    className="text-link"
-                    href={`/api/notebooks/${dialog.source.notebook_id}/sources/${dialog.source.id}/download`}
-                  >
-                    <ArrowDownToLine size={14} />
-                    Original herunterladen
-                  </a>
-                )}
-              </div>
-              {dialog.text ? (
-                <>
-                  <p className="excerpt-location">
-                    {dialog.page ? 'Seite ' + dialog.page : 'Textquelle · Originalauszug'}
-                  </p>
-                  <blockquote className="source-excerpt">{dialog.text}</blockquote>
-                </>
-              ) : (
-                dialog.chunks?.map((c, i) => (
-                  <section className="source-chunk" key={i}>
-                    {c.page_no && <span>Seite {c.page_no}</span>}
-                    <p>{c.text}</p>
-                  </section>
-                ))
-              )}
-            </div>
+            <SourceViewer
+              source={dialog.source}
+              text={dialog.text}
+              page={dialog.page}
+              chunks={dialog.chunks}
+              excerpt={dialog.pdfExcerpt}
+              onBack={
+                dialog.returnEntry
+                  ? () => setDialog({ type: 'artifact', entry: dialog.returnEntry })
+                  : undefined
+              }
+            />
           )}
           {dialog.type === 'artifact' && dialog.entry && (
             <div className="modal-body artifact-viewer">
@@ -1680,10 +1739,13 @@ export function WorkspaceApp() {
                 <StudioContent
                   key={dialog.entry.id}
                   entry={dialog.entry}
-                  renderBlock={(i) => (
+                  renderBlock={(i, withCitations = true) => (
                     <div className="answer-block">
-                      <SafeMarkdown text={dialog.entry!.body!.blocks[i].text} />
-                      {renderCitations(dialog.entry!, i)}
+                      <SafeMarkdown
+                        text={dialog.entry!.body!.blocks[i].text}
+                        links={withCitations}
+                      />
+                      {withCitations && renderCitations(dialog.entry!, i)}
                     </div>
                   )}
                   citations={(i) => renderCitations(dialog.entry!, i)}
@@ -1733,8 +1795,8 @@ export function WorkspaceApp() {
                     {bootstrap?.aiReady
                       ? 'Die KI ist verbunden.'
                       : 'Die KI ist noch nicht verbunden; der Betreiber muss einen kostenlosen Anbieter konfigurieren.'}{' '}
-                    Bis zu 30 Fragen pro Tag und Arbeitsbereich. Kostenlose Anbieter können
-                    zusätzliche Minuten- und Tageslimits haben.
+                    Bis zu {bootstrap?.requestLimit || 200} KI-Anfragen pro Tag und Arbeitsbereich.
+                    Kostenlose Anbieter können zusätzliche Minuten- und Tageslimits haben.
                   </p>
                 </div>
               </div>

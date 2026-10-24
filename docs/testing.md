@@ -4,8 +4,8 @@ Latest execution: **2026-10-24**, Windows, Node 24.19.0; GitHub CI on Ubuntu/Nod
 
 | Command | Result |
 | --- | --- |
-| `npm.cmd run check` | Type generation, TypeScript, ESLint and all 35 service/provider/layout tests passed |
-| `npm.cmd run test:e2e` | 18 desktop/mobile Chromium tests passed; two redundant desktop-only checks skipped on mobile; clearly labeled deterministic test provider |
+| `npm.cmd run check` | Type generation, TypeScript, ESLint and all 43 service/provider/layout tests passed |
+| `npm.cmd run test:e2e` | 22 desktop/mobile Chromium tests passed; two redundant desktop-only checks skipped on mobile; clearly labeled deterministic test provider |
 | `npm.cmd run build` | Optimized Next.js compilation and all static/API routes passed |
 | `neon.cmd deploy` | Existing production policy matched; Postgres-only use; 3 Neon variables pulled into ignored `.env.local` |
 | `npm.cmd run db:migrate` | Neon direct-connection migrations passed; schema versions 1 and 2 |
@@ -103,3 +103,9 @@ Local type generation, TypeScript, ESLint and all 35 service/provider/layout tes
 The public deployment passed a real Groq answer with stored citations, dark source preview, saved note, reload persistence, usage view, navigation expand/collapse, pane focus/restore, close/reopen, phone tabs and rename. At 1280×720, measured panel height is 638 px, reading area height 494 px, and the initial composer height 64 px. Checked widths 801, 900, 1024, 1280, 1600 and 1920 fit without page overflow. There were no browser page errors. Only the synthetic QA notebook was deleted. [Live verification record](design/dark-live-verification.json); screenshots `dark-*-live.png` show the actual public deployment with test mode disabled. No dependency, schema, provider or paid service changed.
 
 Both [main CI](https://github.com/jadomer98/sourcenote/actions/runs/40113067620) and [feature CI](https://github.com/jadomer98/sourcenote/actions/runs/40113065328) passed checks, build and the full browser suite on Linux for implementation `b2cd012`.
+
+## Flashcards, original PDF citations and relaxed app limits
+
+The `feat/flashcards-pdf-evidence` iteration adds full-card flipping, persisted correct/wrong self-assessment, original PDF rendering and verified quotation highlights. The duplicate fixed-minute quota gate is removed; provider cooldown preserves the question and never auto-submits. Notebook/source/page/daily-request allowances increase while file, storage, context and shared budget protection remain. [Behavior, limits, tests and rollback](design/flashcards-pdf-evidence.md).
+
+All 43 service/provider/layout tests, type/lint and the optimized build pass. The full suite passed 22 browser cases plus two skips; the six PDF/flashcard/cooldown cases passed again after phone-scroll and rotated-page checks were refined. The generated `pdf-highlight-*` and `flashcards-rated-*` screenshots use the labeled deterministic provider. The public walkthrough and screenshots are recorded separately after deployment.

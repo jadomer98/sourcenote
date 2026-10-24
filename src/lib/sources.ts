@@ -62,7 +62,7 @@ export async function addSource(
     invariant(
       count.count < config.sources,
       'SOURCE_LIMIT',
-      'Maximal 10 Quellen pro Notebook. Entferne zuerst eine Quelle.',
+      `Maximal ${config.sources} Quellen pro Notebook. Entferne zuerst eine Quelle.`,
       429,
     );
     const [space] = await tx.query<{ bytes: string }>(

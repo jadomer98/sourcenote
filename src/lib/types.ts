@@ -32,6 +32,7 @@ export type GenerationKind = 'answer' | 'summary' | StudioKind;
 export type Block = {
   text: string;
   evidence_ids: string[];
+  source_quotes?: { evidence_id: string; text: string }[];
   question?: string;
   options?: string[];
   correct?: number;

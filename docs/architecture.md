@@ -10,7 +10,7 @@ The Node route handler is a thin validation/authorization boundary. Small module
 
 Local development uses filesystem-backed PGlite (embedded PostgreSQL). With `DATABASE_URL`, a bounded `pg` pool uses managed PostgreSQL such as Neon. All SQL uses parameters. [Migration 001](../migrations/001_initial.sql) defines composite notebook/operation foreign keys, enum-like checks, indexes and persistent operation/quota rows. Private originals are in `source_blob`, capped at 4 MiB each and by a global budget. This avoids a paid volume and lets deletion purge source content and original bytes in one transaction. Temporary disk is used only inside the bounded extraction request.
 
-Prepared deployment: Vercel Hobby + Neon Free, without a custom domain. [Free-tier research](free-tier-research.md) records official sources and trade-offs. No public URL exists yet. Docker is also supplied for a conventional Node host, but no paid service is provisioned.
+The deployment uses Vercel Hobby + Neon Free, without a custom domain. [Free-tier research](free-tier-research.md) records official sources and trade-offs. Docker is also supplied for a conventional Node host; no paid service was provisioned.
 
 ## Source-to-citation flow
 
@@ -20,7 +20,7 @@ Prepared deployment: Vercel Hobby + Neon Free, without a custom domain. [Free-ti
 4. Questions, summaries and quizzes select an exact set of authorized ready sources. Reject stale, excluded, foreign or oversized selections; do not silently truncate. Full context is chosen for predictable coverage of short documents; no embeddings, search ranker, queue or vector service.
 5. Persist operation-specific selection/evidence membership and reserve quotas before the provider call. Pass only the standalone question and selected passages; earlier assistant text is not evidence. Source instructions are untrusted. Groq supplies strict JSON; the optional Cloudflare adapter uses its JSON schema format. Schema and citation allow-list validation happen on the server.
 6. Lock the notebook and recheck source state/version before atomically saving output, citations and usage. Unsupported material produces an explicit limitation without citations. Invalid IDs, truncated output, provider errors or late source deletion produce a useful error without exposing provisional text.
-7. A citation request authorizes again and resolves source text/page from live stored evidence. Model-provided quotes/page numbers are never accepted. A valid ID proves provenance, not that every claim is supported; the [evaluation set](../fixtures/evaluation.json) requires human semantic review.
+7. A citation request authorizes again and resolves source text/page from live stored evidence. New provider outputs include short verbatim quotations: the server verifies each against the cited passage before accepting it. Original-PDF highlighting uses stored page/character offsets plus this verified source substring. Historic entries without quotes highlight their larger evidence passage. Page numbers remain derived from extraction, never the model. A valid quote/ID proves provenance, not that every claim is supported; the [evaluation set](../fixtures/evaluation.json) requires human semantic review.
 
 Saved answers preserve citation provenance. Summary and quiz outputs reopen in Studio. Markdown export includes source names and reliable PDF page labels. Deleting a source clears its chunks/blob and redacts dependent answer/summary/note/quiz bodies, even if a selected source was not cited; historical questions remain. A minimal content-free source tombstone remains until notebook/owner deletion. Source deletion and generation commits use the same notebook lock.
 
@@ -28,13 +28,13 @@ Saved answers preserve citation provenance. Summary and quiz outputs reopen in S
 
 | Boundary | Limit |
 | --- | --- |
-| Upload | 4 MiB, PDF/TXT/MD or pasted UTF-8 text; 50 PDF pages; 100k characters/source |
-| Workspace | 3 notebooks; 10 active sources/notebook; 500k characters/owner; 30 saved notes/notebook |
+| Upload | 4 MiB, PDF/TXT/MD or pasted UTF-8 text; 200 PDF pages; 100k characters/source |
+| Workspace | 10 notebooks; 20 active sources/notebook; 500k characters/owner; 30 saved notes/notebook |
 | Ingestion | 20 new uploads/owner/hour; one globally active parser; 20s parser deadline |
 | Generation | 4k evidence tokens; 1.5k question characters; 2k completion tokens; 45s provider deadline |
 | Concurrency | One active generation/owner, three/service, protected by DB admission locks |
-| Free Groq pacing | Reserve estimated tokens against 8k per clock minute; provider can still return 429 |
-| Daily defaults | 30 attempts/owner; configured 100k service tokens and 50 MiB source bytes in `.env.example` |
+| Free Groq pacing | Provider-authoritative rate windows; forward retry-after/countdown on 429, no automatic resubmission |
+| Daily defaults | 200 attempts/owner; configured 100k service tokens and 50 MiB source bytes in `.env.example` |
 | Session | Seven-day absolute lifetime; lost cookies cannot recover data |
 
 Provider tokenization can differ from the local `o200k_base` estimate; an input margin is used. Provider/account rate limits remain authoritative. The service caps bound local usage; they are not a promise that every allowed request will fit a free provider window.

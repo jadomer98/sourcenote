@@ -164,14 +164,14 @@ async function handler(request: NextRequest, { params }: { params: Promise<{ pat
           if (p[4] === 'retry' && method === 'POST') {
             await retrySource(owner, notebook, source);
             result = { ok: true };
-          } else if (p[4] === 'download' && method === 'GET') {
+          } else if ((p[4] === 'download' || p[4] === 'file') && method === 'GET') {
             const { source: s } = await previewSource(owner, notebook, source);
             const data = await getOriginal(source);
             invariant(data, 'NOT_FOUND', 'Original nicht verfügbar.', 404);
             return new NextResponse(new Uint8Array(data), {
               headers: {
                 'Content-Type': s.mime,
-                'Content-Disposition': `attachment; filename="source.${s.mime === 'application/pdf' ? 'pdf' : 'txt'}"`,
+                'Content-Disposition': `${p[4] === 'file' ? 'inline' : 'attachment'}; filename="source.${s.mime === 'application/pdf' ? 'pdf' : 'txt'}"`,
                 'Cache-Control': 'no-store',
               },
             });
@@ -225,8 +225,18 @@ async function handler(request: NextRequest, { params }: { params: Promise<{ pat
       );
     if (error instanceof AppError)
       return NextResponse.json(
-        { error: error.message, code: error.code },
-        { status: error.status, headers: { 'Cache-Control': 'no-store' } },
+        {
+          error: error.message,
+          code: error.code,
+          ...(error.retryAfter ? { retryAfter: error.retryAfter } : {}),
+        },
+        {
+          status: error.status,
+          headers: {
+            'Cache-Control': 'no-store',
+            ...(error.retryAfter ? { 'Retry-After': String(error.retryAfter) } : {}),
+          },
+        },
       );
     console.error('Request failed:', error instanceof Error ? error.name : 'UnknownError');
     return NextResponse.json(

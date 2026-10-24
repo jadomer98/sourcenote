@@ -4,6 +4,7 @@ import './readability.css';
 import './studio.css';
 import './workspace-layout.css';
 import './dark-workspace.css';
+import './evidence-reader.css';
 export const metadata: Metadata = {
   title: 'SourceNote — Deine Quellen. Klare Antworten.',
   description:

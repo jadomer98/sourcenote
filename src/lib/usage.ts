@@ -76,7 +76,7 @@ export async function readUsage(owner: string, project = false): Promise<UsageDa
       notebooks: config.notebooks,
       sources: config.sources,
       fileMiB: config.fileBytes / 1024 / 1024,
-      pdfPages: 50,
+      pdfPages: config.pdfPages,
       textChars: config.textChars,
       evidenceTokens: config.evidenceTokens,
       outputTokens: config.outputTokens,
