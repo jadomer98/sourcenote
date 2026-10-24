@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('five accent families have readable tool labels', async ({ page, isMobile }) => {
+test('dark tools retain five readable accent families', async ({ page, isMobile }) => {
   test.skip(isMobile, 'The same color tokens are checked once on desktop.');
   await page.goto('/');
   await page.getByRole('button', { name: /Beispiel erkunden/ }).click();
@@ -9,7 +9,8 @@ test('five accent families have readable tool labels', async ({ page, isMobile }
   ).toBeVisible();
   const colors = await page.locator('.studio-tool').evaluateAll((tools) =>
     tools.map((tool) => ({
-      foreground: getComputedStyle(tool.querySelector('strong')!).color,
+      foreground: getComputedStyle(tool.querySelector('.tool-icon')!).color,
+      label: getComputedStyle(tool.querySelector('strong')!).color,
       background: getComputedStyle(tool).backgroundColor,
     })),
   );
@@ -28,6 +29,8 @@ test('five accent families have readable tool labels', async ({ page, isMobile }
     const a = luminance(color.foreground),
       b = luminance(color.background);
     expect((Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)).toBeGreaterThanOrEqual(4.5);
+    const label = luminance(color.label);
+    expect((Math.max(label, b) + 0.05) / (Math.min(label, b) + 0.05)).toBeGreaterThanOrEqual(4.5);
   }
 });
 
@@ -98,6 +101,7 @@ test('sidebar collapses, resizes and keeps navigation usable', async ({ page, is
     return;
   }
   const nav = page.getByRole('complementary', { name: 'Hauptnavigation' });
+  await page.getByRole('button', { name: 'Navigation ausklappen', exact: true }).click();
   await page.getByRole('button', { name: 'Navigation einklappen', exact: true }).click();
   await expect.poll(async () => (await nav.boundingBox())?.width).toBe(68);
   await nav.getByRole('button', { name: 'Nutzung & Limits', exact: true }).click();
@@ -126,6 +130,7 @@ test('intermediate desktop widths stay on screen with expanded and compact navig
   await expect(
     page.getByRole('heading', { name: 'Projekt Morgenlicht', exact: true }),
   ).toBeVisible();
+  await page.getByRole('button', { name: 'Navigation ausklappen', exact: true }).click();
   for (const width of [801, 900, 1024, 1280, 1600, 1920]) {
     await page.setViewportSize({ width, height: 960 });
     await expect(page.locator('.chat-panel')).toBeVisible();

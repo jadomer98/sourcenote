@@ -15,13 +15,10 @@ import {
   GitBranch,
   Table2,
   ArrowDownToLine,
-  ArrowLeft,
   ArrowRight,
   ArrowUp,
   BookOpen,
   Check,
-  CheckCheck,
-  ChevronDown,
   ChevronRight,
   CircleHelp,
   FileText,
@@ -52,6 +49,7 @@ import {
   PanelActions,
   SidebarResizeHandle,
   WorkspacePanels,
+  WorkspacePanelToolbar,
   updateLayout,
   useLayoutPreferences,
 } from './workspace-layout';
@@ -405,7 +403,10 @@ export function WorkspaceApp() {
     if (!workspace || !text.trim() || busy || remoteBusy) return;
     const id = workspace.notebook.id;
     setPendingQuestion(kind === 'answer' ? text : '');
-    if (kind === 'answer') setQuestion('');
+    if (kind === 'answer') {
+      setQuestion('');
+      if (composer.current) composer.current.style.height = '26px';
+    }
     await run(kind, async () => {
       try {
         const result = await api<{ id: string }>(`notebooks/${id}/generate`, {
@@ -674,15 +675,58 @@ export function WorkspaceApp() {
             >
               <PanelLeftClose size={20} />
             </button>
-            <button onClick={() => goHome()}>Arbeitsbereich</button>
-            {workspace && (
+            {workspace ? (
               <>
-                <ChevronRight size={15} />
-                <span>{workspace.notebook.title}</span>
+                <button
+                  className="workspace-home"
+                  aria-label="Zurück zu Notebooks"
+                  title="Meine Notebooks"
+                  onClick={() => goHome()}
+                >
+                  <Logo />
+                </button>
+                <div className="workspace-title">
+                  <h1 dir="auto">{workspace.notebook.title}</h1>
+                  <button
+                    className="icon-button"
+                    aria-label="Notebook umbenennen"
+                    title="Notebook umbenennen"
+                    onClick={() => {
+                      setFormTitle(workspace.notebook.title);
+                      setDialog({ type: 'rename' });
+                    }}
+                  >
+                    <Pencil size={16} />
+                  </button>
+                </div>
               </>
+            ) : (
+              <button onClick={() => goHome()}>Meine Notebooks</button>
             )}
           </div>
           <div className="topbar-end">
+            {workspace && (
+              <>
+                <WorkspacePanelToolbar />
+                <button
+                  className="header-create"
+                  aria-label="Notebook erstellen"
+                  title="Notebook erstellen"
+                  onClick={showCreate}
+                >
+                  <Plus size={19} />
+                  <span>Neues Notebook</span>
+                </button>
+                <button
+                  className="icon-button header-delete"
+                  aria-label="Notebook löschen"
+                  title="Notebook löschen"
+                  onClick={() => setDialog({ type: 'delete' })}
+                >
+                  <Trash2 size={17} />
+                </button>
+              </>
+            )}
             <button
               className="usage-shortcut"
               aria-label="Nutzung und Limits öffnen"
@@ -874,52 +918,6 @@ export function WorkspaceApp() {
           </main>
         ) : (
           <main className="workspace-content" id="main">
-            <div className="notebook-heading">
-              <div className="notebook-heading-left">
-                <button
-                  className="icon-button back-home"
-                  onClick={() => goHome()}
-                  aria-label="Zurück zu Notebooks"
-                >
-                  <ArrowLeft size={19} />
-                </button>
-                <span className={`book-symbol ${workspace.notebook.color}`}>
-                  <BookIcon name={workspace.notebook.emoji} size={25} />
-                </span>
-                <div>
-                  <div className="title-row">
-                    <h1>{workspace.notebook.title}</h1>
-                    <button
-                      className="icon-button"
-                      aria-label="Notebook umbenennen"
-                      onClick={() => {
-                        setFormTitle(workspace.notebook.title);
-                        setDialog({ type: 'rename' });
-                      }}
-                    >
-                      <Pencil size={15} />
-                    </button>
-                  </div>
-                  <span className="notebook-meta">
-                    {workspace.sources.length} Quellen<span>·</span>Zuletzt bearbeitet am{' '}
-                    {date(workspace.notebook.updated_at)}
-                  </span>
-                </div>
-              </div>
-              <div className="notebook-heading-actions">
-                <span>
-                  <CheckCheck size={15} />
-                  Gespeichert
-                </span>
-                <button
-                  className="icon-button"
-                  aria-label="Notebook löschen"
-                  onClick={() => setDialog({ type: 'delete' })}
-                >
-                  <Trash2 size={17} />
-                </button>
-              </div>
-            </div>
             <WorkspacePanels activeTab={tab} onActiveTabChange={setTab}>
               <section
                 className={`sources-panel panel ${tab === 'sources' ? 'mobile-active' : ''}`}
@@ -1075,15 +1073,17 @@ export function WorkspaceApp() {
                 <div className="chat-scroll" role="log" aria-label="Gespräch" aria-live="polite">
                   {!chat.length && !pendingQuestion && (
                     <div className="chat-intro">
-                      <span className="chat-spark">
-                        <Sparkles size={29} />
+                      <span className={`chat-spark ${workspace.notebook.color}`}>
+                        <BookIcon name={workspace.notebook.emoji} size={34} />
                       </span>
-                      <span className="eyebrow">NEUE QUELLEN. NEUE PERSPEKTIVEN.</span>
-                      <h2>
-                        Was möchtest du
-                        <br />
-                        herausfinden?
-                      </h2>
+                      <div className="notebook-intro-title" dir="auto">
+                        {workspace.notebook.title}
+                      </div>
+                      <div className="notebook-intro-meta">
+                        {ready.length} {ready.length === 1 ? 'Quelle' : 'Quellen'}
+                        <span>·</span>
+                        {date(workspace.notebook.created_at)}
+                      </div>
                       <p>
                         {ready.length
                           ? 'Deine Quellen sind bereit. Stelle eine Frage und entdecke die Belege hinter jeder Antwort.'
@@ -1190,20 +1190,23 @@ export function WorkspaceApp() {
                       }
                       value={question}
                       maxLength={1500}
-                      onChange={(e) => setQuestion(e.target.value)}
+                      onChange={(e) => {
+                        setQuestion(e.target.value);
+                        e.target.style.height = 'auto';
+                        e.target.style.height = Math.min(e.target.scrollHeight, 128) + 'px';
+                      }}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' && !e.shiftKey) {
                           e.preventDefault();
                           void ask();
                         }
                       }}
-                      rows={2}
+                      rows={1}
                     />
                     <div className="composer-bottom">
                       <span className="selection-pill">
                         <FileText size={12} />
                         {selected.length} {selected.length === 1 ? 'Quelle' : 'Quellen'}
-                        <ChevronDown size={12} />
                       </span>
                       <button
                         className="send-button"
@@ -1246,12 +1249,7 @@ export function WorkspaceApp() {
                     <PanelActions panel="studio" />
                   </div>
                 </div>
-                <div className="studio-scroll">
-                  <p className="studio-intro">
-                    Mach aus deinen Quellen
-                    <br />
-                    <strong>etwas, das bleibt.</strong>
-                  </p>
+                <div className="studio-tools-area">
                   <div className="studio-tools-grid">
                     {studioTools.map((tool) => {
                       const Icon = {
@@ -1266,6 +1264,8 @@ export function WorkspaceApp() {
                         <button
                           key={tool.kind}
                           className={`studio-tool ${tool.kind}-tool`}
+                          aria-label={tool.title + ' ' + tool.description}
+                          title={tool.description}
                           disabled={!selected.length || !!busy || remoteBusy || !bootstrap?.aiReady}
                           onClick={() =>
                             void ask(
@@ -1294,6 +1294,8 @@ export function WorkspaceApp() {
                     Einmal erstellen. Immer wieder nutzen. Jede Erstellung zählt als eine
                     KI-Anfrage.
                   </p>
+                </div>
+                <div className="studio-scroll">
                   <div className="studio-divider">
                     <span>GESPEICHERTE INHALTE</span>
                     <span>{artifacts.length}</span>
@@ -1333,7 +1335,8 @@ export function WorkspaceApp() {
                             ? 'Notiz'
                             : entry.kind === 'quiz'
                               ? 'Wissenscheck'
-                              : 'Überblick'}
+                              : studioTools.find((tool) => tool.kind === entry.kind)?.title ||
+                                'Inhalt'}
                         </small>
                       </div>
                       <ChevronRight size={15} />

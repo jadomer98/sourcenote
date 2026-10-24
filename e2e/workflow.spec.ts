@@ -43,7 +43,11 @@ test('real UI: upload → question → citation → note → summary → reload 
   if (isMobile) await page.getByRole('tab', { name: 'Studio', exact: true }).click();
   await expect(page.getByRole('button', { name: /Gespeicherte Erkenntnis/ })).toBeVisible();
   await page.getByRole('button', { name: /Quellenüberblick Das Wesentliche/ }).click();
-  await expect(page.getByRole('button', { name: /Quellenüberblick.*Überblick/ })).toBeVisible();
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await page.getByRole('dialog').getByRole('button', { name: 'Schließen', exact: true }).click();
+  await expect(
+    page.locator('.artifact-card').filter({ hasText: 'Quellenüberblick' }),
+  ).toBeVisible();
   await page.reload();
   if (isMobile) await page.getByRole('tab', { name: 'Studio', exact: true }).click();
   await expect(page.getByRole('button', { name: /Gespeicherte Erkenntnis/ })).toBeVisible();
@@ -117,13 +121,11 @@ test('binary PDF upload and provider failure recover through the real UI', async
   const pdf = await PDFDocument.create();
   pdf.addPage().drawText('Pilot budget: 5000 euros. The project starts in November 2026.');
   if (isMobile) await page.getByRole('tab', { name: 'Quellen', exact: true }).click();
-  await page
-    .getByLabel('Quelldatei auswählen')
-    .setInputFiles({
-      name: 'pilot.pdf',
-      mimeType: 'application/pdf',
-      buffer: Buffer.from(await pdf.save()),
-    });
+  await page.getByLabel('Quelldatei auswählen').setInputFiles({
+    name: 'pilot.pdf',
+    mimeType: 'application/pdf',
+    buffer: Buffer.from(await pdf.save()),
+  });
   await expect(page.getByRole('button', { name: /pilot.pdf PDF/ })).toBeVisible();
   if (isMobile) await page.getByRole('tab', { name: 'Chat', exact: true }).click();
   await page.getByLabel('Frage an deine Quellen').fill('PROVIDER_TIMEOUT');
@@ -139,13 +141,11 @@ test('binary PDF upload and provider failure recover through the real UI', async
   await page.getByRole('button', { name: /Beleg 1 aus pilot.pdf/ }).click();
   await expect(page.getByRole('dialog')).toContainText('Seite 1');
   await page.getByRole('button', { name: 'Schließen', exact: true }).click();
-  await page
-    .getByLabel('Quelldatei auswählen')
-    .setInputFiles({
-      name: 'invalid.exe',
-      mimeType: 'application/octet-stream',
-      buffer: Buffer.from('unsupported data'),
-    });
+  await page.getByLabel('Quelldatei auswählen').setInputFiles({
+    name: 'invalid.exe',
+    mimeType: 'application/octet-stream',
+    buffer: Buffer.from('unsupported data'),
+  });
   await expect(
     page.getByText('Bitte eine PDF-, TXT- oder Markdown-Datei hochladen.', { exact: true }),
   ).toBeVisible();

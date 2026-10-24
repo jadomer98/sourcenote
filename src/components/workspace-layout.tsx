@@ -38,7 +38,9 @@ import {
   type PanelId,
 } from '@/lib/workspace-layout';
 
-const key = 'sourcenote:workspace-layout:v1';
+// The dark workspace has a new default arrangement. Keep the preceding
+// layout untouched so restoring that Git release also restores its preferences.
+const key = 'sourcenote:workspace-layout:v2';
 const eventName = 'sourcenote:layout-change';
 let rawCache: string | null | undefined;
 let snapshot = defaultLayout;
@@ -83,6 +85,55 @@ export function updateLayout(
 }
 export function useLayoutPreferences() {
   return useSyncExternalStore(subscribe, getSnapshot, () => defaultLayout);
+}
+
+export function WorkspacePanelToolbar() {
+  const layout = useLayoutPreferences();
+  const visible = panelIds.filter(
+    (id) => !layout.hidden.includes(id) && (!layout.focused || layout.focused === id),
+  );
+  return (
+    <div className="panel-toolbar" aria-label="Bereiche ein- und ausblenden">
+      <div className="panel-toggles">
+        {panelIds.map((id) => {
+          const Icon = { sources: FileText, chat: MessageCircle, studio: Sparkles }[id];
+          return (
+            <button
+              key={id}
+              className={`panel-toggle ${id}`}
+              data-toggle={id}
+              aria-label={panelLabels[id]}
+              aria-pressed={visible.includes(id)}
+              title={panelLabels[id] + (visible.includes(id) ? ' ausblenden' : ' einblenden')}
+              onClick={() =>
+                updateLayout((s) => ({
+                  ...s,
+                  hidden: visible.includes(id)
+                    ? [...new Set([...s.hidden, id])]
+                    : s.hidden.filter((p) => p !== id),
+                  focused: null,
+                }))
+              }
+            >
+              <Icon size={15} />
+              <span>{panelLabels[id]}</span>
+              {!visible.includes(id) && <Plus size={12} />}
+            </button>
+          );
+        })}
+      </div>
+      <button
+        className="layout-reset"
+        aria-label="Layout zurücksetzen"
+        title="Standardaufteilung wiederherstellen"
+        onClick={() =>
+          updateLayout((s) => ({ ...s, hidden: [], focused: null, weights: defaultLayout.weights }))
+        }
+      >
+        <RotateCcw size={15} />
+      </button>
+    </div>
+  );
 }
 
 function stopResizing() {
@@ -215,8 +266,8 @@ export function WorkspacePanels({
     if (activeTab === id)
       onActiveTabChange(panelIds.find((p) => p !== id && !layout.hidden.includes(p)) || 'chat');
     requestAnimationFrame(() =>
-      grid.current?.parentElement
-        ?.querySelector<HTMLButtonElement>(
+      document
+        .querySelector<HTMLButtonElement>(
           window.matchMedia('(max-width: 800px)').matches
             ? `[data-tab="${id}"]`
             : `[data-toggle="${id}"]`,
@@ -227,10 +278,6 @@ export function WorkspacePanels({
   function open(id: PanelId) {
     updateLayout((s) => ({ ...s, hidden: s.hidden.filter((p) => p !== id), focused: null }));
     onActiveTabChange(id);
-  }
-  function toggle(id: PanelId) {
-    if (visible.includes(id)) close(id);
-    else open(id);
   }
   function focus(id: PanelId) {
     updateLayout((s) => ({ ...s, focused: s.focused === id ? null : id }));
@@ -307,46 +354,6 @@ export function WorkspacePanels({
   return (
     <PanelContext.Provider value={{ close, focus, focused: layout.focused }}>
       <div className="workspace-layout">
-        <div className="panel-toolbar" aria-label="Bereiche ein- und ausblenden">
-          <span className="layout-toolbar-label">
-            <PanelsTopLeft size={15} /> Dein Arbeitsbereich
-          </span>
-          <div className="panel-toggles">
-            {panelIds.map((id) => {
-              const Icon = { sources: FileText, chat: MessageCircle, studio: Sparkles }[id];
-              return (
-                <button
-                  key={id}
-                  className={`panel-toggle ${id}`}
-                  data-toggle={id}
-                  aria-pressed={visible.includes(id)}
-                  onClick={() => toggle(id)}
-                  title={panelLabels[id] + (visible.includes(id) ? ' ausblenden' : ' einblenden')}
-                >
-                  <Icon size={14} />
-                  {panelLabels[id]}
-                  {!visible.includes(id) && <Plus size={12} />}
-                </button>
-              );
-            })}
-          </div>
-          <button
-            className="layout-reset"
-            aria-label="Layout zurücksetzen"
-            title="Standardaufteilung wiederherstellen"
-            onClick={() =>
-              updateLayout((s) => ({
-                ...s,
-                weights: defaultLayout.weights,
-                hidden: [],
-                focused: null,
-              }))
-            }
-          >
-            <RotateCcw size={14} />
-            <span>Layout zurücksetzen</span>
-          </button>
-        </div>
         <div className="mobile-tabs" role="tablist" aria-label="Notebook-Bereiche">
           {panelIds.map((id) => {
             const Icon = { sources: FileText, chat: MessageCircle, studio: Sparkles }[id];

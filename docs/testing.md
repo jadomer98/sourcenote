@@ -5,7 +5,7 @@ Latest execution: **2026-10-24**, Windows, Node 24.19.0; GitHub CI on Ubuntu/Nod
 | Command | Result |
 | --- | --- |
 | `npm.cmd run check` | Type generation, TypeScript, ESLint and all 35 service/provider/layout tests passed |
-| `npm.cmd run test:e2e` | 16 desktop/mobile Chromium tests passed; two redundant desktop-only checks skipped on mobile; clearly labeled deterministic test provider |
+| `npm.cmd run test:e2e` | 18 desktop/mobile Chromium tests passed; two redundant desktop-only checks skipped on mobile; clearly labeled deterministic test provider |
 | `npm.cmd run build` | Optimized Next.js compilation and all static/API routes passed |
 | `neon.cmd deploy` | Existing production policy matched; Postgres-only use; 3 Neon variables pulled into ignored `.env.local` |
 | `npm.cmd run db:migrate` | Neon direct-connection migrations passed; schema versions 1 and 2 |
@@ -93,3 +93,9 @@ The layout iteration adds four preference/size-bound tests and browser coverage 
 All 16 browser cases passed locally; the two skipped project instances duplicate desktop color/matrix checks on mobile, whose interactions have separate coverage. Existing source-to-citation and Studio/usage journeys still pass. No AI tokens are consumed by these deterministic tests or the display controls. [Design and keyboard details](design/flexible-workspace.md).
 
 The public deployment also passed resizing (pointer and keyboard), visibility/reopening, focus, retained draft, reload persistence, usage access, desktop overflow checks and mobile navigation/recovery with zero AI requests. See [public layout verification](design/flexible-live-verification.json). Screenshots `flexible-*-live.png` were captured from the public domain with no test mode; the other layout screenshots retain their test-mode banner. [Linux verification for this implementation](https://github.com/jadomer98/sourcenote/actions/runs/40110668820) passed checks, build and the full browser suite.
+
+## Dark workspace redesign
+
+The new `feat/dark-notebook-workspace` branch preserves `feat/flexible-panels-colors` at `45c67c9`. A compact header, initially collapsed navigation, black chat canvas, charcoal panels and pinned Studio tools replace the preceding layout. Panel controls and persisted data remain available. [Design and rollback details](design/dark-workspace.md).
+
+Local type generation, TypeScript, ESLint and all 35 service/provider/layout tests pass. The optimized production build passes. All 18 desktop/mobile browser cases pass; two duplicate desktop-only checks are skipped in the mobile project. New checks measure usable space at 1280×720, composer size and multiline growth, answer readability, pinned tools after four generated artifacts, mobile rename and page fitting. Existing source/citation, learning tools, usage, resizing, hiding, focus and persistence checks still pass. The `dark-workspace-laptop.png` and `dark-workspace-mobile.png` captures use the explicitly labeled deterministic test provider.

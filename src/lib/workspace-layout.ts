@@ -8,9 +8,9 @@ export type LayoutPreferences = {
   focused: PanelId | null;
 };
 export const defaultLayout: LayoutPreferences = {
-  sidebarCollapsed: false,
+  sidebarCollapsed: true,
   sidebarWidth: 224,
-  weights: { sources: 26, chat: 45, studio: 29 },
+  weights: { sources: 25, chat: 49, studio: 26 },
   hidden: [],
   focused: null,
 };
@@ -25,10 +25,13 @@ export function parseLayout(raw: string | null): LayoutPreferences {
   if (!raw) return defaultLayout;
   try {
     const value = JSON.parse(raw);
-    if (!value || typeof value !== 'object') return defaultLayout;
+    if (!value || typeof value !== 'object' || Array.isArray(value)) return defaultLayout;
     const valid = (n: unknown): n is number => typeof n === 'number' && Number.isFinite(n);
     return {
-      sidebarCollapsed: value.sidebarCollapsed === true,
+      sidebarCollapsed:
+        typeof value.sidebarCollapsed === 'boolean'
+          ? value.sidebarCollapsed
+          : defaultLayout.sidebarCollapsed,
       sidebarWidth: valid(value.sidebarWidth)
         ? clamp(value.sidebarWidth, 176, 340)
         : defaultLayout.sidebarWidth,
