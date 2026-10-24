@@ -8,6 +8,15 @@
     border-color 150ms,
     background 150ms;
 }
+.modal-head h2 {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.modal-head > .icon-button {
+  flex-shrink: 0;
+}
 .learning-view button.flashcard:hover {
   background: #303034;
   border-color: var(--accent);
