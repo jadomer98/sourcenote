@@ -1,6 +1,6 @@
 # SourceNote: implemented architecture
 
-Updated 2026-10-23. The application is implemented and verified locally. Real free-provider evaluation, cloud provisioning and public delivery remain pending credentials/account access. The original [proposal](architecture-proposal.md) and ADR-01–06 remain historical; [ADR-07](architecture/decisions.md) records the revision required by Ayham's zero-spend constraint.
+Updated 2026-10-24. The application is published at https://sourcenote-mu.vercel.app with source at https://github.com/jadomer98/sourcenote. Actual Neon/Groq HTTP and desktop/mobile UI checks passed on Vercel Hobby; Loom recording remains outstanding. The original [proposal](architecture-proposal.md) and ADR-01–06 remain historical; [ADR-07–09](architecture/decisions.md) record the zero-spend revision, database integration and verified public deployment.
 
 ## Application and data boundaries
 
@@ -66,6 +66,6 @@ Provider credentials are server environment variables only. Error responses and 
 | MVP-04–07 | generation.ts, provider.ts | ARCH-02–04 | Evidence allow-list, limitation, deletion race, timeout tests |
 | MVP-09 | workspace-app.tsx, CSS | ARCH-01 | Desktop/mobile browser core journey, screenshots |
 | MVP-10,11 | auth.ts, API handler, quotas/config | ARCH-01,04 | Cross-owner IDs, CSRF and service cap tests |
-| Employer delivery | README, deployment/demo/submission docs | all four | Local package complete; public links/real AI/video pending |
+| Employer delivery | README, deployment/demo/submission docs | all four | Repository/live app published and real AI tested; Loom recording remains pending |
 
 See [tests](testing.md), [deployment](deployment.md), [diagram manifest](architecture/README.md) and [delivery audit](delivery-status.md).
