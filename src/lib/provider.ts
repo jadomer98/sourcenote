@@ -96,7 +96,7 @@ export function validateGenerated(
         ],
       };
     }
-    validateGenerated(
+    const verified = validateGenerated(
       {
         outcome: studio.outcome,
         blocks: studio.blocks.map((b) => ({
@@ -107,6 +107,9 @@ export function validateGenerated(
       },
       passages,
     );
+    studio.blocks.forEach((block, i) => {
+      block.source_quotes = verified.blocks[i].source_quotes;
+    });
     return studio;
   }
   const result = parsedSchema.safeParse(value);
@@ -135,22 +138,22 @@ export function validateGenerated(
     );
     block.evidence_ids = [...new Set(block.evidence_ids)];
     if (block.source_quotes !== undefined) {
-      const ids = block.source_quotes.map((q) => q.evidence_id);
-      invariant(
-        new Set(ids).size === ids.length &&
-          ids.length === block.evidence_ids.length &&
-          block.source_quotes.every((quote) => {
-            const passage = passages.find((p) => p.id === quote.evidence_id);
-            return (
-              block.evidence_ids.includes(quote.evidence_id) &&
-              passage &&
-              findTextRange(passage.text, quote.text) !== null
-            );
-          }),
-        'INVALID_QUOTE',
-        'Eine zitierte Textstelle war nicht eindeutig im Original belegt. Bitte erneut versuchen.',
-        502,
-      );
+      const seen = new Set<string>();
+      // These are optional precision anchors, not the evidence membership itself.
+      // Discard unverified anchors so the viewer can honestly show the stored passage.
+      // Unknown evidence IDs and fabricated literal quotes in the answer still fail below.
+      block.source_quotes = block.source_quotes.filter((quote) => {
+        const passage = passages.find((p) => p.id === quote.evidence_id);
+        if (
+          !block.evidence_ids.includes(quote.evidence_id) ||
+          !passage ||
+          seen.has(quote.evidence_id) ||
+          !findTextRange(passage.text, quote.text)
+        )
+          return false;
+        seen.add(quote.evidence_id);
+        return true;
+      });
     }
     const normalize = (s: string) => s.normalize('NFC').replace(/\s+/g, ' ').trim();
     // Delimited literal quotations must occur in one of this block's cited passages.

@@ -84,4 +84,43 @@ it('allows sequential provider-approved requests and resolves exact persisted qu
     ['global:' + new Date().toISOString().slice(0, 10)],
   );
   expect(Number(quota.tokens)).toBe(400);
+  vi.stubGlobal('fetch', async (_url: string, request: RequestInit) => {
+    const evidence = JSON.parse(JSON.parse(String(request.body)).messages[1].content).evidence[0]
+      .evidence_id;
+    return Response.json({
+      choices: [
+        {
+          finish_reason: 'stop',
+          message: {
+            content: JSON.stringify({
+              outcome: 'answer',
+              blocks: [
+                {
+                  text: 'Das Budget beträgt 5.000 Euro.',
+                  evidence_ids: [evidence],
+                  source_quotes: [
+                    { evidence_id: evidence, text: 'Das Budget beträgt 9.999 Euro.' },
+                  ],
+                },
+              ],
+            }),
+          },
+        },
+      ],
+      usage: { total_tokens: 100 },
+    });
+  });
+  const fallback = await generate(owner, book, [source], 'Budget erneut?', 'answer', randomUUID());
+  const entry = (await getWorkspace(owner, book)).entries.find(
+    (e) => e.operation_id === fallback.id && e.kind === 'answer',
+  )!;
+  expect(entry.body!.blocks[0].source_quotes).toEqual([]);
+  const fallbackCitation = await resolveCitation(
+    owner,
+    book,
+    entry.id,
+    entry.citations[0].evidence_id,
+  );
+  expect(fallbackCitation.precise).toBe(false);
+  expect(fallbackCitation.highlight_text).toBe(fallbackCitation.text);
 });

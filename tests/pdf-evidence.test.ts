@@ -50,7 +50,7 @@ describe('PDF source highlights', () => {
     });
     expect(findTextRange('Budget 5000.', 'Budget 9000.')).toBeNull();
   });
-  it('accepts exact source quotations and rejects invented or misattributed highlights', () => {
+  it('accepts exact source quotations and discards invented or misattributed highlight anchors', () => {
     const passages = [
       {
         id: 'a',
@@ -72,22 +72,37 @@ describe('PDF source highlights', () => {
     expect(
       validateGenerated(output('Das Budget beträgt 5.000 Euro.'), passages).blocks[0].source_quotes,
     ).toHaveLength(1);
-    expect(() => validateGenerated(output('Das Budget beträgt 9.999 Euro.'), passages)).toThrow();
-    expect(() =>
-      validateGenerated(output('Das Budget beträgt 5.000 Euro.', 'foreign'), passages),
-    ).toThrow();
-    expect(() =>
+    expect(
+      validateGenerated(output('Das Budget beträgt 9.999 Euro.'), passages).blocks[0].source_quotes,
+    ).toEqual([]);
+    expect(
+      validateGenerated(output('Das Budget beträgt 5.000 Euro.', 'foreign'), passages).blocks[0]
+        .source_quotes,
+    ).toEqual([]);
+    expect(
       validateGenerated(
         { outcome: 'answer', blocks: [{ text: 'Budget', evidence_ids: ['a'], source_quotes: [] }] },
         passages,
-      ),
-    ).toThrow();
+      ).blocks[0].source_quotes,
+    ).toEqual([]);
     expect(
       validateGenerated(
         { outcome: 'answer', blocks: [{ text: 'Legacy answer', evidence_ids: ['a'] }] },
         passages,
       ).outcome,
     ).toBe('answer');
+    const cards = validateGenerated(
+      {
+        outcome: 'answer',
+        blocks: [0, 1].map((i) => ({
+          ...output('Das Budget beträgt 9.999 Euro.').blocks[0],
+          question: 'Budgetfrage ' + i,
+        })),
+      },
+      passages,
+      'flashcards',
+    );
+    expect(cards.blocks.every((block) => block.source_quotes?.length === 0)).toBe(true);
   });
 });
 
