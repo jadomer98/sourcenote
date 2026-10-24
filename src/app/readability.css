@@ -3,12 +3,12 @@
 .section-toolbar p,
 .example-banner p,
 .notebook-card p {
-  color: #757e97;
+  color: var(--muted);
 }
 .nav-notebook,
 .nav-item,
 .rail-empty {
-  color: #68738d;
+  color: var(--muted);
 }
 .notebook-meta,
 .source-info small,
@@ -17,20 +17,20 @@
 .studio-intro,
 .studio-empty p,
 .composer-footnote {
-  color: #78849e;
+  color: var(--muted);
 }
 .source-info strong,
 .studio-tool strong,
 .studio-intro strong,
 .studio-empty h3,
 .artifact-card strong {
-  color: #596b93;
+  color: var(--ink);
 }
 .studio-tool div > span,
 .artifact-card p,
 .chat-intro > p,
 .suggestions > button {
-  color: #63718b;
+  color: var(--muted);
   opacity: 1;
 }
 .source-info strong {
@@ -50,11 +50,11 @@
 }
 .answer-block {
   font-size: 12px;
-  color: #52627e;
+  color: var(--ink);
 }
 .user-message .message-body {
   font-size: 12px;
-  color: #52628a;
+  color: var(--muted);
 }
 .suggestions > button {
   font-size: 10px;
@@ -63,23 +63,23 @@
   font-size: 12px;
 }
 .composer textarea::placeholder {
-  color: #8b98b4;
+  color: var(--muted);
 }
 .info-content > p,
 .info-feature p,
 .muted {
-  color: #78869f;
+  color: var(--muted);
 }
 .source-chunk,
 .source-excerpt {
-  color: #566985;
+  color: var(--ink);
 }
 .test-mode-banner {
   padding: 6px 24px;
-  background: #fff8e4;
-  border-bottom: 1px solid #f4e6b9;
+  background: var(--amber-soft);
+  border-bottom: 1px solid var(--amber-line);
   font-size: 10px;
-  color: #9b7a39;
+  color: var(--amber);
 }
 .test-mode-banner ~ .workspace-content {
   height: calc(100dvh - 104px);

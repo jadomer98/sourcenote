@@ -62,6 +62,7 @@ docs/             Decisions, diagrams, test evidence and recruitment handoff
 - [Implemented architecture](docs/architecture.md) · [ADRs](docs/architecture/decisions.md) · [schema/lifecycle](docs/architecture/schema-notes.md) · [HTTP contract](docs/api.md)
 - [Native draw.io architecture](docs/architecture/notebooklm-clone.drawio) · [page manifest and imports](docs/architecture/README.md)
 - [Zero-spend research](docs/free-tier-research.md) · [deployment/runbook](docs/deployment.md)
+- [Color research and palette](docs/design/color-research.md) · [preserved purple version](https://github.com/jadomer98/sourcenote/tree/feat/sourcenote-implementation)
 - [AI assistance and validation](docs/ai-usage.md) · [4:30 German Loom script](docs/demo-script.md) · [German reply draft](docs/submission-email.de.md)
 
 Deployed on **Vercel Hobby + Neon Free + Groq Free**. Original files are bounded private PostgreSQL blobs, so no paid disk or bucket is needed. Production deploys automatically from `main`; other Git branches do not deploy automatically or receive production secrets. Required variables and release migrations are documented. A Loom recording URL is not available yet.

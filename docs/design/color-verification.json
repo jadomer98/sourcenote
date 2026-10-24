@@ -1,0 +1,68 @@
+{
+  "date": "2026-10-24T13:37:25.464Z",
+  "scope": "Rendered visible text in selected states; excludes disabled controls and aria-hidden illustrations; not a complete accessibility audit",
+  "focus": [
+    {
+      "selector": ".welcome .primary",
+      "outlineWidth": "3px",
+      "outlineStyle": "solid",
+      "outlineColor": "rgb(57, 120, 85)"
+    },
+    {
+      "selector": ".nav-rail .nav-item",
+      "outlineWidth": "3px",
+      "outlineStyle": "solid",
+      "outlineColor": "rgb(214, 229, 185)"
+    }
+  ],
+  "results": [
+    {
+      "state": "desktop home",
+      "checked": 35,
+      "minimum": 4.79,
+      "failures": []
+    },
+    {
+      "state": "create notebook dialog",
+      "checked": 5,
+      "minimum": 5.87,
+      "failures": []
+    },
+    {
+      "state": "desktop workspace",
+      "checked": 66,
+      "minimum": 4.74,
+      "failures": []
+    },
+    {
+      "state": "answer and citation controls",
+      "checked": 66,
+      "minimum": 4.74,
+      "failures": []
+    },
+    {
+      "state": "citation dialog",
+      "checked": 4,
+      "minimum": 4.94,
+      "failures": []
+    },
+    {
+      "state": "mobile chat",
+      "checked": 30,
+      "minimum": 4.79,
+      "failures": []
+    },
+    {
+      "state": "mobile Studio",
+      "checked": 30,
+      "minimum": 4.79,
+      "failures": []
+    },
+    {
+      "state": "mobile navigation drawer",
+      "checked": 12,
+      "minimum": 4.74,
+      "failures": []
+    }
+  ]
+}
